@@ -18,8 +18,8 @@
 uint32_t GYRO_WhoAmI(void);
 void read_ang_vels(float * ang_vels);
 void set_gyro_offsets(float gx, float gy, float gz);
-uint16_t gyro_ReadReg(uint8_t reg);
-uint16_t gyro_ReadReg(uint8_t reg);
+uint32_t gyro_ReadReg(uint8_t reg);
+//uint16_t gyro_ReadReg(uint8_t reg);
 float gyro_get(char axis);
 
 

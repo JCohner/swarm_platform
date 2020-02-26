@@ -10,7 +10,9 @@
 float gx_offset,gy_offset,gz_offset;
 
 uint32_t GYRO_WhoAmI(void) {
-    return I2CReceive(GYRO_ADDR, GYRO_WHOAMI);
+    uint32_t who_am_i;
+    I2CReceive(GYRO_ADDR, GYRO_WHOAMI, &who_am_i,1);
+    return who_am_i;
 }
 
 void set_gyro_offsets(float gx, float gy, float gz)
@@ -20,12 +22,13 @@ void set_gyro_offsets(float gx, float gy, float gz)
     gz_offset = gz;
 }
 
-uint16_t gyro_ReadReg(uint8_t reg)
+uint32_t gyro_ReadReg(uint8_t reg)
 {
-    uint8_t accelDataL =  I2CReceive(GYRO_ADDR, reg);
-    uint8_t accelDataH =  I2CReceive(GYRO_ADDR, reg+1);
+    uint32_t gyroData[2];
+    I2CReceive(GYRO_ADDR, reg, gyroData,2);
 
-    return ((accelDataH << 8) | accelDataL);
+
+    return ((gyroData[1] << 8) | gyroData[0]);
 }
 
 //description: get floating point value for specific reading type of specific axis

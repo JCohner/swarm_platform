@@ -22,7 +22,7 @@ void start()
     WriteUART0("uart init\n\r");
     InitI2C0();
     WriteUART0("i2c init\n\r");
-//    acc_setup();
+    acc_setup();
 //    gyro_setup();
 
 }
@@ -32,7 +32,7 @@ void read_imu()
     heading = atan2(accel_get('M','y'),accel_get('M','z'))  * 180.0 / PI;
 
     read_accels(accels, teslas);
-    read_ang_vels(ang_vels);
+//    read_ang_vels(ang_vels);
     GPIO_clearDio(CC1310_LAUNCHXL_PIN_GLED);
 
     if (callib_flag){
@@ -42,8 +42,8 @@ void read_imu()
         WriteUART0(buffer);
         sprintf(buffer, "heading: %f\r\n", heading);
         WriteUART0(buffer);
-        sprintf(buffer, "gx: %10.5f\r\ngy: %10.5f\r\ngz: %10.5f\r\n", ang_vels[x], ang_vels[y], ang_vels[z]);
-        WriteUART0(buffer);
+//        sprintf(buffer, "gx: %10.5f\r\ngy: %10.5f\r\ngz: %10.5f\r\n", ang_vels[x], ang_vels[y], ang_vels[z]);
+//        WriteUART0(buffer);
     }
     GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 }
@@ -63,14 +63,16 @@ void callibrate()
         calib_data[1] += accels[y]/num_samples;
         calib_data[2] += accels[z]/num_samples;
 
-        calib_data[3] += ang_vels[x]/num_samples;
-        calib_data[4] += ang_vels[y]/num_samples;
-        calib_data[5] += ang_vels[z]/num_samples;
+//        calib_data[3] += ang_vels[x]/num_samples;
+//        calib_data[4] += ang_vels[y]/num_samples;
+//        calib_data[5] += ang_vels[z]/num_samples;
     }
 //    GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
-    set_gyro_offsets(calib_data[3], calib_data[4], calib_data[5]);
-    sprintf(buffer,"calibration complete:\n\rax: %f \tay: %f\taz: %f\n\rgx: %f \tgy: %f\tgz: %f\n\r",
-            calib_data[x], calib_data[y], calib_data[z], calib_data[(3 + x)], calib_data[(3 + y)], calib_data[(3 + z)]);
+//    set_gyro_offsets(calib_data[3], calib_data[4], calib_data[5]);
+//    sprintf(buffer,"calibration complete:\n\rax: %f \tay: %f\taz: %f\n\rgx: %f \tgy: %f\tgz: %f\n\r",
+//            calib_data[x], calib_data[y], calib_data[z], calib_data[(3 + x)], calib_data[(3 + y)], calib_data[(3 + z)]);
+    sprintf(buffer,"calibration complete:\n\rax: %f \tay: %f\taz: %f\n\r",
+            calib_data[x], calib_data[y], calib_data[z]);
     WriteUART0(buffer);
     callib_flag = 1;
 }

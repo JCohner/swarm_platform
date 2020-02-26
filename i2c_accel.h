@@ -23,7 +23,7 @@
 
 uint32_t ACC_WhoAmI(void);
 void read_accels(float * accels, float * teslas);
-uint16_t accel_ReadReg(uint8_t reg);
+uint32_t accel_ReadReg(uint8_t reg);
 float accel_get(char type, char axis);
 // initialize the accelerometer
 void acc_setup();

@@ -9,15 +9,18 @@
 
 
 uint32_t ACC_WhoAmI(void) {
-    return I2CReceive(ACC_ADDR, ACC_WHOAMI);
+    uint32_t who_am_i;
+    I2CReceive(ACC_ADDR, ACC_WHOAMI, &who_am_i,1);
+    return who_am_i;
 }
 
-uint16_t accel_ReadReg(uint8_t reg)
+uint32_t accel_ReadReg(uint8_t reg)
 {
-    uint8_t accelDataL =  I2CReceive(ACC_ADDR, reg);
-    uint8_t accelDataH =  I2CReceive(ACC_ADDR, reg+1);
+    uint32_t accelData[2];
+    I2CReceive(ACC_ADDR, reg, accelData,2);
 
-    return ((accelDataH << 8) | accelDataL);
+
+    return ((accelData[1] << 8) | accelData[0]);
 }
 
 //description: get floating point value for specific reading type of specific axis
@@ -29,10 +32,10 @@ float accel_get(char type, char axis)
     switch(type)
     {
     case 'M':
-        reg = ACC_OUT_X_L_M;
+        reg = ACC_OUT_X_L_M | 0x80;
         break;
     case 'A':
-        reg = ACC_OUT_X_L_A;
+        reg = ACC_OUT_X_L_A | 0x80; //enables continous reading
         break;
     default:
         //TODO: UART Error Log
