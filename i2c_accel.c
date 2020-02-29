@@ -74,11 +74,9 @@ void read_accels(float * accels, float * teslas)
 
 void acc_setup() {
   // set up the accelerometer, using I2C 2
-  I2CSend(ACC_ADDR, 6,  //leaving CTRL0 t0 default +-2g resolution
-          ACC_CTRL1, 0xAF,  // set accelerometer data rate to 1600 Hz.
-          ACC_CTRL5, 0xF0,  // 50 Hz magnetometer, high resolution, temp sensor on
-          ACC_CTRL7, 0x00  // enable continuous reading of the magnetometer
-          );
+  I2CSend(ACC_ADDR, ACC_CTRL1, 0xAF);
+  I2CSend(ACC_ADDR, ACC_CTRL5, 0xF0);
+  I2CSend(ACC_ADDR, ACC_CTRL7, 0x00);
 
   //add WhoAmI call and uart log here
 }

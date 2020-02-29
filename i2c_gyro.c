@@ -69,11 +69,7 @@ void read_ang_vels(float * ang_vels)
 void gyro_setup()
 {
     // set up the gyro, using I2C1
-    I2CSend(GYRO_ADDR, 4,
-            GYRO_CTRL1, 0xEF,  // set gyrometer data rate to 800 Hz.
-            GYRO_CTRL4, 0x90  //  500dps selection & Don't update until we read values
-            );
-
-
+    I2CSend(GYRO_ADDR, GYRO_CTRL1, 0xEF);
+    I2CSend(GYRO_ADDR, GYRO_CTRL4, 0x90);
 
 }

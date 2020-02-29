@@ -12,8 +12,8 @@
 #define ACC_CTRL7 0x26      // control register 7
 
 #define ACC_OUT_X_L_A 0x28  // LSB of x-axis acceleration register.
-#define ACC_OUT_Y_L_ 0x2A,
-#define ACC_OUT_Z_L_ 0x2C
+#define ACC_OUT_Y_L_A 0x2A,
+#define ACC_OUT_Z_L_A 0x2C
 #define ACC_OUT_X_L_M 0x08
 #define ACC_OUT_Y_L_M 0x0A
 #define ACC_OUT_Z_L_M 0x0C
