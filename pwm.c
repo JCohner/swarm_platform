@@ -18,10 +18,10 @@ void PWMEnable()
     // EVENT0: GPT0 A
     // EVENT1: GPT0 B
     // EVENT2: GPT1 A ... //from https://e2e.ti.com/support/wireless-connectivity/sub-1-ghz/f/156/p/515712/1894843#1894843
-    IOCIOPortIdSet(IOID_12, IOC_PORT_MCU_PORT_EVENT0);
-    IOCIOPortIdSet(IOID_11, IOC_PORT_MCU_PORT_EVENT1);
-    IOCPortConfigureSet(IOID_11, IOC_PORT_MCU_PORT_EVENT1, IOC_IOMODE_NORMAL);
-    IOCPortConfigureSet(IOID_12, IOC_PORT_MCU_PORT_EVENT0, IOC_IOMODE_NORMAL);
+    IOCIOPortIdSet(M1_PWM, IOC_PORT_MCU_PORT_EVENT0);
+    IOCIOPortIdSet(M2_PWM, IOC_PORT_MCU_PORT_EVENT1);
+    IOCPortConfigureSet(M2_PWM, IOC_PORT_MCU_PORT_EVENT1, IOC_IOMODE_NORMAL);
+    IOCPortConfigureSet(M1_PWM, IOC_PORT_MCU_PORT_EVENT0, IOC_IOMODE_NORMAL);
 
     //configure timer
     TimerDisable(GPT0_BASE,TIMER_A);
@@ -39,9 +39,9 @@ void PWMEnable()
 
 void PWMSet(int motor, int value)
 {
-    if (motor == 0){
+    if (motor == M1_PWM){
         TimerMatchSet(GPT0_BASE, TIMER_A, (value % 1024));
-    } else if (motor == 1) {
+    } else if (motor == M2_PWM) {
         TimerMatchSet(GPT0_BASE, TIMER_B, (value % 1024));
     }
 }

@@ -57,8 +57,17 @@ void I2CReceive(uint32_t slave_addr, uint8_t reg, uint32_t * data, uint8_t num_d
     //slave device
     I2CMasterSlaveAddrSet(I2C0_BASE, slave_addr, false);
 
-    //specify register to be read
-    I2CMasterDataPut(I2C0_BASE, reg);
+    if (num_data > 1)
+    {
+        //specify register to be read
+        I2CMasterDataPut(I2C0_BASE, reg | 0x80);
+    }
+    else
+    {
+        //specify register to be read
+        I2CMasterDataPut(I2C0_BASE, reg);
+    }
+
 
     //send control byte and register address byte to slave device
     I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_START); //keep repeeated start
@@ -81,7 +90,9 @@ void I2CReceive(uint32_t slave_addr, uint8_t reg, uint32_t * data, uint8_t num_d
         int i;
         for (i = 0; i < num_data; i++)
         {
-            if ((num_data - i) == 1)
+            if(i == 0){
+                I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_RECEIVE_START);
+            }else if ((num_data - i) == 1)
             {
                 I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
             }

@@ -17,8 +17,8 @@ uint32_t ACC_WhoAmI(void) {
 uint32_t accel_ReadReg(uint8_t reg)
 {
     uint32_t accelData[2];
-    I2CReceive(ACC_ADDR, reg, accelData,2);
-
+    I2CReceive(ACC_ADDR, reg, accelData,1);
+    I2CReceive(ACC_ADDR, reg, accelData + 1,1);
 
     return ((accelData[1] << 8) | accelData[0]);
 }
@@ -32,10 +32,10 @@ float accel_get(char type, char axis)
     switch(type)
     {
     case 'M':
-        reg = ACC_OUT_X_L_M | 0x80;
+        reg = ACC_OUT_X_L_M;// | 0x80;
         break;
     case 'A':
-        reg = ACC_OUT_X_L_A | 0x80; //enables continous reading
+        reg = ACC_OUT_X_L_A ;//| 0x80; //enables continous reading
         break;
     default:
         //TODO: UART Error Log
@@ -58,18 +58,18 @@ float accel_get(char type, char axis)
         ;
     }
 
-    float value = accel_ReadReg(reg) * LSB_TO_G_PM2G;
+    float value = accel_ReadReg(reg) * 0.000061;
     return value;
 }
 
 void read_accels(float * accels, float * teslas)
 {
     accels[0] = accel_get('A', 'x');
-    accels[1] = accel_get('A', 'y');
-    accels[2] = accel_get('A', 'z');
-    teslas[0] = accel_get('M', 'x');
-    teslas[1] = accel_get('M', 'y');
-    teslas[2] = accel_get('M', 'z');
+//    accels[1] = accel_get('A', 'y');
+//    accels[2] = accel_get('A', 'z');
+//    teslas[0] = accel_get('M', 'x');
+//    teslas[1] = accel_get('M', 'y');
+//    teslas[2] = accel_get('M', 'z');
 }
 
 void acc_setup() {

@@ -21,6 +21,4 @@ void I2CSend(uint8_t slave_addr, uint8_t reg, uint8_t value);
 void I2CSendString(uint32_t slave_addr, char array[]);
 void I2CReceive(uint32_t slave_addr, uint8_t reg, uint32_t * data, uint8_t num_data);
 
-void I2CReceive1(uint32_t slave_addr, uint8_t reg, uint32_t * data);
-
 #endif
