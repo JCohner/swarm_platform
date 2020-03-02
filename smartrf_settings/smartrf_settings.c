@@ -34,6 +34,18 @@
 #include <devices/cc13x0/rf_patches/rf_patch_cpe_genfsk.h>
 #include <devices/cc13x0/rf_patches/rf_patch_rfe_genfsk.h>
 #include "smartrf_settings.h"
+#include <drivers/rf/RF.h>
+
+// TI-RTOS RF Mode Object
+RF_Mode RF_prop =
+{
+    .rfMode = RF_MODE_PROPRIETARY_SUB_1,
+    .cpePatchFxn = &rf_patch_cpe_genfsk,
+    .mcePatchFxn = 0,
+    .rfePatchFxn = &rf_patch_rfe_genfsk,
+};
+
+
 
 // Overrides for CMD_PROP_RADIO_DIV_SETUP
 uint32_t pOverrides[] =

@@ -13,6 +13,11 @@
 #include <devices/cc13x0/driverlib/rf_common_cmd.h>
 #include <devices/cc13x0/driverlib/rf_prop_cmd.h>
 
+#include <drivers/rf/RF.h>
+
+// TI-RTOS RF Mode Object
+extern RF_Mode RF_prop; //we shouldnt need this
+
 // RF Core API commands
 extern rfc_CMD_PROP_RADIO_DIV_SETUP_t RF_cmdPropRadioDivSetup; //will put us in the sub 1-Ghz band
 extern rfc_CMD_FS_t RF_cmdFs; //will set synthesizer freq
