@@ -143,14 +143,15 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .rxConf.bAutoFlushCrcErr = 0x0,
  .rxConf.bIncludeHdr = 0x1,
  .rxConf.bIncludeCrc = 0x0,
- .rxConf.bAppendRssi = 0x1, //could append rssi value to packet in rx queue
+ .rxConf.bAppendRssi = 0x0, //could append rssi value to packet in rx queue
  .rxConf.bAppendTimestamp = 0x0,
  .rxConf.bAppendStatus = 0x1,
 
  /*CS Config*/
  .csConf.bEnaRssi = 0x1,
+ .csConf.bEnaCorr = 0x0,
  .csConf.operation = 0x1,
- .csConf.busyOp = 0x0, //continue if busy (to a read)
+ .csConf.busyOp = 0x1, //if busy end carrier sense change to read
  .csConf.idleOp = 0x1, //end if channel idle
  .csConf.timeoutRes = 0x1, //for now treat timeout as IDLE
  .rssiThr                  = 0x0, // Set the RSSI threshold in the application
@@ -160,13 +161,13 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
                                   // needed before the channel is declared Busy
 
 
-    .corrConfig.numCorrInv    = 0x0, // N/A since .csConf.bEnaCorr = 0
-    .corrConfig.numCorrBusy   = 0x0, // N/A since .csConf.bEnaCorr = 0
-    .csEndTrigger.triggerType = TRIG_REL_START, // Trigs at a time relative to the command started
-    .csEndTrigger.bEnaCmd     = 0x0,
-    .csEndTrigger.triggerNo   = 0x0,
-    .csEndTrigger.pastTrig    = 0x0,
-    .csEndTime                = 0x00000000, // Set the CS end time in the application
+.corrConfig.numCorrInv    = 0x0, // N/A since .csConf.bEnaCorr = 0
+.corrConfig.numCorrBusy   = 0x0, // N/A since .csConf.bEnaCorr = 0
+.csEndTrigger.triggerType = TRIG_REL_START, // Trigs at a time relative to the command started
+.csEndTrigger.bEnaCmd     = 0x0,
+.csEndTrigger.triggerNo   = 0x0,
+.csEndTrigger.pastTrig    = 0x0,
+.csEndTime                = 0x00000000, // Set the CS end time in the application
 
  .syncWord = 0x930B51DE,
  .maxPktLen = 0xFF, // MAKE SURE DATA ENTRY IS LARGE ENOUGH
