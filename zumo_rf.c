@@ -14,7 +14,7 @@
 #include "application_settings.h"
 
 #include <devices/cc13x0/driverlib/gpio.h>
-
+#include <devices/cc13x0/driverlib/rf_common_cmd.h>
 #include "zumo_rf.h"
 #include "uart.h"
 #include "CC1310_LAUNCHXL.h"
@@ -92,6 +92,8 @@ uint32_t message_time;
 uint32_t prev_message_time;
 uint32_t delta_message_time = 0;
 uint32_t idle_count = 0;
+
+bool neighbors = false;
 void rf_setup()
 {
     RF_Params rfParams;
@@ -110,10 +112,9 @@ void rf_setup()
     /* Customize the CMD_PROP_TX command for this application */
    RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
    RF_cmdPropTx.pPkt = packet;
-   RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
-//   //my addition
-//   RF_cmdPropTx.startTrigger.triggerType = TRIG_REL_PREVEND;
-//   RF_cmdPropTx.startTime = TX_DELAY;
+//   RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
+   RF_cmdPropTx.startTrigger.triggerType = TRIG_REL_SUBMIT;
+   RF_cmdPropTx.startTime = TX_DELAY;
 
    /* Modify CMD_PROP_TX and CMD_PROP_RX commands for application needs */
    /* Set the Data Entity queue for received data */
@@ -142,7 +143,6 @@ void rf_setup()
    RF_cmdPropRxSniff.csEndTime = (IDLE_TIME_US + 150) * 4;
    RF_cmdPropRxSniff.numRssiIdle = 0x10;
 
-
    rfHandle = RF_open(&rfObject, &RF_prop, (RF_RadioSetup*)&RF_cmdPropRadioDivSetup, &rfParams);
 
    /* Set the frequency */
@@ -152,24 +152,36 @@ void rf_setup()
    time = RF_getCurrentTime();
    curr_time = time;
 
+
+   sprintf((packet + 2), "MACH: 0\r\n");
+   /*init shout*/
+   RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+                         &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 }
 RF_CmdHandle rxCommandHandle;
 RF_EventMask events;
 
+char buffer[50];
 void rf_main()
 {
     /* Create packet with incrementing sequence number & random payload */
     packet[0] = (uint8_t)(seqNumber >> 8);
     packet[1] = (uint8_t)(seqNumber);
     uint8_t i;
-    for (i = 2; i < PAYLOAD_LENGTH; i++)
-    {
-        packet[i] = rand();
-    }
+//    for (i = 2; i < PAYLOAD_LENGTH; i++)
+//    {
+//        packet[i] = rand();
+//    }
 
 //    /* Set absolute TX time to utilize automatic power management */
 //    time += (PACKET_INTERVAL_US * 4);
 //    RF_cmdNop.startTime = time;
+
+//    if (!neighbors)
+//    {
+//        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+//                              &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+//    }
 
     /* Sniff */
     rxCommandHandle =
@@ -177,9 +189,11 @@ void rf_main()
               &sniff_callback, (RF_EventCmdDone |
                       RF_EventLastCmdDone | RF_EventRxEntryDone));
     if (rxCommandHandle < 0){
-       WriteUART0("pend naysh\r\n");
-        events = RF_pendCmd(rfHandle, rxCommandHandle,
-                                RF_EventRxEntryDone);
+        WriteUART0("command queue full, flushing\r\n");
+//        RF_EventMask events = RF_pendCmd(rfHandle, rxCommandHandle,
+//                RF_EventRxEntryDone);
+//               sprintf(buffer, "flush res: %d\r\n", result);
+//               WriteUART0(buffer);
     }
 
     if (curr_time > wait_time && !(wait_time < 0))
@@ -188,12 +202,19 @@ void rf_main()
 
         curr_time = 0;
     }
-
+    ++idle_count;
+    sprintf(buffer, "idle count is: %d\r\n", idle_count);
+        WriteUART0(buffer);
     if((idle_count > 12) && (wait_time < 0))
     {
         idle_count = 0;
-        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+        rxCommandHandle =
+                RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityHigh,
                   &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+        if(rxCommandHandle < 0)
+        {
+            WriteUART0("never even scheduled\r\n");
+        }
     }
 
 }
@@ -209,7 +230,7 @@ void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
 }
 
-char buffer[50];
+
 
 
 void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
@@ -234,9 +255,8 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
     WriteUART0(buffer);
 
-    if (e & RF_EventRxEntryDone || RF_cmdPropRxSniff.status == PROP_DONE_OK)
+    if (e & RF_EventRxEntryDone)
     {
-        WriteUART0("I heard from someone halejewya!\r\n");
         message_time = RF_getCurrentTime();
         delta_message_time = (message_time - prev_message_time) * 3;
         prev_message_time = message_time;
@@ -249,10 +269,24 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         packetLength      = *(uint8_t *)(&(currentDataEntry->data));
         packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
         RFQueue_nextEntry();
+//        WriteUART0("fuck\r\n");
+//        memcpy(buffer, packetDataPointer, packetLength);
+        sprintf(buffer, "got packet of length: %u\r\n", packetLength);
+        WriteUART0(buffer);
+        sprintf(buffer,
+                "seq: %d\r\n",
+                (
+                        (*(packetDataPointer) << 8) | *(packetDataPointer + 1)
+                                )
+                        );
+        WriteUART0(buffer);
+        WriteUART0((char *) (packetDataPointer + 2));
 
-        WriteUART0("I heard from someone halejewya!\r\n");
-
+        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
+        WriteUART0(buffer);
 //        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
+
+        idle_count = 0;
     }
 
 }

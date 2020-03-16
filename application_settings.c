@@ -151,8 +151,8 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .csConf.bEnaRssi = 0x1,
  .csConf.bEnaCorr = 0x0,
  .csConf.operation = 0x1,
- .csConf.busyOp = 0x1, //if busy end carrier sense change to read
- .csConf.idleOp = 0x1, //end if channel idle
+ .csConf.busyOp = 0x1, //if busy end carrier sense change to read //APPEARS TO BE CRUCIAL. RECEIVES WHEN 1, SENDS WHEN 0
+ .csConf.idleOp = 0x0, //end if channel idle
  .csConf.timeoutRes = 0x1, //for now treat timeout as IDLE
  .rssiThr                  = 0x0, // Set the RSSI threshold in the application
  .numRssiIdle              = 0x0, // Number of consecutive RSSI measurements - 1 below the threshold
@@ -181,3 +181,9 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .pQueue = 0, // INSERT APPLICABLE POINTER: (dataQueue_t*)&xxx
  .pOutput = 0, // INSERT APPLICABLE POINTER: (uint8_t*)&xxx
 };
+
+//rfc_CMD_FLUSH_QUEUE_t RF_cmdFlush =
+//{
+// .commandNo = 0x0007,
+// .pQueue = 0x00, //define in application
+//};
