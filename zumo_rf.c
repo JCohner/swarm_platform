@@ -94,6 +94,7 @@ uint32_t delta_message_time = 0;
 uint32_t idle_count = 0;
 
 bool neighbors = false;
+uint8_t resp_flag;
 void rf_setup()
 {
     RF_Params rfParams;
@@ -113,8 +114,8 @@ void rf_setup()
    RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
    RF_cmdPropTx.pPkt = packet;
 //   RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
-   RF_cmdPropTx.startTrigger.triggerType = TRIG_REL_SUBMIT;
-   RF_cmdPropTx.startTime = TX_DELAY;
+//   RF_cmdPropTx.startTrigger.triggerType = TRIG_REL_SUBMIT;
+//   RF_cmdPropTx.startTime = TX_DELAY;
 
    /* Modify CMD_PROP_TX and CMD_PROP_RX commands for application needs */
    /* Set the Data Entity queue for received data */
@@ -141,7 +142,18 @@ void rf_setup()
    /*Set Carrier Sense Properties*/
    RF_cmdPropRxSniff.rssiThr  = RSSI_THRESHOLD_DBM;
    RF_cmdPropRxSniff.csEndTime = (IDLE_TIME_US + 150) * 4;
-   RF_cmdPropRxSniff.numRssiIdle = 0x10;
+//   RF_cmdPropRxSniff.numRssiIdle = 0x10;
+
+    /*Nop gives us clean entry point*/
+    RF_cmdNop.startTrigger.triggerType = TRIG_NOW;
+    RF_cmdNop.startTrigger.pastTrig = 1;
+//    RF_cmdNop.pNextOp = (rfc_radioOp_t*)&RF_cmdPropRxSniff;
+//    RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t*)&RF_cmdCountBranch;
+//    RF_cmdCountBranch.pNextOp = (rfc_radioOp_t*)&RF_cmdPropTx; //pointer once this counter expires
+//    RF_cmdCountBranch.pNextOpIfOk = (rfc_radioOp_t*)&RF_cmdPropRxSniff; //if the counter did not expire
+
+    /*setup branch counter*/
+    RF_cmdCountBranch.counter = CS_RETRIES_WHEN_BUSY;
 
    rfHandle = RF_open(&rfObject, &RF_prop, (RF_RadioSetup*)&RF_cmdPropRadioDivSetup, &rfParams);
 
@@ -153,12 +165,15 @@ void rf_setup()
    curr_time = time;
 
 
+   resp_flag = 1;
+
    sprintf((packet + 2), "MACH: 0\r\n");
    /*init shout*/
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                          &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 }
 RF_CmdHandle rxCommandHandle;
+RF_CmdHandle prev_rxCommandHandle;
 RF_EventMask events;
 
 char buffer[50];
@@ -167,55 +182,62 @@ void rf_main()
     /* Create packet with incrementing sequence number & random payload */
     packet[0] = (uint8_t)(seqNumber >> 8);
     packet[1] = (uint8_t)(seqNumber);
-    uint8_t i;
+//    uint8_t i;
 //    for (i = 2; i < PAYLOAD_LENGTH; i++)
 //    {
 //        packet[i] = rand();
 //    }
 
-//    /* Set absolute TX time to utilize automatic power management */
-//    time += (PACKET_INTERVAL_US * 4);
-//    RF_cmdNop.startTime = time;
 
-//    if (!neighbors)
+
+    /* Set absolute TX time to utilize automatic power management */
+    time += (PACKET_INTERVAL_US * 4);
+    RF_cmdNop.startTime = RF_getCurrentTime();
+    /* Sniff */
+    if (resp_flag == 1)
+    {
+        WriteUART0("resp flag high posting command\r\n");
+        rxCommandHandle =
+                RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRxSniff, RF_PriorityNormal,
+                  &sniff_callback, (RF_EventCmdDone |
+                          RF_EventLastCmdDone | RF_EventRxEntryDone));
+        if (rxCommandHandle < 0)
+        {
+            WriteUART0("command queue full, flushing\r\n");
+            RF_EventMask events = RF_pendCmd(rfHandle, rxCommandHandle,
+                    RF_EventRxEntryDone);
+            WriteUART0("done w that shit\r\n");
+        }
+        resp_flag = 0;
+    }
+    else if (resp_flag == 0)
+    {
+        sprintf(buffer, "sniff not returned, idle count at: %d\r\n", idle_count);
+        WriteUART0("didn't hear from anyone ")
+    }
+
+
+//    if (curr_time > wait_time && !(wait_time < 0))
 //    {
-//        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-//                              &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+//
+//
+//        curr_time = 0;
+//    }
+//
+////    sprintf(buffer, "idle count is: %d\r\n", idle_count);
+////        WriteUART0(buffer);
+//    if((idle_count > 12) && (wait_time < 0))
+//    {
+//        idle_count = 0;
+//        rxCommandHandle =
+//                RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityHigh,
+//                  &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+//        if(rxCommandHandle < 0)
+//        {
+//            WriteUART0("never even scheduled\r\n");
+//        }
 //    }
 
-    /* Sniff */
-    rxCommandHandle =
-            RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRxSniff, RF_PriorityNormal,
-              &sniff_callback, (RF_EventCmdDone |
-                      RF_EventLastCmdDone | RF_EventRxEntryDone));
-    if (rxCommandHandle < 0){
-        WriteUART0("command queue full, flushing\r\n");
-//        RF_EventMask events = RF_pendCmd(rfHandle, rxCommandHandle,
-//                RF_EventRxEntryDone);
-//               sprintf(buffer, "flush res: %d\r\n", result);
-//               WriteUART0(buffer);
-    }
-
-    if (curr_time > wait_time && !(wait_time < 0))
-    {
-
-
-        curr_time = 0;
-    }
-    ++idle_count;
-    sprintf(buffer, "idle count is: %d\r\n", idle_count);
-        WriteUART0(buffer);
-    if((idle_count > 12) && (wait_time < 0))
-    {
-        idle_count = 0;
-        rxCommandHandle =
-                RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityHigh,
-                  &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
-        if(rxCommandHandle < 0)
-        {
-            WriteUART0("never even scheduled\r\n");
-        }
-    }
 
 }
 
@@ -244,6 +266,14 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //        prev_message_time = message_time;
 //        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
 //    }
+
+
+    if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventCmdDone))
+        {
+            seqNumber++;
+            GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
+            WriteUART0("shouting\r\n");
+        }
 
     if(RF_cmdPropRxSniff.status == PROP_DONE_IDLE)
     {
@@ -287,7 +317,15 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
 
         idle_count = 0;
+        resp_flag = 1;
+        WriteUART0("heard from someone resp flag set high\r\n");
     }
+
+    RF_cmdNop.status = IDLE;
+                RF_cmdPropCs.status = IDLE;
+                RF_cmdCountBranch.status = IDLE;
+                RF_cmdPropTx.status = IDLE;
+                RF_cmdCountBranch.counter = CS_RETRIES_WHEN_BUSY;
 
 }
 
