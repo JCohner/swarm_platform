@@ -129,8 +129,8 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .startTrigger.bEnaCmd = 0x0,
  .startTrigger.triggerNo = 0x0,
  .startTrigger.pastTrig = 0x0,
- .condition.rule = 0x1,
- .condition.nSkip = 0x0,
+ .condition.rule = COND_STOP_ON_TRUE,
+ .condition.nSkip = 0x0, //changed this to a 2 from 0
  .pktConf.bFsOff = 0x0,
  .pktConf.bRepeatOk = 0x0,
  .pktConf.bRepeatNok = 0x0,
@@ -151,13 +151,13 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .csConf.bEnaRssi = 0x1,
  .csConf.bEnaCorr = 0x0,
  .csConf.operation = 0x1,
- .csConf.busyOp = 0x1, //if busy end carrier sense change to read //APPEARS TO BE CRUCIAL. RECEIVES WHEN 1, SENDS WHEN 0
- .csConf.idleOp = 0x0, //end if channel idle
- .csConf.timeoutRes = 0x1, //for now treat timeout as IDLE
+ .csConf.busyOp = 0x1, //if busy no longer check carrier sense
+ .csConf.idleOp = 0x1, //end if channel idle
+ .csConf.timeoutRes = 0x1, //we want receive operation to continue
  .rssiThr                  = 0x0, // Set the RSSI threshold in the application
- .numRssiIdle              = 0x0, // Number of consecutive RSSI measurements - 1 below the threshold
+ .numRssiIdle              = 0x1, // Number of consecutive RSSI measurements - 1 below the threshold
                                   // needed before the channel is declared Idle
- .numRssiBusy              = 0x0, // Number of consecutive RSSI measurements -1 above the threshold
+ .numRssiBusy              = 0x1, // Number of consecutive RSSI measurements -1 above the threshold
                                   // needed before the channel is declared Busy
 
 
@@ -182,8 +182,8 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .pOutput = 0, // INSERT APPLICABLE POINTER: (uint8_t*)&xxx
 };
 
-//rfc_CMD_FLUSH_QUEUE_t RF_cmdFlush =
-//{
-// .commandNo = 0x0007,
-// .pQueue = 0x00, //define in application
-//};
+rfc_CMD_FLUSH_QUEUE_t RF_cmdFlush =
+{
+ .commandNo = 0x0007,
+ .pQueue = 0x00, //define in application
+};

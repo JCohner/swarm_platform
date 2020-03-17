@@ -41,5 +41,5 @@ extern rfc_CMD_PROP_CS_t RF_cmdPropCs;
 extern rfc_CMD_COUNT_BRANCH_t RF_cmdCountBranch;
 extern rfc_CMD_NOP_t RF_cmdNop;
 extern rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff;
-rfc_CMD_FLUSH_QUEUE_t RF_cmdFlush;
+extern rfc_CMD_FLUSH_QUEUE_t RF_cmdFlush;
 #endif // APPLICATION_SETTINGS_H
