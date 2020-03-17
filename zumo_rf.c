@@ -219,7 +219,7 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     //if sniff returned idle
     if(RF_cmdPropRxSniff.status == PROP_DONE_IDLE)
     {
-        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
 
 //        WriteUART0("theres no one out there :(\r\n");
         idle_count++;
