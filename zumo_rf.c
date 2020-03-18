@@ -26,7 +26,7 @@
 #define PAYLOAD_LENGTH          30
 #define PACKET_INTERVAL_US      200000
 /* Number of times the CS command should run when the channel is BUSY */
-#define CS_RETRIES_WHEN_BUSY    10
+#define CS_RETRIES_WHEN_BUSY    100
 /* The channel is reported BUSY is the RSSI is above this threshold */
 #define RSSI_THRESHOLD_DBM      -80
 #define IDLE_TIME_US            5000
@@ -95,6 +95,7 @@ uint32_t idle_count = 0;
 
 bool neighbors = false;
 uint8_t resp_flag;
+
 void rf_setup()
 {
     RF_Params rfParams;
@@ -110,9 +111,13 @@ void rf_setup()
         while(1);
     }
 
+    triggerCmd.commandNo = CMD_TRIGGER;
+    triggerCmd.triggerNo = 1;
+
     /* Customize the CMD_PROP_TX command for this application */
     RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
     RF_cmdPropTx.pPkt = packet;
+    RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
     RF_cmdNop.startTrigger.triggerType = TRIG_ABSTIME;
     RF_cmdNop.startTrigger.pastTrig = 1;
 
@@ -132,7 +137,8 @@ void rf_setup()
    RF_cmdPropRxSniff.startTrigger.triggerType = TRIG_NOW;
 //   RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t *)&RF_cmdPropTx;
    /* Only run the TX command if RX is successful */
-   RF_cmdPropRxSniff.condition.rule = COND_STOP_ON_FALSE;
+   RF_cmdPropRxSniff.condition.rule = COND_SKIP_ON_FALSE;
+   RF_cmdPropRxSniff.condition.nSkip = 0x0; //repeat the rxsniff if it retruns idle
    RF_cmdPropRxSniff.pOutput = (uint8_t *)&rxStatistics;
 
    //dont set this as next ok, do control flow differently
@@ -141,15 +147,16 @@ void rf_setup()
    /*Set Carrier Sense Properties*/
    RF_cmdPropRxSniff.rssiThr  = RSSI_THRESHOLD_DBM;
    RF_cmdPropRxSniff.csEndTime = (IDLE_TIME_US + 150) * 4;
+//   RF_cmdPropRxSniff.endTime = (IDLE_TIME_US + 150) * 16;
 //   RF_cmdPropRxSniff.numRssiIdle = 0x10;
 
     /*Nop gives us clean entry point*/
     RF_cmdNop.startTrigger.triggerType = TRIG_ABSTIME;
     RF_cmdNop.startTrigger.pastTrig = 1;
 //    RF_cmdNop.pNextOp = (rfc_radioOp_t*)&RF_cmdPropRxSniff;
-//    RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t*)&RF_cmdPropTx;
+//    RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t*)&RF_cmdCountBranch;
 //    RF_cmdCountBranch.pNextOp = (rfc_radioOp_t*)&RF_cmdPropTx; //pointer once this counter expires
-//    RF_cmdCountBranch.pNextOpIfOk = (rfc_radioOp_t*)&RF_cmdPropTx; //if the counter did not expire
+//    RF_cmdCountBranch.pNextOpIfOk = (rfc_radioOp_t*)&RF_cmdPropRxSniff; //if the counter did not expire
 
     /*setup branch counter*/
 //    RF_cmdCountBranch.counter = CS_RETRIES_WHEN_BUSY;
@@ -174,7 +181,7 @@ void rf_setup()
 RF_CmdHandle rxCommandHandle;
 RF_CmdHandle txCommandHandle;
 RF_EventMask events;
-
+char trigNo = 0;
 char buffer[50];
 void rf_main()
 {
@@ -182,13 +189,35 @@ void rf_main()
     packet[0] = (uint8_t)(seqNumber >> 8);
     packet[1] = (uint8_t)(seqNumber);
 
-    rxCommandHandle =
+    if (resp_flag)
+    {
+
+        rxCommandHandle =
             RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRxSniff, RF_PriorityNormal,
               &sniff_callback, (RF_EventCmdDone |
                       RF_EventLastCmdDone | RF_EventRxEntryDone));
-    RF_cmdPropTx.startTime = TX_DELAY + delta_message_time/2.0;
-    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-                             &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+        resp_flag = 0;
+    }
+    if (resp_flag == 0)
+    {
+        idle_count++;
+    }
+    sprintf(buffer, "idle count is: %u\r\n", idle_count);
+    WriteUART0(buffer);
+    if (idle_count > 10)
+    {
+        RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
+        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+                                 &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+        resp_flag = 1;
+        idle_count = 0;
+    }
+
+
+//    RF_cmdPropTx.startTime = TX_DELAY + (delta_message_time/2.0) * 10;
+//    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+//                             &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+
 
     if (rxCommandHandle < 0)
     {
@@ -203,7 +232,7 @@ void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     {
         seqNumber++;
         GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
-        WriteUART0("shouting\r\n");
+        WriteUART0("ah shouting\r\n");
     }
 
 }
@@ -215,7 +244,13 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {
     sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
     WriteUART0(buffer);
-
+//
+    if ((RF_cmdPropTx.status == PROP_DONE_OK))// && (e & RF_EventLastCmdDone))
+    {
+        seqNumber++;
+        GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
+        WriteUART0("shouting\r\n");
+    }
     //if sniff returned idle
     if(RF_cmdPropRxSniff.status == PROP_DONE_IDLE)
     {
@@ -224,6 +259,7 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //        WriteUART0("theres no one out there :(\r\n");
         idle_count++;
         sprintf(buffer, "idle count at: %u\r\n", idle_count);
+        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
         WriteUART0(buffer);
         resp_flag = 0;
     }
@@ -231,10 +267,16 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     //if sniff returned bsy
     if(RF_cmdPropRxSniff.status == PROP_DONE_BUSY)
     {
-        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
 
         WriteUART0("line busy\r\n");
         resp_flag = 1;
+    }
+
+
+    if(RF_cmdCountBranch.status == DONE_COUNTDOWN)
+    {
+        WriteUART0("didnt here someone for 100 sniffs\r\n");
     }
 
     //if we successfully recevied
@@ -268,6 +310,13 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         idle_count = 0;
         resp_flag = 1;
         WriteUART0("heard from someone resp flag set high\r\n");
+
+        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
+        GPIO_clearDio(CC1310_LAUNCHXL_PIN_GLED);
+
+//        RF_cmdPropTx.startTime = TX_DELAY + (delta_message_time/2.0);
+//        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+//                                 &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
     }
 }
 
