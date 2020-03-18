@@ -89,8 +89,8 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 uint32_t curr_time;
 int wait_time = -1;
 uint32_t message_time;
-uint32_t prev_message_time;
-uint32_t delta_message_time = 10;
+uint32_t prev_message_time = 0;
+uint32_t delta_message_time = 0;
 uint32_t idle_count = 0;
 
 bool neighbors = false;
@@ -173,7 +173,7 @@ void rf_setup()
    RF_cmdFlush.pQueue = &dataQueue;
    resp_flag = 1;
 
-   sprintf((packet + 2), "MACH: 0\r\n");
+   sprintf((packet + 2), "MACH: 2\r\n");
    /*init shout*/
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                          &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
@@ -181,6 +181,9 @@ void rf_setup()
 RF_CmdHandle rxCommandHandle;
 RF_CmdHandle txCommandHandle;
 RF_EventMask events;
+
+uint32_t curr_count = 0;
+
 char trigNo = 0;
 char buffer[50];
 void rf_main()
@@ -189,9 +192,10 @@ void rf_main()
     packet[0] = (uint8_t)(seqNumber >> 8);
     packet[1] = (uint8_t)(seqNumber);
 
+    curr_count++;
+
     if (resp_flag)
     {
-
         rxCommandHandle =
             RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRxSniff, RF_PriorityNormal,
               &sniff_callback, (RF_EventCmdDone |
@@ -215,7 +219,7 @@ void rf_main()
     }
 
 
-    if (idle_count > 10)
+    if (idle_count > 30)
     {
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
@@ -242,7 +246,7 @@ void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
     {
         seqNumber++;
-        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
+        GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
         WriteUART0("ah shouting\r\n");
     }
 
@@ -256,12 +260,12 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
     WriteUART0(buffer);
 //
-    if ((RF_cmdPropTx.status == PROP_DONE_OK))// && (e & RF_EventLastCmdDone))
-    {
-        seqNumber++;
-        GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
-        WriteUART0("shouting\r\n");
-    }
+//    if ((RF_cmdPropTx.status == PROP_DONE_OK))// && (e & RF_EventLastCmdDone))
+//    {
+//        seqNumber++;
+//        GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
+//        WriteUART0("shouting\r\n");
+//    }
     //if sniff returned idle
     if(RF_cmdPropRxSniff.status == PROP_DONE_IDLE)
     {
@@ -270,7 +274,7 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //        WriteUART0("theres no one out there :(\r\n");
         idle_count++;
         sprintf(buffer, "idle count at: %u\r\n", idle_count);
-        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
+//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
         WriteUART0(buffer);
         resp_flag = 0;
     }
@@ -278,7 +282,7 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     //if sniff returned bsy
     if(RF_cmdPropRxSniff.status == PROP_DONE_BUSY)
     {
-        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
+//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
 
         WriteUART0("line busy\r\n");
         resp_flag = 1;
@@ -293,9 +297,10 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     //if we successfully recevied
     if (e & RF_EventRxEntryDone)
     {
-//        message_time = RF_getCurrentTime();
-        delta_message_time = idle_count;
-//        prev_message_time = message_time;
+        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
+        message_time = curr_count;
+        delta_message_time = message_time - prev_message_time;
+        prev_message_time = message_time;
         /* Get current unhandled data entry */
         currentDataEntry = RFQueue_getDataEntry();
 
@@ -323,8 +328,8 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         heard_since_last = 1;
         WriteUART0("heard from someone resp flag set high\r\n");
 
-        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
-        GPIO_clearDio(CC1310_LAUNCHXL_PIN_GLED);
+//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
+//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_GLED);
 
 //        RF_cmdPropTx.startTime = TX_DELAY + (delta_message_time/2.0);
 //        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
