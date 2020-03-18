@@ -137,8 +137,8 @@ void rf_setup()
    RF_cmdPropRxSniff.startTrigger.triggerType = TRIG_NOW;
 //   RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t *)&RF_cmdPropTx;
    /* Only run the TX command if RX is successful */
-   RF_cmdPropRxSniff.condition.rule = COND_SKIP_ON_FALSE;
-   RF_cmdPropRxSniff.condition.nSkip = 0x0; //repeat the rxsniff if it retruns idle
+//   RF_cmdPropRxSniff.condition.rule = COND_SKIP_ON_FALSE;
+//   RF_cmdPropRxSniff.condition.nSkip = 0x0; //repeat the rxsniff if it retruns idle
    RF_cmdPropRxSniff.pOutput = (uint8_t *)&rxStatistics;
 
    //dont set this as next ok, do control flow differently
