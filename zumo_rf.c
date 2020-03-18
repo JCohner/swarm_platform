@@ -90,12 +90,12 @@ uint32_t curr_time;
 int wait_time = -1;
 uint32_t message_time;
 uint32_t prev_message_time;
-uint32_t delta_message_time = 0;
+uint32_t delta_message_time = 10;
 uint32_t idle_count = 0;
 
 bool neighbors = false;
 uint8_t resp_flag;
-
+uint8_t heard_since_last;
 void rf_setup()
 {
     RF_Params rfParams;
@@ -202,8 +202,19 @@ void rf_main()
     {
         idle_count++;
     }
-    sprintf(buffer, "idle count is: %u\r\n", idle_count);
+    sprintf(buffer, "idle count is: %u, heard_since_last: %d\r\n", idle_count, heard_since_last);
     WriteUART0(buffer);
+    if ((idle_count > delta_message_time/2) && (heard_since_last == 1))
+    {
+        RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
+        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+                                 &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+        resp_flag = 1;
+        idle_count = 0;
+        heard_since_last = 0;
+    }
+
+
     if (idle_count > 10)
     {
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
@@ -282,9 +293,9 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     //if we successfully recevied
     if (e & RF_EventRxEntryDone)
     {
-        message_time = RF_getCurrentTime();
-        delta_message_time = (message_time - prev_message_time) * 3;
-        prev_message_time = message_time;
+//        message_time = RF_getCurrentTime();
+        delta_message_time = idle_count;
+//        prev_message_time = message_time;
         /* Get current unhandled data entry */
         currentDataEntry = RFQueue_getDataEntry();
 
@@ -309,6 +320,7 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         //on successful rx set resp flag high
         idle_count = 0;
         resp_flag = 1;
+        heard_since_last = 1;
         WriteUART0("heard from someone resp flag set high\r\n");
 
         GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
