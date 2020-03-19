@@ -14,34 +14,38 @@
 #include "i2c_gyro.h"
 #include "pwm.h"
 #include "zumo.h"
-static char buffer[200];
+#include "zumo_rf.h"
+static char buffer[20];
 int main(void)
 {
 
-    PRCMPowerDomainOn(PRCM_DOMAIN_PERIPH | PRCM_DOMAIN_SERIAL);
-    while (PRCMPowerDomainStatus(PRCM_DOMAIN_PERIPH | PRCM_DOMAIN_SERIAL)
+    PRCMPowerDomainOn(PRCM_DOMAIN_PERIPH | PRCM_DOMAIN_SERIAL | PRCM_DOMAIN_RFCORE);
+    while (PRCMPowerDomainStatus(PRCM_DOMAIN_PERIPH | PRCM_DOMAIN_SERIAL | PRCM_DOMAIN_RFCORE)
     != PRCM_DOMAIN_POWER_ON);
 
     InitGPIO();
     GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
 
     PWMEnable();
-    start();
+//    start();
+    InitUART0();
+    rf_setup();
 //      callibrate();
 //      GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
       uint32_t curr_time = 0;
       uint32_t prev_time = 0;
       uint32_t freq = SysCtrlClockGet();
       int counter = 0;
-
+      setMotor(M2, 0, 0);
+      setMotor(M1, 0, 0);
       while(1)
       {
           sprintf(buffer,"%d\r\n", counter);
           WriteUART0(buffer);
-
-          GPIO_setDio(M1_DIR);
+//          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 
 //          read_imu();
+          rf_main();
           while ((curr_time - prev_time) < 1000000){
               ++curr_time;
           }

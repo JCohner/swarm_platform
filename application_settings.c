@@ -129,8 +129,8 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .startTrigger.bEnaCmd = 0x0,
  .startTrigger.triggerNo = 0x0,
  .startTrigger.pastTrig = 0x0,
- .condition.rule = COND_STOP_ON_TRUE,
- .condition.nSkip = 0x0, //changed this to a 2 from 0
+ .condition.rule = COND_SKIP_ON_FALSE,
+ .condition.nSkip = 0x2, //changed this to a 2 from 0
  .pktConf.bFsOff = 0x0,
  .pktConf.bRepeatOk = 0x0,
  .pktConf.bRepeatNok = 0x0,
@@ -152,12 +152,12 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .csConf.bEnaCorr = 0x0,
  .csConf.operation = 0x1,
  .csConf.busyOp = 0x1, //if busy no longer check carrier sense
- .csConf.idleOp = 0x1, //end if channel idle
- .csConf.timeoutRes = 0x1, //we want receive operation to continue
+ .csConf.idleOp = 0x0, //end if channel idle
+ .csConf.timeoutRes = 0x0, //we want receive operation to continue
  .rssiThr                  = 0x0, // Set the RSSI threshold in the application
- .numRssiIdle              = 0x1, // Number of consecutive RSSI measurements - 1 below the threshold
+ .numRssiIdle              = 0x0, // Number of consecutive RSSI measurements - 1 below the threshold
                                   // needed before the channel is declared Idle
- .numRssiBusy              = 0x1, // Number of consecutive RSSI measurements -1 above the threshold
+ .numRssiBusy              = 0x0, // Number of consecutive RSSI measurements -1 above the threshold
                                   // needed before the channel is declared Busy
 
 
@@ -173,11 +173,11 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .maxPktLen = 0xFF, // MAKE SURE DATA ENTRY IS LARGE ENOUGH
  .address0 = 0xAA,
  .address1 = 0xBB,
- .endTrigger.triggerType = 0x1,
- .endTrigger.bEnaCmd = 0x0,
- .endTrigger.triggerNo = 0x0,
- .endTrigger.pastTrig = 0x0,
- .endTime = 0x00000000,
+ .endTrigger.triggerType = TRIG_NEVER, //changed from TRIG_NEVER
+ .endTrigger.bEnaCmd = 0x1, //enable imediate command to kill this binch
+ .endTrigger.triggerNo = 0x1,
+ .endTrigger.pastTrig = 0x1,
+ .endTime = 0x00000000, //Set RX end time in application
  .pQueue = 0, // INSERT APPLICABLE POINTER: (dataQueue_t*)&xxx
  .pOutput = 0, // INSERT APPLICABLE POINTER: (uint8_t*)&xxx
 };
@@ -186,4 +186,11 @@ rfc_CMD_FLUSH_QUEUE_t RF_cmdFlush =
 {
  .commandNo = 0x0007,
  .pQueue = 0x00, //define in application
+};
+
+rfc_CMD_TRIGGER_t triggerCmd =
+{
+    .commandNo = CMD_TRIGGER,
+    .triggerNo = 2,                   // Chose the same value as for the
+                                      // radio operation command trigger                              // above.
 };

@@ -39,6 +39,7 @@ void PWMEnable()
 
 void PWMSet(int motor, int value)
 {
+    //setting to 0 sets 100%, setting to 1022 sets to ~0%
     if (motor == M1_PWM){
         TimerMatchSet(GPT0_BASE, TIMER_A, (value % 1024));
     } else if (motor == M2_PWM) {
