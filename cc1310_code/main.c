@@ -27,8 +27,8 @@ int main(void)
     GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
 
     PWMEnable();
-//    start();
-    InitUART0();
+    start();
+//    InitUART0();
     rf_setup();
 //      callibrate();
 //      GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
@@ -44,8 +44,8 @@ int main(void)
           WriteUART0(buffer);
 //          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 
-//          read_imu();
-          rf_main();
+          read_imu();
+//          rf_main();
           while ((curr_time - prev_time) < 1000000){
               ++curr_time;
           }

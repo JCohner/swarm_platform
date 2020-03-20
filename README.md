@@ -13,6 +13,7 @@ This is the [micro-conrtoller](http://www.ti.com/product/CC1310) we are using du
 	* custom PCB for CC1310
 	* LED array for representing bitwise memory
 	* power at 3.3V  
+* reorganize this github
 
 ## Accomplished Work
 * Implemented driver library level functionality of control of the Zumo robot
