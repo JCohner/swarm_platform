@@ -1,0 +1,107 @@
+This folder contains code for the NU32 bootloader and it's corresponding utility.
+
+It accompanies the book 
+"Embedded Computing and Mechatronics with the PIC32 Microcontroller",
+by Lynch, Marchuk and Elwin. Newnes--Elsevier 2015.
+
+We refer to the bootloader code running on the PIC32 as the bootloader.
+We refer to the bootloader code running on your computer as the utility.
+All commands assume that you are in the EXTRA_Bootloader directory, and that
+the EXTRA_Bootloader directory is located in the same directory as the other
+example code from the book.
+
+File structure
+EXTRA_Bootloader/
+  common/  
+    code that is used in both the bootloader and the utility
+
+  utility/
+    code that runs on the PC only (is used exclusively by the utility)
+
+  pic32/
+   code that runs on the PIC32 only (is used exclusively by the bootloader)
+
+
+The utility: 
+  The utility is compiled using gcc.
+  There are two ways to compile the utility, single and multi-file.
+  The single file mode is what you used in 01_Quickstart.
+
+  > gcc -o nu32utility nu32utility.c
+
+  The file nu32utility.c is actually formed by concatenating the following files, in order
+    common/frame.h
+    common/uart.h
+    common/hex.h
+    utility/nu32client.c
+    common/frame.c
+    utility/uart_windows.c
+    utility/uart_posix.c
+    common/hex.c
+
+  On Linux/Mac OS nu32utility.c can be created with the following
+  command:
+
+  > cat common/frame.h common/uart.h common/hex.h utility/nu32client.c common/frame.c 
+        utility/uart_windows.c utility/uart_posix.c common/hex.c > nu32utility.c
+
+  On Windows:
+  > copy /b common\frame.h+common\uart.h+common\hex.h+utility\nu32client.c+
+    common\frame.c+utility\uart_windows.c+utility\uart_posix.c+common\hex.c nu32utility.c
+
+  We provided the single file in Quickstart to make distribution easier.  However,
+  for modularity, the actual code is split into several files.
+
+  The utility can be compiled directly from the several files with the following command,
+  run from EXTRA_Bootloader/
+
+  > gcc -o nu32utility -I./common -I./utility utility/nu32client.c \
+      common/frame.c common/hex.c utility/uart_windows.c utility/uart_posix.c
+
+  Alternatively, you can run make in EXTRA_Bootloader/, as follows
+
+  > make nu32utility
+
+  This will create the binary nu32utility in the EXTRA_Bootloader directory
+
+The bootloader:
+  The bootloader compiles in the same way as any other project for the PIC32; however,
+  you will need a programmer device (such as the PICKit3) and MPLAB X (available 
+  from the microchip website) to load it onto your PIC32.
+
+  1. Copy the skeleton directory (the same one you have used for other projects)
+  to a new project folder, just as you do for other projects. We will call this 
+  directory <bootloader>.
+  
+  2. Copy the full contents of EXTRA_Bootloader/common and 
+     EXTRA_Bootloader/pic32 to <bootloader>.  Make sure to copy 
+     EXTRA_Bootloader/pic32/NU32bootloaded.ld, which is a special linker script
+     for the bootloader that replaces the usual one.
+
+  3. Compile as usual using make
+
+  To load the bootloader onto the PIC32 (assuming you use a PICkit3)
+    1. Make sure the PICkit3 is plugged into a USB port on your computer.
+    2. Make sure the NU32 is powered and ON!
+    3. Launch MPLAB X. File -> Import Hexfile -> Select the hexfile.
+    4. There are 5 holes directly above the reset button, the one closest
+       to the button has a white arrow.  Align the white arrow on the PICkit3
+       with this hole. 
+       You will need to form a connection between the socket in the PICkit3 and 
+       these holes.  
+       We recommend you use standard .100 single row header pins (5 long) 
+       plugged into the socket on the PICkit3. (Note that the PICkit3 has 6 pins, 
+       but the one furtherst from the white arrow is not used).  
+       Insert the pins into the holes on the NU32board, providing slight
+       angular pressure to to create a connection between the pins and the holes.
+    5. Press the run button (green arrow) to program.
+    6. Note MPLAB X also includes a standalone program, the mplab_ipe, which is
+       designed to directly program hexfiles.  You can use that as an alternative
+       to needing to launch MPLAB X. 
+
+
+
+      
+    
+
+
