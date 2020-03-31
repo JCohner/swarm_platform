@@ -6,3 +6,5 @@
 Debug
 targetConfigs
 driverlib_cc13xx_cc26xx
+/.metadata/
+.jx*
