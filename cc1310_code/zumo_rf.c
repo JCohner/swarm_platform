@@ -38,6 +38,7 @@
 #define PROP_DONE_BUSYTIMEOUT   0x340A
 #define TX_DELAY             (uint32_t)(4000000*0.1f)
 #define IDLE_MAX 50
+#define DELTA_TIME_BUFF_SIZE 10
 
 /* NOTE: Only two data entries supported at the moment */
 #define NUM_DATA_ENTRIES       2
@@ -92,8 +93,13 @@ uint32_t message_time;
 uint32_t prev_message_time = 0;
 uint32_t delta_message_time = 0;
 uint32_t idle_count = 0;
+uint32_t delta_message_time_buff[DELTA_TIME_BUFF_SIZE];
+bool ten_receive_flag = false;
 
-bool neighbors = false;
+uint32_t delta_message_time_average = 0;
+uint32_t num_receives = 0;
+
+
 uint8_t resp_flag;
 uint8_t heard_since_last;
 void rf_setup()
@@ -276,10 +282,39 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     //if we successfully recevied
     if (e & RF_EventRxEntryDone)
     {
+
+
         GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
         message_time = curr_count;
         delta_message_time = message_time - prev_message_time;
         prev_message_time = message_time;
+
+        //FIFO buffer of 10 most recent messages //TODO: replace 10 with constant
+        num_receives = (num_receives + 1) % 10;
+        delta_message_time_buff[num_receives] = delta_message_time;
+
+        if (!ten_receive_flag)
+        {
+            if (num_receives > 8) {
+                ten_receive_flag = true;
+            }
+            delta_message_time_average = 0;
+            int i;
+            for (i = 0; i < num_receives; i++)
+            {
+                delta_message_time_average += (uint32_t) (1.0/((float) num_receives) *  delta_message_time_buff[i]);
+            }
+        }
+        else //we've filled the buffer
+        {
+            delta_message_time_average = 0;
+            int i;
+            for (i = 0; i < num_receives; i++)
+            {
+                delta_message_time_average += (uint32_t) (1.0/((float) num_receives) *  delta_message_time_buff[i]);
+            }
+        }
+
         /* Get current unhandled data entry */
         currentDataEntry = RFQueue_getDataEntry();
 
