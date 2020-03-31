@@ -19,3 +19,11 @@ This is the [micro-conrtoller](http://www.ti.com/product/CC1310) we are using du
 * Implemented driver library level functionality of control of the Zumo robot
 * Designed v1.0 of interface PCB
 * Implemented prototype of a custom biosynchronicity algorithm using the CC1310's RF Driver
+
+## Directory Structure
+* cc1310_code
+	code running on the CC1310, controls zumo, implements RF synchronicity algorithm. See directory for more information
+* doc
+	documentation relating to the Zumo, CC1310, and other components in this design
+* eagle_files
+	all PCB related documents
