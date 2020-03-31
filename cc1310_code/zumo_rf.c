@@ -37,7 +37,7 @@
 #define PROP_DONE_IDLETIMEOUT   0x3409  ///< Carrier sense operation ended because of timeout with csConf.timeoutRes = 1
 #define PROP_DONE_BUSYTIMEOUT   0x340A
 #define TX_DELAY             (uint32_t)(4000000*0.1f)
-
+#define IDLE_MAX 50
 
 /* NOTE: Only two data entries supported at the moment */
 #define NUM_DATA_ENTRIES       2
@@ -141,8 +141,6 @@ void rf_setup()
 //   RF_cmdPropRxSniff.condition.nSkip = 0x0; //repeat the rxsniff if it retruns idle
    RF_cmdPropRxSniff.pOutput = (uint8_t *)&rxStatistics;
 
-   //dont set this as next ok, do control flow differently
-//   RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t*)&RF_cmdPropTx;
 
    /*Set Carrier Sense Properties*/
    RF_cmdPropRxSniff.rssiThr  = RSSI_THRESHOLD_DBM;
@@ -153,13 +151,7 @@ void rf_setup()
     /*Nop gives us clean entry point*/
     RF_cmdNop.startTrigger.triggerType = TRIG_ABSTIME;
     RF_cmdNop.startTrigger.pastTrig = 1;
-//    RF_cmdNop.pNextOp = (rfc_radioOp_t*)&RF_cmdPropRxSniff;
-//    RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t*)&RF_cmdCountBranch;
-//    RF_cmdCountBranch.pNextOp = (rfc_radioOp_t*)&RF_cmdPropTx; //pointer once this counter expires
-//    RF_cmdCountBranch.pNextOpIfOk = (rfc_radioOp_t*)&RF_cmdPropRxSniff; //if the counter did not expire
 
-    /*setup branch counter*/
-//    RF_cmdCountBranch.counter = CS_RETRIES_WHEN_BUSY;
 
    rfHandle = RF_open(&rfObject, &RF_prop, (RF_RadioSetup*)&RF_cmdPropRadioDivSetup, &rfParams);
 
@@ -192,8 +184,9 @@ void rf_main()
     packet[0] = (uint8_t)(seqNumber >> 8);
     packet[1] = (uint8_t)(seqNumber);
 
-    curr_count++;
+    curr_count++; //TODO: just use mains
 
+    //if response received issue new RxSniff
     if (resp_flag)
     {
         rxCommandHandle =
@@ -202,12 +195,14 @@ void rf_main()
                       RF_EventLastCmdDone | RF_EventRxEntryDone));
         resp_flag = 0;
     }
+    //if no response increment idle counter
     if (resp_flag == 0)
     {
         idle_count++;
     }
-    sprintf(buffer, "idle count is: %u, heard_since_last: %d\r\n", idle_count, heard_since_last);
+    sprintf(buffer, "idle count is: %u\n\rcurr count is: %u\r\ndelta message time: %u\r\n", idle_count, curr_count, delta_message_time);
     WriteUART0(buffer);
+    //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
     if ((idle_count > delta_message_time/2) && (heard_since_last == 1))
     {
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
@@ -218,8 +213,8 @@ void rf_main()
         heard_since_last = 0;
     }
 
-
-    if (idle_count > 30)
+    //if you havent heard from anyone and idle count is greater than idle max, chirp
+    if (idle_count > IDLE_MAX)
     {
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
@@ -227,11 +222,6 @@ void rf_main()
         resp_flag = 1;
         idle_count = 0;
     }
-
-
-//    RF_cmdPropTx.startTime = TX_DELAY + (delta_message_time/2.0) * 10;
-//    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-//                             &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 
 
     if (rxCommandHandle < 0)
@@ -259,31 +249,20 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {
     sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
     WriteUART0(buffer);
-//
-//    if ((RF_cmdPropTx.status == PROP_DONE_OK))// && (e & RF_EventLastCmdDone))
-//    {
-//        seqNumber++;
-//        GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
-//        WriteUART0("shouting\r\n");
-//    }
-    //if sniff returned idle
-    if(RF_cmdPropRxSniff.status == PROP_DONE_IDLE)
-    {
-//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
 
-//        WriteUART0("theres no one out there :(\r\n");
-        idle_count++;
-        sprintf(buffer, "idle count at: %u\r\n", idle_count);
-//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
-        WriteUART0(buffer);
-        resp_flag = 0;
-    }
-//
+    //fuck this for rn
+//    //if sniff returned idle
+//    if(RF_cmdPropRxSniff.status == PROP_DONE_IDLE)
+//    {
+//        idle_count++;
+//        sprintf(buffer, "idle count at: %u\r\n", idle_count);
+//        WriteUART0(buffer);
+//        resp_flag = 0;
+//    }
+
     //if sniff returned bsy
     if(RF_cmdPropRxSniff.status == PROP_DONE_BUSY)
     {
-//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
-
         WriteUART0("line busy\r\n");
         resp_flag = 1;
     }
@@ -311,16 +290,12 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
         RFQueue_nextEntry();
 
-
-//        sprintf(buffer, "got packet of length: %u\r\n", packetLength);
-//        WriteUART0(buffer);
         sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
         WriteUART0(buffer);
         WriteUART0((char *) (packetDataPointer + 2));
 
         sprintf(buffer, "delta time: %u\r\n", delta_message_time);
         WriteUART0(buffer);
-//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
 
         //on successful rx set resp flag high
         idle_count = 0;
@@ -328,12 +303,6 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         heard_since_last = 1;
         WriteUART0("heard from someone resp flag set high\r\n");
 
-//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
-//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_GLED);
-
-//        RF_cmdPropTx.startTime = TX_DELAY + (delta_message_time/2.0);
-//        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-//                                 &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
     }
 }
 
