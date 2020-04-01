@@ -206,10 +206,10 @@ void rf_main()
     {
         idle_count++;
     }
-    sprintf(buffer, "idle count is: %u\n\rcurr count is: %u\r\ndelta message time: %u\r\n", idle_count, curr_count, delta_message_time);
+    sprintf(buffer, "idle count is: %u\n\r delta message time: %u\r\n", idle_count, delta_message_time);
     WriteUART0(buffer);
     //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
-    if ((idle_count > delta_message_time/2) && (heard_since_last == 1))
+    if ((idle_count > delta_message_time/2.0) && (heard_since_last == 1)) //switch to averaged value
     {
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
@@ -237,13 +237,15 @@ void rf_main()
 
 }
 
+
+
 void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {
     if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
     {
         seqNumber++;
         GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
-        WriteUART0("ah shouting\r\n");
+        WriteUART0("AH SHOUTING\r\n");
     }
 
 }
