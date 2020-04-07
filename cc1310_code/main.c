@@ -44,6 +44,9 @@ int main(void)
           WriteUART0(buffer);
 //          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 
+          //pause until character entered
+          char data = UARTCharGet(UART0_BASE);
+
 //          read_imu();
           rf_main();
           while ((curr_time - prev_time) < 1000000){
