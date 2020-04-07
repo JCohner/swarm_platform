@@ -88,20 +88,22 @@ void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 /*Globals for biosynchronicity*/
 uint32_t curr_time;
-int wait_time = -1;
+
 uint32_t message_time;
 uint32_t prev_message_time = 0;
-uint32_t delta_message_time = 0;
+uint32_t delta_message_time = 10;
 uint32_t idle_count = 0;
 uint32_t delta_message_time_buff[DELTA_TIME_BUFF_SIZE];
-bool ten_receive_flag = false;
+bool receive_buff_full_flag = false;
 
 uint32_t delta_message_time_average = 0;
 uint32_t num_receives = 0;
 
-
 uint8_t resp_flag;
 uint8_t heard_since_last;
+uint32_t curr_count = 0;
+uint8_t period_flag = 1;
+
 void rf_setup()
 {
     RF_Params rfParams;
@@ -171,7 +173,7 @@ void rf_setup()
    RF_cmdFlush.pQueue = &dataQueue;
    resp_flag = 1;
 
-   sprintf((packet + 2), "MACH: 0\r\n");
+   sprintf((packet + 2), "MACH: 0\r\n"); //TODO: would be nice to tie this to device numb
    /*init shout*/
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                          &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
@@ -180,7 +182,6 @@ RF_CmdHandle rxCommandHandle;
 RF_CmdHandle txCommandHandle;
 RF_EventMask events;
 
-uint32_t curr_count = 0;
 
 char trigNo = 0;
 char buffer[50];
@@ -213,17 +214,24 @@ void rf_main()
     uint32_t it_count = idle_count % delta_message_time;
     sprintf(buffer, "1/2 dmt: %u\r\nit_count: %u\r\n", hdmt,it_count);
     WriteUART0(buffer);
-
+    //if we're starting a new period
+    if (it_count == 0)
+    {
+        period_flag = 1;
+    }
 
     //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: implement some modulo
-    if ((idle_count > hdmt) && (heard_since_last ==1)) //switch to averaged value
-//    if ((it_count > hdmt) && ((it_count - hdmt) < 2)) //switch to averaged value
+//    if ((idle_count > hdmt) && (heard_since_last ==1)) //works but need to make periodic with modulo and use averaged value
+    if ((it_count > hdmt) && (period_flag)) //switch to averaged value
     {
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                                  &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+
+        //also probably rerun listen / receive command after this posting
+        period_flag = 0;
         resp_flag = 1;
-        idle_count = 0;
+//        idle_count = 0; //only set idle count to 0 on real receive
         heard_since_last = 0;
     }
 
@@ -304,10 +312,10 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         num_receives = (num_receives + 1) % 10;
         delta_message_time_buff[num_receives] = delta_message_time;
 
-        if (!ten_receive_flag)
+        if (!receive_buff_full_flag)
         {
             if (num_receives > 8) {
-                ten_receive_flag = true;
+                receive_buff_full_flag = true;
             }
             delta_message_time_average = 0;
             int i;
