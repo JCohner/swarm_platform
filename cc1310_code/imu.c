@@ -75,7 +75,7 @@ void read_imu()
 
 //    read_accels(accels, teslas);
 //    read_ang_vels(ang_vels);
-    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+//    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
 
     if (!callib_flag){
         sprintf(buffer,"ax: %10.5f \r\nay: %10.5f \r\naz: %10.5f\r\n", x, y, z);

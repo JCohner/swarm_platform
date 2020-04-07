@@ -1,66 +1,21 @@
-# File structure
+# Swarm Robotic Platform
+### Josh Cohen
 
-## Main
-### main.c
-* turns on relevant PRCM Domains (Serial | Periph | RF)
-* Initializes gpio settings (defined in gpio.c)
-* Intializes i2c and with it accelerometer, gyro, and magnotometer (defined in imu.c, i2c_master.c, i2c_accel.c, i2c_gyro.c)
-* Enables PWM (defined in pwm.c)
-* Setups up RF (defined in zumo_rf.c)
-* Sets motors to zero (defined in zumo.c)
-* Infinite Loop:
-	* Increments a counter, posts to UART0
-	* Reads IMU and Magnetometer
-	* Conducts step of RF biosynchronicity algorithm
+## Intro
+With the goal of making decentralized, equitable, and sustainable systems, swarm robotic systems seem like a promising framework. Inspired by the success of the open source hardware community over the past 10 years and works like the [swarmbot: Jasmine](http://www.swarmrobot.org/), I hope to attempt to design my own low cost platform that can help propel swarm robotics into the real world. 
 
-## Sensor Interface
-### imu.c
-* `start()` intializes UART, i2c, accelerometer, and gyro
-* `read_imu()` and `calibrate()` call i2c functions and data manipulation to easily interface with physical peripherals
-* effectively higher level middleware for dealing with i2c and uart
+## TI CC1310
+This is the [micro-conrtoller](http://www.ti.com/product/CC1310) we are using due to its small profile, low power consumption, and integrated RF capabilities. This board is currently interfacing with a [Pololu Zumo](https://www.pololu.com/product/2508) robot through a custom connector board.    
 
-### i2c_master.c ; i2c_accel.c, i2c_gyro.c, uart.c
-* interfaces with Zumo's on board accelerometer, gyro, and magnotometer
-* master:
-	* defines i2c peripheral intiializer: `InitI2C0()`
-	* defines i2c transmitter: 	`I2CSend()`
-	* defines i2c receiver: `I2CReceive()`
-* gyro and accel
-	* defines WhoAmI functions: `GYRO_WhoAmI()` and `ACC_WhoAmI()`
-	* defines setup functions: `acc_setup()` and `gyro_setup()`
-	* defines register reading functions: `accel_ReadReg()` and `gyro_ReadReg()`
-	* defines macros to interfaces with register reading functions
-	* .h files contain pertinent register addresses
-* UART
-	* implements peripheral intiliazer `InitUART0()`
-	* implements read and write functionality; heavily inspired by PIC32 implementations
+## Current Work
+* Integrate biosynchronicity algorithm with Zumo movement to get them to "dance"
+* Iterate on board
+	* custom PCB for CC1310
+	* LED array for representing bitwise memory
+	* power at 3.3V  
+* reorganize this github
 
-## Motor Control
-### zumo.c ; pwm.c ; gpio.c
-* for motor setting functionality
-* pwm.c is middleware to enable and write analog values from CC1310
-* zumo.c uses both to control motors of zumo.c
-
-## Radio
-### zumo_rf.c
-* `rf_setup()` configures RF parameters, queue, populates command structures with application specific information, opens handle to radio driver, sets RF frequency, performs init "chirp" 
-* `rf_main()`called once by main loop to handle all RF related events
-* significant work went into making it asynchronous
-* implements biosynchronicity algorithm
-	* anonymous units find time delta between received "chirps" (rf RXs)
-	* unit "chirps" at half the time delta between heard chirps
-	* if no other chirp heard for some time, chirps into the void
-
-### RFQueue.c ; aplication_settings.c; smartrf_settings
-* adapted files from TI example code of radio driver
-* queue is useful tool for getting data from RX buffer of the cortex controlling RF
-* smart rf settings sets basic settings for the proprietary RF commands used 
-	* RadioDivSetup - setsup RF Driver
-	* cmdFs - sets frequency
-	* Tx & Rx - basic properties, application props configured in zumo_rf.c
-
-* application_settings implements more advanced radio commands 
-	* branch counter
-	* carrier sense operations
-	* flush queue op
-	* trigger command (for alternatively killing queued ops)
+## Accomplished Work
+* Implemented driver library level functionality of control of the Zumo robot
+* Designed v1.0 of interface PCB
+* Implemented prototype of a custom biosynchronicity algorithm using the CC1310's RF Driver
