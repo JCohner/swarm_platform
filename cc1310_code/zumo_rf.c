@@ -171,7 +171,7 @@ void rf_setup()
    RF_cmdFlush.pQueue = &dataQueue;
    resp_flag = 1;
 
-   sprintf((packet + 2), "MACH: 2\r\n");
+   sprintf((packet + 2), "MACH: 0\r\n");
    /*init shout*/
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                          &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
@@ -206,10 +206,14 @@ void rf_main()
     {
         idle_count++;
     }
-    sprintf(buffer, "idle count is: %u\n\r delta message time: %u\r\n", idle_count, delta_message_time);
+    sprintf(buffer, "idle count is: %u\n\rdelta message time: %u\r\nheard: %d\r\n", idle_count, delta_message_time, heard_since_last);
     WriteUART0(buffer);
-    //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
-    if ((idle_count > delta_message_time/2.0) && (heard_since_last == 1)) //switch to averaged value
+    //make sure hdmt what we think it is
+    uint32_t hdmt = (uint32_t) delta_message_time/2.0;
+    sprintf(buffer, "1/2 dmt: %u\r\n", hdmt);
+    WriteUART0(buffer);
+    //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: implement some modulo
+    if (((idle_count % delta_message_time)> delta_message_time/2.0) && (heard_since_last == 1)) //switch to averaged value
     {
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
@@ -331,7 +335,7 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         WriteUART0(buffer);
         WriteUART0((char *) (packetDataPointer + 2));
 
-        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
+        sprintf(buffer, " delta time: %u\r\n", delta_message_time);
         WriteUART0(buffer);
 
         //on successful rx set resp flag high
