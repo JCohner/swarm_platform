@@ -36,7 +36,7 @@
 #define PROP_DONE_BUSY          0x3408 //from rf_prop_mailbox
 #define PROP_DONE_IDLETIMEOUT   0x3409  ///< Carrier sense operation ended because of timeout with csConf.timeoutRes = 1
 #define PROP_DONE_BUSYTIMEOUT   0x340A
-#define TX_DELAY             (uint32_t)(4000000*0.1f)
+#define TX_DELAY             (uint32_t)(4000000*0.1f) //TODO: add this delay
 #define IDLE_MAX 50
 #define DELTA_TIME_BUFF_SIZE 10
 
@@ -96,7 +96,7 @@ uint32_t idle_count = 0;
 uint32_t delta_message_time_buff[DELTA_TIME_BUFF_SIZE];
 bool receive_buff_full_flag = false;
 
-uint32_t delta_message_time_average = 0;
+uint32_t delta_message_time_average = 10;
 uint32_t num_receives = 0;
 
 uint8_t resp_flag;
@@ -173,7 +173,7 @@ void rf_setup()
    RF_cmdFlush.pQueue = &dataQueue;
    resp_flag = 1;
 
-   sprintf((packet + 2), "MACH: 0\r\n"); //TODO: would be nice to tie this to device numb
+   sprintf((packet + 2), "MACH: 0\r\n"); //TODO: would be nice to tie t
    /*init shout*/
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                          &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
@@ -207,12 +207,14 @@ void rf_main()
     {
         idle_count++;
     }
-    sprintf(buffer, "idle count is: %u\n\rdelta message time: %u\r\nheard: %d\r\n", idle_count, delta_message_time, heard_since_last);
+    sprintf(buffer, "idle count is: %u\n\rdelta message time: %u\r\n", idle_count, delta_message_time);
     WriteUART0(buffer);
     //make sure hdmt what we think it is
     uint32_t hdmt = (uint32_t) delta_message_time/2.0;
     uint32_t it_count = idle_count % delta_message_time;
-    sprintf(buffer, "1/2 dmt: %u\r\nit_count: %u\r\n", hdmt,it_count);
+//    sprintf(buffer, "1/2 dmt: %u\r\nit_count: %u\r\n", hdmt,it_count);
+//    WriteUART0(buffer);
+    sprintf(buffer, "dmt ave: %u\r\n", delta_message_time);
     WriteUART0(buffer);
     //if we're starting a new period
     if (it_count == 0)
@@ -309,7 +311,7 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         prev_message_time = message_time;
 
         //FIFO buffer of 10 most recent messages //TODO: replace 10 with constant
-        num_receives = (num_receives + 1) % 10;
+        num_receives = (num_receives + 1) % DELTA_TIME_BUFF_SIZE;
         delta_message_time_buff[num_receives] = delta_message_time;
 
         if (!receive_buff_full_flag)
