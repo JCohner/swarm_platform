@@ -263,7 +263,7 @@ void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     {
         seqNumber++;
         GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
-        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+        GPIO_clearDio(CC1310_LAUNCHXL_PIN_GLED);
         WriteUART0("AH SHOUTING\r\n");
     }
 
@@ -306,9 +306,14 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
 
         GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
+        GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
         message_time = curr_count;
         delta_message_time = message_time - prev_message_time;
         prev_message_time = message_time;
+        if (delta_message_time < 5)
+        {
+            delta_message_time = 5;
+        }
 
         //FIFO buffer of 10 most recent messages //TODO: replace 10 with constant
         num_receives = (num_receives + 1) % DELTA_TIME_BUFF_SIZE;
