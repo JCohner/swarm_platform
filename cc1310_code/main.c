@@ -15,6 +15,7 @@
 #include "pwm.h"
 #include "zumo.h"
 #include "zumo_rf.h"
+#include "adc.h"
 static char buffer[20];
 int main(void)
 {
@@ -45,7 +46,7 @@ int main(void)
 //          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 
           //pause until character entered
-          char data = UARTCharGet(UART0_BASE);
+//          char data = UARTCharGet(UART0_BASE);
 
 //          read_imu();
           rf_main();
