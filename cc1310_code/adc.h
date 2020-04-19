@@ -12,5 +12,6 @@
 #include <devices/cc13x0/driverlib/aux_adc.h>
 #include <devices/cc13x0/driverlib/ioc.h>
 void InitADC();
+uint32_t ReadADC();
 
 #endif /* ADC_H_ */
