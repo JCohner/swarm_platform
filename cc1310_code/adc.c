@@ -35,15 +35,24 @@ void InitADC()
 //    //configure ADC registers
     AUXADCDisable();
 //    AUXADCEnableSync(AUXADC_REF_FIXED, AUXADC_SAMPLE_TIME_5P3_US, AUXADC_TRIGGER_MANUAL);
-    WriteUART0("am i hancocking here?\r\n");
 }
 
-uint32_t ReadADC()
+void ReadADC(uint32_t * vals)
 {
+    //eneable interface and adc clock
+    AUXWUCClockEnable(AUX_WUC_ADC_CLOCK | AUX_WUC_ANAIF_CLOCK | AUX_WUC_ADI_CLOCK);
+    while (AUXWUCClockStatus(AUX_WUC_ADC_CLOCK) != AUX_WUC_CLOCK_READY);
+    AUXADCSelectInput(ADC_COMPB_IN_AUXIO7);
     AUXADCDisable();
     AUXADCEnableSync(AUXADC_REF_FIXED, AUXADC_SAMPLE_TIME_2P7_US, AUXADC_TRIGGER_MANUAL);
-    AUXADCGenManualTrigger();
-    uint16_t sing_samp = AUXADCReadFifo();
+    int i;
+    for (i = 0; i < 6; i++)
+    {
+        AUXADCSelectInput(ADC_COMPB_IN_AUXIO6);
+        AUXADCGenManualTrigger();
+        vals[i]= AUXADCReadFifo();
+
+    }
     AUXADCDisable();
-    return AUXADCReadFifo();
+    return;
 }

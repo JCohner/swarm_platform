@@ -16,7 +16,10 @@
 #include "zumo.h"
 #include "zumo_rf.h"
 #include "adc.h"
+
 static char buffer[20];
+char adc_vals[8];
+
 int main(void)
 {
 
@@ -24,13 +27,16 @@ int main(void)
     while (PRCMPowerDomainStatus(PRCM_DOMAIN_PERIPH | PRCM_DOMAIN_SERIAL | PRCM_DOMAIN_RFCORE)
     != PRCM_DOMAIN_POWER_ON);
 
+    start();
     InitGPIO();
     GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
-
+    WriteUART0("making call\r\n");
+    InitADC();
+    WriteUART0("call returned\r\n");
     PWMEnable();
-    start();
+
 //    InitUART0();
-    rf_setup();
+//    rf_setup();
 //      callibrate();
 //      GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
       uint32_t curr_time = 0;
@@ -49,7 +55,10 @@ int main(void)
 //          char data = UARTCharGet(UART0_BASE);
 
 //          read_imu();
-          rf_main();
+//          rf_main();
+          ReadADC(adc_vals);
+          sprintf(buffer,"adc: %u, %u, %u, %u\r\n", adc_vals[0], adc_vals[1], adc_vals[2], adc_vals[3]);
+          WriteUART0(buffer);
           while ((curr_time - prev_time) < 1000000){
               ++curr_time;
           }
