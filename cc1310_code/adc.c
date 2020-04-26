@@ -48,7 +48,7 @@ void ReadADC(uint32_t * vals)
     int i;
     for (i = 0; i < 6; i++)
     {
-        AUXADCSelectInput(ADC_COMPB_IN_AUXIO6);
+        AUXADCSelectInput(adc_inputs[i]);
         AUXADCGenManualTrigger();
         vals[i]= AUXADCReadFifo();
 
