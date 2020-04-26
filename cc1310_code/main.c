@@ -18,7 +18,7 @@
 #include "adc.h"
 
 static char buffer[20];
-char adc_vals[8];
+uint32_t adc_vals[8];
 
 int main(void)
 {
@@ -27,16 +27,20 @@ int main(void)
     while (PRCMPowerDomainStatus(PRCM_DOMAIN_PERIPH | PRCM_DOMAIN_SERIAL | PRCM_DOMAIN_RFCORE)
     != PRCM_DOMAIN_POWER_ON);
 
+    //from imu.c: begins uart and i2c; performs accelerometer and gyro setup
     start();
+    //opens digital input output pins, and analog output pins configures motor driver specific pins
     InitGPIO();
-    GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
-    WriteUART0("making call\r\n");
+    PWMEnable(); //sets timers to finish configuring analog out pins
+    //initialize analog input
     InitADC();
-    WriteUART0("call returned\r\n");
-    PWMEnable();
+    //configures rf driver, configures application specific packages, makes initial chirp call
+    rf_setup();
 
-//    InitUART0();
-//    rf_setup();
+    //light green LED to show setup is done
+    GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
+
+//
 //      callibrate();
 //      GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
       uint32_t curr_time = 0;
@@ -57,7 +61,8 @@ int main(void)
 //          read_imu();
 //          rf_main();
           ReadADC(adc_vals);
-          sprintf(buffer,"adc: %u, %u, %u, %u\r\n", adc_vals[0], adc_vals[1], adc_vals[2], adc_vals[3]);
+//          sprintf(buffer,"adc: %u, %u, %u, %u\r\n", adc_vals[0], adc_vals[1], adc_vals[2], adc_vals[3]);
+          sprintf(buffer,"adc: %u\r\n", adc_vals[0]);
           WriteUART0(buffer);
           while ((curr_time - prev_time) < 1000000){
               ++curr_time;
