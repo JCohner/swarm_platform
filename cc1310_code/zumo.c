@@ -6,6 +6,9 @@
  */
 
 #include "zumo.h"
+#include "uart.h"
+
+char buffer[50];
 
 void setMotor(int motor, int dir, int value)
 {
@@ -31,6 +34,39 @@ void setMotor(int motor, int dir, int value)
 
 }
 
+void driver(uint32_t * vals)
+{
+    int left_right_bias = vals[0] - vals[1];
+    int thresh = 128;
 
+//    sprintf(buffer, "hi fuck this: %d\r\n", left_right_bias);
+//    WriteUART0(buffer);
+
+    //TODO stop being shitty and make this a proportional controller w threshold sir
+    if ((vals[0] < 300) && (vals[1] < 300))
+    {
+        //stahp
+        setMotor(M2, 0, MOTOR_OFF);
+        setMotor(M1, 0, MOTOR_OFF);
+    }
+    else if (left_right_bias > thresh)
+    {
+        //turn right
+        setMotor(M1, 0, MOTOR_ON);
+        setMotor(M2, 1, MOTOR_TURN);
+    }
+    else if (left_right_bias < -thresh)
+    {
+        //turn left
+        setMotor(M1, 1, MOTOR_TURN);
+        setMotor(M2, 0, MOTOR_OFF);
+    }
+    else if (vals[0] > 300)
+    {
+        //go forward
+        setMotor(M1, 1, MOTOR_ON);
+        setMotor(M2, 1, MOTOR_ON);
+    }
+}
 
 
