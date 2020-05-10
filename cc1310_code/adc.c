@@ -49,11 +49,11 @@ void ReadADC(uint32_t * vals)
     AUXADCDisable();
     AUXADCEnableSync(AUXADC_REF_FIXED, AUXADC_SAMPLE_TIME_2P7_US, AUXADC_TRIGGER_MANUAL);
     int i;
-    for (i = 0; i < 5; i++)
+    for (i = 0; i < 4; i++)
     {
-        SetAndWritePinHigh(adc_outputs[i]);
+//        SetAndWritePinHigh(adc_outputs[i]);
         IOCPinTypeAux(adc_outputs[i]); //tri-state the pin to switch it off
-        delay(0.000003);
+//        delay(0.000003);
         AUXADCSelectInput(adc_inputs[i]);
         AUXADCGenManualTrigger();
         vals[i]= AUXADCReadFifo();
@@ -61,3 +61,4 @@ void ReadADC(uint32_t * vals)
     AUXADCDisable();
     return;
 }
+
