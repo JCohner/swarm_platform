@@ -26,3 +26,15 @@ void InitGPIO(void)
     GPIO_setOutputEnableDio(M1_DIR, GPIO_OUTPUT_ENABLE);
     GPIO_setOutputEnableDio(M2_DIR, GPIO_OUTPUT_ENABLE);
 }
+
+void SetAndWritePinHigh(uint32_t pin)
+{
+    IOCPortConfigureSet(pin, IOC_PORT_GPIO, IOC_STD_OUTPUT);
+    GPIO_setOutputEnableDio(pin, GPIO_OUTPUT_ENABLE);
+    GPIO_setDio(pin);
+}
+
+void ClearPin(uint32_t pin)
+{
+    GPIO_clearDio(pin);
+}

@@ -15,4 +15,8 @@
 
 void InitGPIO(void);
 
+void SetAndWritePinHigh(uint32_t pin);
+
+void ClearPin(uint32_t pin);
+
 #endif /* GPIO_H_ */
