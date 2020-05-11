@@ -22,11 +22,14 @@
 #define IR_Sense IOID_23
 #define IL_Sense IOID_24
 #define ML_Sense IOID_26
+#define ER_Sense IOID_27
+#define EL_Sense IOID_28
+
 #define LED_Sense IOID_19 //connected to pin 2 on zum (with jumper on IR breakout set there)
 
-#define MOTOR_ON 0//256
+#define MOTOR_ON 256//256
 #define MOTOR_OFF 0
-#define MOTOR_TURN 0//64
+#define MOTOR_TURN 64//64
 
 void setMotor(int motor, int dir, int value);
 void driver(uint32_t * vals);
