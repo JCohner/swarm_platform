@@ -16,6 +16,8 @@
 #include "zumo.h"
 #include "zumo_rf.h"
 #include "adc.h"
+#include "helpful.h"
+#include "ir_sense.h"
 
 static char buffer[20];
 uint32_t adc_vals[8];
@@ -37,6 +39,9 @@ int main(void)
     //configures rf driver, configures application specific packages, makes initial chirp call
     rf_setup();
 
+    //start up neccesarries for ir sensing
+    IR_SenseSetup();
+
     //light green LED to show setup is done
     GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
 
@@ -45,7 +50,12 @@ int main(void)
 //      GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
       uint32_t curr_time = 0;
       uint32_t prev_time = 0;
+      //returns frequency of system clock: 48 MHz rn
       uint32_t freq = SysCtrlClockGet();
+      sprintf(buffer, "freq: %u\r\n", freq);
+      WriteUART0(buffer);
+
+
       int counter = 0;
       setMotor(M2, 0, 0);
       setMotor(M1, 0, 0);
@@ -60,14 +70,17 @@ int main(void)
 
 //          read_imu();
 //          rf_main();
-          ReadADC(adc_vals);
-//          sprintf(buffer,"adc: %u, %u, %u, %u\r\n", adc_vals[0], adc_vals[1], adc_vals[2], adc_vals[3]);
-          sprintf(buffer,"adc: %u\r\n", adc_vals[0]);
+
+//          ReadADC(adc_vals);
+          ReadIR(adc_vals);
+
+          sprintf(buffer,"adc: %u, %u, %u, %u\r\n", adc_vals[3], adc_vals[1], adc_vals[0], adc_vals[2]);
           WriteUART0(buffer);
-          while ((curr_time - prev_time) < 1000000){
-              ++curr_time;
-          }
-          curr_time = 0;
+
+          driver(adc_vals);
+
+          delay(.25);
+
           ++counter;
       }
 
