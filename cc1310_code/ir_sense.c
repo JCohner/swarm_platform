@@ -24,13 +24,15 @@ void emmitters_on(void)
 
     delay(200 * 10e-6);
 }
-
+uint32_t temp_vals[NUM_SENSORS];
+uint32_t sensor_flags[NUM_SENSORS];
 void ReadIR(uint32_t * vals)
 {
     //initialize all values to zero
     memset(vals, 0, NUM_SENSORS * 4);
-    uint32_t temp_vals[4] = {0,0,0,0};
-    uint32_t sensor_flags[4] = {0,0,0,0};
+    memset(temp_vals, 0, NUM_SENSORS * 4);
+    memset(sensor_flags, 0, NUM_SENSORS * 4);
+
     int i, j;
     emmitters_on();
     SetTimerState(TIMER_ON);
@@ -64,7 +66,7 @@ void ReadIR(uint32_t * vals)
 
     for (i = 0; i < NUM_SENSORS; i++)
     {
-        if (vals[i] == 0)
+        if ((vals[i] == 0) || (vals[i] > 1000))
         {
             vals[i] = MAX_SAMPLE_TIME;
         }
