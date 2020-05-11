@@ -14,7 +14,10 @@
 #include "uart.h"
 
 #define NUM_SENSORS 4
-#define NUM_SAMPLES 10
+#define NUM_SAMPLES 1
+#define MAX_SAMPLE_TIME 1000 //in microseconds
+
+
 
 void IR_SenseSetup(void);
 void ReadIR(uint32_t * vals);
