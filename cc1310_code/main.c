@@ -19,7 +19,7 @@
 #include "helpful.h"
 #include "ir_sense.h"
 
-static char buffer[20];
+static char buffer[60];
 uint32_t adc_vals[8];
 
 int main(void)
@@ -74,13 +74,14 @@ int main(void)
 //          ReadADC(adc_vals);
           ReadIR(adc_vals);
 
-          sprintf(buffer,"adc: %u, %u, %u, %u\r\n", adc_vals[3], adc_vals[1], adc_vals[0], adc_vals[2]);
+          sprintf(buffer,"adc: %u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1], adc_vals[0], adc_vals[2], adc_vals[4]);
           WriteUART0(buffer);
 
           driver(adc_vals);
+//          read_line(adc_vals);
 
-          delay(.25);
-
+          delay(.05);
+//          WriteUART0("hi you \r\n");
           ++counter;
       }
 
