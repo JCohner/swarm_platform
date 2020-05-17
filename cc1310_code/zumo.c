@@ -36,37 +36,34 @@ void setMotor(int motor, int dir, int value)
 
 void driver(uint32_t * vals)
 {
-    int left_right_bias = vals[0] - vals[1];
-    int thresh = 128;
-
-//    sprintf(buffer, "hi fuck this: %d\r\n", left_right_bias);
-//    WriteUART0(buffer);
-
-    //TODO stop being shitty and make this a proportional controller w threshold sir
-    if ((vals[0] < 300) && (vals[1] < 300))
+    if((vals[0] > 500) && vals[1] > 500)
     {
-        //stahp
-        setMotor(M2, 0, MOTOR_OFF);
-        setMotor(M1, 0, MOTOR_OFF);
+        setMotor(M1, 1, MOTOR_OFF);
+        setMotor(M2, 1, MOTOR_OFF);
     }
-    else if (left_right_bias > thresh)
+    else
     {
-        //turn right
         setMotor(M1, 0, MOTOR_ON);
-        setMotor(M2, 1, MOTOR_TURN);
+        setMotor(M2, 0, MOTOR_ON);
     }
-    else if (left_right_bias < -thresh)
-    {
-        //turn left
-        setMotor(M1, 1, MOTOR_TURN);
-        setMotor(M2, 0, MOTOR_OFF);
-    }
-    else if (vals[0] > 300)
-    {
-        //go forward
-        setMotor(M1, 1, MOTOR_ON);
-        setMotor(M2, 1, MOTOR_ON);
-    }
+
+
 }
 
+int read_line(uint32_t * vals)
+{
+//    uint32_t onLine = (val[0] + val[1]) / 2.0;
+//    if (onLine > 800)
+//    {
+//        setMotor(M1, 0, MOTOR_ON);
+//        setMotor(M2, 0, MOTOR_ON);
+//    }
 
+    int m1_val = MOTOR_ON * (vals[0] / 1000.0);
+    int m2_val = MOTOR_ON * (vals[1] / 1000.0);
+
+    setMotor(M1, 0, m1_val);
+    setMotor(M2, 0, m2_val);
+
+
+}

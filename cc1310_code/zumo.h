@@ -33,5 +33,5 @@
 
 void setMotor(int motor, int dir, int value);
 void driver(uint32_t * vals);
-
+int read_line(uint32_t * vals);
 #endif /* ZUMO_H_ */
