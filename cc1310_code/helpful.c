@@ -26,6 +26,12 @@ void delay(float sec)
 
 }
 
+uint32_t ticsToMicrosec(uint32_t tics)
+{
+    return (tics / 48.0);
+}
+
+
 void EnableTimer()
 {
     //enable peripheral

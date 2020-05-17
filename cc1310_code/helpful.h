@@ -21,4 +21,6 @@ void EnableTimer(void);
 void SetTimerState(int timer_state_command);
 uint32_t GetTime(void);
 
+uint32_t ticsToMicrosec(uint32_t tics);
+
 #endif /* HELPFUL_H_ */
