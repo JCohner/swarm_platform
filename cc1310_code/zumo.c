@@ -7,6 +7,7 @@
 
 #include "zumo.h"
 #include "uart.h"
+#include <math.h>
 
 char buffer[50];
 
@@ -77,25 +78,48 @@ void calibrate_line()
 }
 
 
-
+float inner_rh, p_inner_rh, inner_lh, p_inner_lh;
+float mid_rh, p_mid_rh, mid_lh, p_mid_lh;
+float rhs, p_rhs, lhs, p_lhs, on_line, p_on_line;
+float del_inner_rh, del_inner_lh, del_mid_rh, del_mid_lh;
+float Kp = 1;
+float Kd = 0.05;
+float time_delta = 0.05;
 int read_line(uint32_t * vals)
 {
-    float on_line = (vals[0] + vals[1])/2;
+    on_line = (vals[0] + vals[1])/2;
 
-    float rhs = ((1000.0 - (vals[0]))/1000.0) * on_line/1000.0 + 0.5;
-    float lhs = ((1000.0 - (vals[1]))/1000.0) * on_line/1000.0 + 0.5;
+    p_inner_rh = inner_rh;
+    p_inner_lh = inner_lh;
+    inner_rh = (1000.0 - vals[0])/1000.0 * on_line/1000.0;
+    inner_lh = (1000.0 - vals[1])/1000.0 * on_line/1000.0;
+    del_inner_rh = (p_inner_rh - inner_rh)/time_delta;
+    del_inner_lh = (p_inner_lh - inner_lh)/time_delta;
+
+    p_mid_rh = mid_rh;
+    p_mid_lh = mid_lh;
+    mid_rh = abs((400.0 - vals[2])/400.0) * (1000.0-on_line)/1000.0;
+    mid_lh = abs((400.0 - vals[3])/400.0) * (1000.0-on_line)/1000.0;
+    del_mid_rh = (p_mid_rh - mid_rh)/time_delta;
+    del_mid_lh = (p_mid_lh - mid_lh)/time_delta;
+
+    rhs = Kp * (inner_rh + mid_lh) + Kd * (del_inner_rh + del_mid_lh)+ 0.5;
+    lhs = Kp * (inner_lh + mid_rh) + Kd * (del_inner_lh + del_mid_rh)+ 0.5;
 
 
 //    float rhs = (on_line - (vals[0] + vals[2])/2.0)/on_line;
 //    float lhs = (on_line - (vals[1] + vals[3])/2.0)/on_line;
 
-    int m1_val = MOTOR_ON * lhs;
-    int m2_val = MOTOR_ON * rhs;
+    int m1_val = MOTOR_ON * lhs + 128;
+    int m2_val = MOTOR_ON * rhs + 128;
+
     sprintf(buffer, "left: %f, %d, right: %f, %d\r\n",  lhs, m1_val, rhs, m2_val);
     WriteUART0(buffer);
 
-//    setMotor(M1, 0, m1_val);
-//    setMotor(M2, 0, m2_val);
+//    if (m1)
+//
+    setMotor(M1, 0, m2_val);
+    setMotor(M2, 0, m1_val);
 
     return;
 }
