@@ -10,6 +10,10 @@
 
 #include "gpio.h"
 #include "pwm.h"
+#include "ir_sense.h"
+
+//TODO: serious organization decisions need to be made about where these pinds are going to be defined
+//      as of rn zumo is a high level abstraction and should not have low level pin decs
 
 #define M1 1
 #define M2 2
@@ -18,20 +22,21 @@
 #define M1_PWM IOID_11//pin 10 on zumo
 #define M1_DIR IOID_20//pin 8 on zumo
 
-#define MR_Sense IOID_25
-#define IR_Sense IOID_23
-#define IL_Sense IOID_24
-#define ML_Sense IOID_26
-#define ER_Sense IOID_27
-#define EL_Sense IOID_28
+//#define MR_Sense IOID_25
+//#define IR_Sense IOID_23
+//#define IL_Sense IOID_24
+//#define ML_Sense IOID_26
+//#define ER_Sense IOID_27
+//#define EL_Sense IOID_28
 
 #define LED_Sense IOID_19 //connected to pin 2 on zum (with jumper on IR breakout set there)
 
-#define MOTOR_ON 256//256
+#define MOTOR_ON 512//1024//256
 #define MOTOR_OFF 0
 #define MOTOR_TURN 64//64
 
 void setMotor(int motor, int dir, int value);
 void driver(uint32_t * vals);
 int read_line(uint32_t * vals);
+void calibrate_line(void);
 #endif /* ZUMO_H_ */
