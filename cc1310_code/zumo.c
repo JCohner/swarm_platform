@@ -77,49 +77,74 @@ void calibrate_line()
 //    while(1);
 }
 
-
-float inner_rh, p_inner_rh, inner_lh, p_inner_lh;
-float mid_rh, p_mid_rh, mid_lh, p_mid_lh;
-float rhs, p_rhs, lhs, p_lhs, on_line, p_on_line;
-float del_inner_rh, del_inner_lh, del_mid_rh, del_mid_lh;
-float Kp = 1;
-float Kd = 0.05;
-float time_delta = 0.05;
-int read_line(uint32_t * vals)
+float lastValue = 0;
+float read_line(uint32_t * vals)
 {
-    on_line = (vals[0] + vals[1])/2;
+    unsigned char on_line = 0;
+    uint32_t avg = 0;
+    uint32_t sum = 0;
+    int i;
 
-    p_inner_rh = inner_rh;
-    p_inner_lh = inner_lh;
-    inner_rh = (1000.0 - vals[0])/1000.0 * on_line/1000.0;
-    inner_lh = (1000.0 - vals[1])/1000.0 * on_line/1000.0;
-    del_inner_rh = (p_inner_rh - inner_rh)/time_delta;
-    del_inner_lh = (p_inner_lh - inner_lh)/time_delta;
+//    uint32_t ordered_vals[6] = {vals[5], vals[3], vals[1], vals[0], vals[2], vals[4]};
+    uint32_t ordered_vals[4] = {vals[3], vals[1], vals[0], vals[2]};
+    for (i = 0; i < NUM_SENSORS - 2; ++i)
+    {
+        int value = ordered_vals[i];
+        if (value > 800)
+        {
+            on_line = 1;
+        }
 
-    p_mid_rh = mid_rh;
-    p_mid_lh = mid_lh;
-    mid_rh = abs((400.0 - vals[2])/400.0) * (1000.0-on_line)/1000.0;
-    mid_lh = abs((400.0 - vals[3])/400.0) * (1000.0-on_line)/1000.0;
-    del_mid_rh = (p_mid_rh - mid_rh)/time_delta;
-    del_mid_lh = (p_mid_lh - mid_lh)/time_delta;
+        if (value > 650)
+        {
+            avg += value * (i * 1000);
+            sum += value;
+        }
+    }
 
-    rhs = Kp * (inner_rh + mid_lh) + Kd * (del_inner_rh + del_mid_lh)+ 0.5;
-    lhs = Kp * (inner_lh + mid_rh) + Kd * (del_inner_lh + del_mid_rh)+ 0.5;
+    if (!on_line)
+    {
+        // If it last read to the left of center, return 0.
+        if (lastValue < (NUM_SENSORS - 2-  1) * 1000/2.0)
+        {
+            return 0;
+        }
+        //otherwise return rightmost
+        else
+        {
+            return (NUM_SENSORS - -2 - 1) * 1000;
+        }
+    }
 
+    lastValue = avg/(float)sum;
+    return lastValue/1000.0;
+}
 
-//    float rhs = (on_line - (vals[0] + vals[2])/2.0)/on_line;
-//    float lhs = (on_line - (vals[1] + vals[3])/2.0)/on_line;
+float error, prev_error, d_error;
+float dt = 0.05;
+void drive_line(float val)
+{
+    prev_error = error;
+    error = 2 - val;
+    d_error = (error-prev_error)/dt;
 
-    int m1_val = MOTOR_ON * lhs + 128;
-    int m2_val = MOTOR_ON * rhs + 128;
+    if (error < 0.3)
+    {
+        setMotor(M1, 0, MOTOR_ON);
+        setMotor(M2, 0, MOTOR_ON);
+    }
+    else
+    {
+        if (error < 0)
+        {
+            setMotor(M1, 1, 0.75 * MOTOR_ON);
+            setMotor(M2, 1, 0.25 * MOTOR_ON);
+        }
+        else
+        {
+            setMotor(M1, 1, 0.25 * MOTOR_ON);
+            setMotor(M2, 1, 0.75 * MOTOR_ON);
+        }
+    }
 
-    sprintf(buffer, "left: %f, %d, right: %f, %d\r\n",  lhs, m1_val, rhs, m2_val);
-    WriteUART0(buffer);
-
-//    if (m1)
-//
-    setMotor(M1, 0, m2_val);
-    setMotor(M2, 0, m1_val);
-
-    return;
 }
