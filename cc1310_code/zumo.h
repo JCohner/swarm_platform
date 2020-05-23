@@ -22,6 +22,13 @@
 #define M1_PWM IOID_11//pin 10 on zumo
 #define M1_DIR IOID_20//pin 8 on zumo
 
+#define BLED0 IOID_9
+#define BLED1 IOID_8
+#define BLED2 IOID_13
+#define BLED3 IOID_14
+
+
+
 //#define MR_Sense IOID_25
 //#define IR_Sense IOID_23
 //#define IL_Sense IOID_24
@@ -31,12 +38,13 @@
 
 #define LED_Sense IOID_19 //connected to pin 2 on zum (with jumper on IR breakout set there)
 
-#define MOTOR_ON 512//1024//256
+#define MOTOR_ON 256
 #define MOTOR_OFF 0
 #define MOTOR_TURN 64//64
 
 void setMotor(int motor, int dir, int value);
 void driver(uint32_t * vals);
-int read_line(uint32_t * vals);
+float read_line(uint32_t * vals);
+void drive_line(float val, uint32_t * vals);
 void calibrate_line(void);
 #endif /* ZUMO_H_ */

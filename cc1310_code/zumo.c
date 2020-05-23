@@ -10,7 +10,7 @@
 #include <math.h>
 
 char buffer[50];
-
+char bleds[4] = {BLED0, BLED1, BLED2, BLED3};
 void setMotor(int motor, int dir, int value)
 {
     int DIR_pin, PWM_pin;
@@ -87,15 +87,15 @@ float read_line(uint32_t * vals)
 
 //    uint32_t ordered_vals[6] = {vals[5], vals[3], vals[1], vals[0], vals[2], vals[4]};
     uint32_t ordered_vals[4] = {vals[3], vals[1], vals[0], vals[2]};
-    for (i = 0; i < NUM_SENSORS - 2; ++i)
+    for (i = 0; i < 4; ++i)
     {
         int value = ordered_vals[i];
-        if (value > 800)
+        if (value > 600)
         {
             on_line = 1;
         }
 
-        if (value > 650)
+        if (value > 460)
         {
             avg += value * (i * 1000);
             sum += value;
@@ -105,46 +105,96 @@ float read_line(uint32_t * vals)
     if (!on_line)
     {
         // If it last read to the left of center, return 0.
-        if (lastValue < (NUM_SENSORS - 2-  1) * 1000/2.0)
+        if (lastValue < (4 -  1) * 1000/2.0)
         {
             return 0;
         }
         //otherwise return rightmost
         else
         {
-            return (NUM_SENSORS - -2 - 1) * 1000;
+            return (4 - 1);
         }
+//        return lastValue/1000.0;
     }
 
     lastValue = avg/(float)sum;
     return lastValue/1000.0;
 }
 
-float error, prev_error, d_error;
+float error, e, prev_error, d_error;
 float dt = 0.05;
-void drive_line(float val)
+void drive_line(float val, uint32_t * vals)
 {
     prev_error = error;
-    error = 2 - val;
+    error = 1.5 - val;
+    e = (1.5 - val)/1.5;
     d_error = (error-prev_error)/dt;
 
-    if (error < 0.3)
-    {
-        setMotor(M1, 0, MOTOR_ON);
-        setMotor(M2, 0, MOTOR_ON);
-    }
-    else
-    {
-        if (error < 0)
-        {
-            setMotor(M1, 1, 0.75 * MOTOR_ON);
-            setMotor(M2, 1, 0.25 * MOTOR_ON);
+    sprintf(buffer, "error: %f\r\n", error);
+    WriteUART0(buffer);
+    float speed_delim = 1 - fabs(error)/1.5;
+    float rhs = speed_delim * MOTOR_ON + (e * MOTOR_ON/2.0) + 128;
+    float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + 128;
+
+    sprintf(buffer, "rhs: %f, lhs: %f\r\n", rhs, lhs);
+    WriteUART0(buffer);
+
+
+    setMotor(M2, 0, lhs);
+    setMotor(M1, 0, rhs);
+
+    if (fabs(error) == 1.5 || error == 0) {
+        if (error < 0){
+            setMotor(M1, 1, MOTOR_ON);
+            setMotor(M2, 0, MOTOR_ON);
+        }
+        else if (error > 0){
+            setMotor(M1, 0, MOTOR_ON);
+            setMotor(M2, 1, MOTOR_ON);
         }
         else
         {
-            setMotor(M1, 1, 0.25 * MOTOR_ON);
-            setMotor(M2, 1, 0.75 * MOTOR_ON);
+            setMotor(M1, 0, MOTOR_OFF);
+            setMotor(M2, 0, MOTOR_OFF);
         }
+//        setMotor(M1, 0, MOTOR_OFF);
+//        setMotor(M2, 0, MOTOR_OFF);
+//        WriteUART0("rough waters\r\n");
     }
 
+    return;
+
+//    int x = val;
+//    switch (x)
+//    {
+//    case 0:
+//        GPIO_writeDio(BLED0, 1);
+//
+//        GPIO_writeDio(BLED1, 0);
+//        GPIO_writeDio(BLED2, 0);
+//        GPIO_writeDio(BLED3, 0);
+//        break;
+//    case 1:
+//        GPIO_writeDio(BLED1, 1);
+//
+//        GPIO_writeDio(BLED2, 0);
+//        GPIO_writeDio(BLED3, 0);
+//        GPIO_writeDio(BLED0, 0);
+//        break;
+//    case 2:
+//        GPIO_writeDio(BLED2, 1);
+//
+//        GPIO_writeDio(BLED1, 0);
+//        GPIO_writeDio(BLED3, 0);
+//        GPIO_writeDio(BLED0, 0);
+//        break;
+//
+//    case 3:
+//        GPIO_writeDio(BLED3, 1);
+//
+//        GPIO_writeDio(BLED1, 0);
+//        GPIO_writeDio(BLED2, 0);
+//        GPIO_writeDio(BLED0, 0);
+//        break;
+//    }
 }
