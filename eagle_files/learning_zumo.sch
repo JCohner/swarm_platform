@@ -7901,14 +7901,14 @@ Source: http://www.ledtronics.com/ds/smd-0603/Dstr0092.pdf</description>
 <wire x1="-2.54" y1="12.7" x2="7.62" y2="12.7" width="0.127" layer="21"/>
 <wire x1="7.62" y1="12.7" x2="7.62" y2="-2.54" width="0.127" layer="21"/>
 <wire x1="7.62" y1="-2.54" x2="-2.54" y2="-2.54" width="0.127" layer="21"/>
-<text x="0" y="1.27" size="1.27" layer="21" rot="R90">VCC</text>
+<text x="5.08" y="1.27" size="1.27" layer="21" rot="R90">VCC</text>
 <text x="2.54" y="1.27" size="1.27" layer="21" rot="R90">GND</text>
-<text x="5.08" y="1.27" size="1.27" layer="21" rot="R90">AUD</text>
+<text x="0" y="1.27" size="1.27" layer="21" rot="R90">AUD</text>
 <text x="-2.54" y="15.24" size="1.27" layer="25">&gt;NAME</text>
 <text x="-2.54" y="12.7" size="1.27" layer="27">&gt;VALUE</text>
-<pad name="VCC" x="0" y="0" drill="1"/>
+<pad name="VCC" x="5.08" y="0" drill="1"/>
 <pad name="GND" x="2.54" y="0" drill="1"/>
-<pad name="AUD" x="5.08" y="0" drill="1"/>
+<pad name="AUD" x="0" y="0" drill="1"/>
 </package>
 </packages>
 <packages3d>
@@ -15431,6 +15431,11 @@ Source: www.kingbright.com</description>
 <pinref part="B1" gate="G$1" pin="D2"/>
 <wire x1="66.04" y1="71.12" x2="73.66" y2="71.12" width="0.1524" layer="91"/>
 <label x="68.58" y="71.12" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="36.D18"/>
+<wire x1="154.94" y1="43.18" x2="165.1" y2="43.18" width="0.1524" layer="91"/>
+<label x="160.02" y="43.18" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$1" class="0">
