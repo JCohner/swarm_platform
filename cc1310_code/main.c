@@ -39,9 +39,12 @@ int main(void)
     //configures rf driver, configures application specific packages, makes initial chirp call
     rf_setup();
 
+    setMotor(M2, 0, 0);
+    setMotor(M1, 0, 0);
+
     //start up neccesarries for ir sensing
     IR_SenseSetup();
-
+//    calibrate_line(); //not sure of utility yet
     //light green LED to show setup is done
     GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
 
@@ -57,8 +60,7 @@ int main(void)
 
 
       int counter = 0;
-      setMotor(M2, 0, 0);
-      setMotor(M1, 0, 0);
+
       while(1)
       {
           sprintf(buffer,"%d\r\n", counter);
@@ -77,10 +79,14 @@ int main(void)
           sprintf(buffer,"adc: %u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1], adc_vals[0], adc_vals[2], adc_vals[4]);
           WriteUART0(buffer);
 
-          driver(adc_vals);
-//          read_line(adc_vals);
+//          driver(adc_vals);
+          float IR_val = read_line(adc_vals);
+          drive_line(IR_val, adc_vals);
+//          sprintf(buffer, "by cocks: %f\r\n", IR_val);
+//          WriteUART0(buffer);
 
-          delay(.05);
+
+          delay(.1);
 //          WriteUART0("hi you \r\n");
           ++counter;
       }
