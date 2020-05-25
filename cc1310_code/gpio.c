@@ -25,6 +25,19 @@ void InitGPIO(void)
     IOCPortConfigureSet(M2_DIR,IOC_PORT_GPIO, IOC_STD_OUTPUT);
     GPIO_setOutputEnableDio(M1_DIR, GPIO_OUTPUT_ENABLE);
     GPIO_setOutputEnableDio(M2_DIR, GPIO_OUTPUT_ENABLE);
+
+    // defining output leds
+    IOCPortConfigureSet(BLED0, IOC_PORT_GPIO, IOC_STD_OUTPUT);
+    GPIO_setOutputEnableDio(BLED0, GPIO_OUTPUT_ENABLE);
+
+    IOCPortConfigureSet(BLED1, IOC_PORT_GPIO, IOC_STD_OUTPUT);
+    GPIO_setOutputEnableDio(BLED1, GPIO_OUTPUT_ENABLE);
+
+    IOCPortConfigureSet(BLED2, IOC_PORT_GPIO, IOC_STD_OUTPUT);
+    GPIO_setOutputEnableDio(BLED2, GPIO_OUTPUT_ENABLE);
+
+    IOCPortConfigureSet(BLED3, IOC_PORT_GPIO, IOC_STD_OUTPUT);
+    GPIO_setOutputEnableDio(BLED3, GPIO_OUTPUT_ENABLE);
 }
 
 void SetAndWritePinHigh(uint32_t pin)
