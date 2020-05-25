@@ -90,12 +90,12 @@ float read_line(uint32_t * vals)
     for (i = 0; i < 4; ++i)
     {
         int value = ordered_vals[i];
-        if (value > 600)
+        if (value > 600) //600
         {
             on_line = 1;
         }
 
-        if (value > 460)
+        if (value > 460) //460
         {
             avg += value * (i * 1000);
             sum += value;
@@ -133,8 +133,8 @@ void drive_line(float val, uint32_t * vals)
     sprintf(buffer, "error: %f\r\n", error);
     WriteUART0(buffer);
     float speed_delim = 1 - fabs(error)/1.5;
-    float rhs = speed_delim * MOTOR_ON + (e * MOTOR_ON/2.0) + 128;
-    float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + 128;
+    float rhs = speed_delim * MOTOR_ON + (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
+    float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
 
     sprintf(buffer, "rhs: %f, lhs: %f\r\n", rhs, lhs);
     WriteUART0(buffer);
@@ -147,20 +147,32 @@ void drive_line(float val, uint32_t * vals)
         if (error < 0){
             setMotor(M1, 1, MOTOR_ON);
             setMotor(M2, 0, MOTOR_ON);
+            WriteUART0("turning clockwise");
         }
         else if (error > 0){
             setMotor(M1, 0, MOTOR_ON);
             setMotor(M2, 1, MOTOR_ON);
+            WriteUART0("turning CCW");
         }
-        else
+        else if (vals[0] == vals[2] && vals[1] == vals[3])
         {
             setMotor(M1, 0, MOTOR_OFF);
             setMotor(M2, 0, MOTOR_OFF);
         }
-//        setMotor(M1, 0, MOTOR_OFF);
+////        setMotor(M1, 0, MOTOR_OFF);
 //        setMotor(M2, 0, MOTOR_OFF);
 //        WriteUART0("rough waters\r\n");
     }
+
+    // if(vals[1] == vals[3] && vals[2]!=vals[3])
+    // {
+    //     GPIO_writeDio(BLED0, 1);
+    // }
+    // else
+    // {
+    //     GPIO_writeDio(BLED0, 0);
+    // }
+
 
     return;
 

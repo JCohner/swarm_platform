@@ -18,7 +18,7 @@
 #define M1 1
 #define M2 2
 #define M2_PWM IOID_12//pin 9 on zumo
-#define M2_DIR IOID_6//pin 7 on zumo  //THIS SWITCHES TO IOID_19 for future revisions!!!
+#define M2_DIR IOID_19//pin 7 on zumo  //THIS SWITCHES TO IOID_19 for future revisions!!!
 #define M1_PWM IOID_11//pin 10 on zumo
 #define M1_DIR IOID_20//pin 8 on zumo
 
