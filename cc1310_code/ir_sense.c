@@ -42,6 +42,7 @@ void ReadIR(uint32_t * vals)
     uint32_t IRTime = 0;
     while (IRTime < MAX_SAMPLE_TIME)
     {
+        //read the voltage value
         ReadADC(temp_vals);
         for (j = 0; j < NUM_SAMPLES; j++)
         {
@@ -56,6 +57,7 @@ void ReadIR(uint32_t * vals)
 
         for(i = 0; i < NUM_SENSORS; i++)
         {
+            //if voltage value l
             if ((temp_vals[i] < 2400) && !(sensor_flags[i]))
             {
                 vals[i] = IRTime;
