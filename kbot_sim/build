@@ -1,0 +1,5 @@
+#/bin/bash
+cd src
+
+g++ simplebmp.cpp robot.cpp main.cpp -lGL -lGLU -lglut -o ../bin/simulation -std=c++11
+cd ..
