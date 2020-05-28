@@ -43,6 +43,11 @@ class mykilobot : public kilobot
 		//max idle counts before tx
 		uint32_t IDLE_MAX = 50;
 
+		biosync()
+		{
+			// memset(delta_message_time_buff, 10, 10*4);
+		}
+
 		void compute_dmt()
 		{
 			message_time = curr_count;
