@@ -1,9 +1,15 @@
+#CCS Specifics
 .ccsproject
 .cproject
 .project
 .launches
 .settings
 Debug
+# TI's driverlib
 driverlib_cc13xx_cc26xx
+#exclude CCS workspace stuff
 /.metadata/
 .jx*
+#kilobots executable and log
+/kbot_sim/bin
+/kbot_sim/simulation.log
