@@ -319,6 +319,7 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         num_receives = (num_receives + 1) % DELTA_TIME_BUFF_SIZE;
         delta_message_time_buff[num_receives] = delta_message_time;
 
+        //deals with averaging the delta message time
         if (!receive_buff_full_flag)
         {
             if (num_receives > 8) {
@@ -335,9 +336,9 @@ void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         {
             delta_message_time_average = 0;
             int i;
-            for (i = 0; i < num_receives; i++)
+            for (i = 0; i < DELTA_TIME_BUFF_SIZE; i++)
             {
-                delta_message_time_average += (uint32_t) (1.0/((float) num_receives) *  delta_message_time_buff[i]);
+                delta_message_time_average += (uint32_t) (1.0/((float) DELTA_TIME_BUFF_SIZE) *  delta_message_time_buff[i]);
             }
         }
 
