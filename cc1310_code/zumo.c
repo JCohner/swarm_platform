@@ -164,14 +164,20 @@ void drive_line(float val, uint32_t * vals)
 //        WriteUART0("rough waters\r\n");
     }
 
-    // if(vals[1] == vals[3] && vals[2]!=vals[3])
-    // {
-    //     GPIO_writeDio(BLED0, 1);
-    // }
-    // else
-    // {
-    //     GPIO_writeDio(BLED0, 0);
-    // }
+    //attempt to read barcode like info from margin sensors
+    uint32_t right_marg = vals[4];
+    uint32_t left_marg = vals[5];
+
+    sprintf(buffer, "rm: %u, lm: %u\r\n", right_marg, left_marg);
+    WriteUART0(buffer);
+     if(right_marg > left_marg)
+     {
+         GPIO_writeDio(BLED0, 1);
+     }
+     else
+     {
+         GPIO_writeDio(BLED0, 0);
+     }
 
 
     return;
