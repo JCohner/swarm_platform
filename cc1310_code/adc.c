@@ -46,3 +46,17 @@ void ReadADC(uint32_t * vals)
     return;
 }
 
+uint32_t Read1ADC(int pin)
+{
+    AUXWUCClockEnable(AUX_WUC_ADC_CLOCK | AUX_WUC_ANAIF_CLOCK | AUX_WUC_ADI_CLOCK);
+    while (AUXWUCClockStatus(AUX_WUC_ADC_CLOCK) != AUX_WUC_CLOCK_READY);
+    AUXADCDisable();
+    AUXADCEnableSync(AUXADC_REF_FIXED, AUXADC_SAMPLE_TIME_2P7_US, AUXADC_TRIGGER_MANUAL);
+
+    int i = pin;
+    IOCPinTypeAux(adc_outputs[i]); //tri-state the pin to switch it off
+//        delay(0.000003);
+    AUXADCSelectInput(adc_inputs[i]);
+    AUXADCGenManualTrigger();
+    return AUXADCReadFifo();
+}
