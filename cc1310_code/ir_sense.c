@@ -34,6 +34,9 @@ void ReadIR(uint32_t * vals)
     memset(sensor_flags, 0, NUM_SENSORS * 4);
 
     int i, j;
+    //possibly turn 1 by 1
+    // to see if we can differentiate colors better (based on some weird cross reflection stuff)
+
     emmitters_on();
     SetTimerState(TIMER_ON);
     uint32_t startTime = GetTime();
@@ -68,7 +71,7 @@ void ReadIR(uint32_t * vals)
 
     for (i = 0; i < NUM_SENSORS; i++)
     {
-        if ((vals[i] == 0) || (vals[i] > 1000))
+        if ((vals[i] == 0) || (vals[i] > MAX_SAMPLE_TIME))
         {
             vals[i] = MAX_SAMPLE_TIME;
         }

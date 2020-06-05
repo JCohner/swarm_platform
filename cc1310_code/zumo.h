@@ -39,7 +39,7 @@
 //WILL HAVE TO ENABLE THIS BEFORE USE in gpio.c
 #define LED_Sense IOID_18 //connected to pin 2 on zum (with jumper on IR breakout set there) //
 
-#define MOTOR_ON 256
+#define MOTOR_ON 0//256
 #define MOTOR_OFF 0
 #define MOTOR_TURN 64//64
 

@@ -45,6 +45,8 @@ int main(void)
     //start up neccesarries for ir sensing
     IR_SenseSetup();
 //    calibrate_line(); //not sure of utility yet
+//
+//    while(1);
     //light green LED to show setup is done
     GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
 
@@ -81,6 +83,8 @@ int main(void)
 
 //          driver(adc_vals);
           float IR_val = read_line(adc_vals);
+          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
+          WriteUART0(buffer);
           drive_line(IR_val, adc_vals);
 //          sprintf(buffer, "by cocks: %f\r\n", IR_val);
 //          WriteUART0(buffer);

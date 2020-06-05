@@ -63,12 +63,12 @@ void calibrate_line()
 
     uint32_t temp_adc_vals[8];
     int i, j;
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < 100; i++)
     {
         ReadIR(temp_adc_vals);
         for (j = 0; j < 6; j++)
         {
-            line_calib[j] += 0.1 * temp_adc_vals[j];
+            line_calib[j] += 0.01 * temp_adc_vals[j];
         }
     }
 
@@ -123,21 +123,33 @@ float read_line(uint32_t * vals)
 
 float error, e, prev_error, d_error;
 float dt = 0.05;
+int policy = 0;
+char do_once = 0;
+
 void drive_line(float val, uint32_t * vals)
 {
+
+    ////////
+    //NORMAL DRIVING
+    ///////
     prev_error = error;
     error = 1.5 - val;
     e = (1.5 - val)/1.5;
     d_error = (error-prev_error)/dt;
 
-    sprintf(buffer, "error: %f\r\n", error);
-    WriteUART0(buffer);
+//    sprintf(buffer, "error: %f\r\n", error);
+//    WriteUART0(buffer);
     float speed_delim = 1 - fabs(error)/1.5;
     float rhs = speed_delim * MOTOR_ON + (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
     float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
 
-    sprintf(buffer, "rhs: %f, lhs: %f\r\n", rhs, lhs);
-    WriteUART0(buffer);
+//    sprintf(buffer, "rhs: %f, lhs: %f\r\n", rhs, lhs);
+//    WriteUART0(buffer);
+
+    if (error < .3 && error > 0)
+    {
+        do_once = 0;
+    }
 
 
     setMotor(M2, 0, lhs);
@@ -147,72 +159,51 @@ void drive_line(float val, uint32_t * vals)
         if (error < 0){
             setMotor(M1, 1, MOTOR_ON);
             setMotor(M2, 0, MOTOR_ON);
-            WriteUART0("turning clockwise");
+//            WriteUART0("turning clockwise");
         }
         else if (error > 0){
             setMotor(M1, 0, MOTOR_ON);
             setMotor(M2, 1, MOTOR_ON);
-            WriteUART0("turning CCW");
+//            WriteUART0("turning CCW");
         }
         else if (vals[0] == vals[2] && vals[1] == vals[3])
         {
             setMotor(M1, 0, MOTOR_OFF);
             setMotor(M2, 0, MOTOR_OFF);
         }
-////        setMotor(M1, 0, MOTOR_OFF);
-//        setMotor(M2, 0, MOTOR_OFF);
-//        WriteUART0("rough waters\r\n");
+
     }
+
+    ////////
+    //CHECK FOR MESSAGES
+    ///////
+
 
     //attempt to read barcode like info from margin sensors
     uint32_t right_marg = vals[4];
     uint32_t left_marg = vals[5];
 
-    sprintf(buffer, "rm: %u, lm: %u\r\n", right_marg, left_marg);
-    WriteUART0(buffer);
-     if(right_marg > left_marg)
+//    sprintf(buffer, "rm: %u, lm: %u\r\n", right_marg, left_marg);
+//    WriteUART0(buffer);
+    uint32_t mids = vals[2] + vals[3];
+    uint32_t cent = vals[0] + vals[1];
+    uint32_t outs = vals[4] + vals[5] ;
+     if(outs > 2500 && mids < 1500 && cent < 1500)
      {
-         GPIO_writeDio(BLED0, 1);
+//         GPIO_writeDio(BLED0, 1);
+         GPIO_setDio(BLED0);
+//         policy = -1;
+//         WriteUART0("target found\r\n");
+//         do_once = 1;
+
+         setMotor(M1, 0, MOTOR_ON);
+         setMotor(M2, 1, MOTOR_ON);
+
      }
      else
      {
-         GPIO_writeDio(BLED0, 0);
+         GPIO_clearDio(BLED0);
      }
 
-
     return;
-
-//    int x = val;
-//    switch (x)
-//    {
-//    case 0:
-//        GPIO_writeDio(BLED0, 1);
-//
-//        GPIO_writeDio(BLED1, 0);
-//        GPIO_writeDio(BLED2, 0);
-//        GPIO_writeDio(BLED3, 0);
-//        break;
-//    case 1:
-//        GPIO_writeDio(BLED1, 1);
-//
-//        GPIO_writeDio(BLED2, 0);
-//        GPIO_writeDio(BLED3, 0);
-//        GPIO_writeDio(BLED0, 0);
-//        break;
-//    case 2:
-//        GPIO_writeDio(BLED2, 1);
-//
-//        GPIO_writeDio(BLED1, 0);
-//        GPIO_writeDio(BLED3, 0);
-//        GPIO_writeDio(BLED0, 0);
-//        break;
-//
-//    case 3:
-//        GPIO_writeDio(BLED3, 1);
-//
-//        GPIO_writeDio(BLED1, 0);
-//        GPIO_writeDio(BLED2, 0);
-//        GPIO_writeDio(BLED0, 0);
-//        break;
-//    }
 }
