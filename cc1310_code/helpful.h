@@ -23,4 +23,5 @@ uint32_t GetTime(void);
 
 uint32_t ticsToMicrosec(uint32_t tics);
 
+void print_array(uint16_t * array, uint8_t num_els);
 #endif /* HELPFUL_H_ */

@@ -60,3 +60,15 @@ uint32_t GetTime()
 {
     return TimerValueGet(GPT1_BASE ,TIMER_A);
 }
+
+void print_array(uint16_t * array, uint8_t num_els)
+{
+    int i;
+    char buff[300];
+    for (i = 0; i < num_els; i++)
+    {
+        sprintf(buff, "%u ", array[i]);
+        WriteUART0(buff);
+    }
+    WriteUART0("\r\n");
+}
