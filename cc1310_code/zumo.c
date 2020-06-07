@@ -90,12 +90,12 @@ float read_line(uint32_t * vals)
     for (i = 0; i < 4; ++i)
     {
         int value = ordered_vals[i];
-        if (value > 600) //600
+        if (value > 200) //600
         {
             on_line = 1;
         }
 
-        if (value > 460) //460
+        if (value > 150) //460
         {
             avg += value * (i * 1000);
             sum += value;
@@ -174,36 +174,30 @@ void drive_line(float val, uint32_t * vals)
 
     }
 
+
     ////////
     //CHECK FOR MESSAGES
     ///////
-
-
-    //attempt to read barcode like info from margin sensors
-    uint32_t right_marg = vals[4];
-    uint32_t left_marg = vals[5];
-
-//    sprintf(buffer, "rm: %u, lm: %u\r\n", right_marg, left_marg);
-//    WriteUART0(buffer);
-    uint32_t mids = vals[2] + vals[3];
-    uint32_t cent = vals[0] + vals[1];
-    uint32_t outs = vals[4] + vals[5] ;
-     if(outs > 2500 && mids < 1500 && cent < 1500)
-     {
-//         GPIO_writeDio(BLED0, 1);
-         GPIO_setDio(BLED0);
-//         policy = -1;
-//         WriteUART0("target found\r\n");
-//         do_once = 1;
-
-         setMotor(M1, 0, MOTOR_ON);
-         setMotor(M2, 1, MOTOR_ON);
-
-     }
-     else
-     {
-         GPIO_clearDio(BLED0);
-     }
+    detect_poi(vals);
 
     return;
+}
+
+int red_flag = 0;
+uint16_t prev_vals[100];
+void detect_poi(uint32_t * vals)
+{
+//    int red_thresh = 75;
+//    if(vals[2] < red_thresh || vals[3] < red_thresh || vals[4] < red_thresh)// && !red_flag)
+//    {
+//        GPIO_toggleDio(BLED0);
+//        red_flag = 1;
+//    }
+//    else
+//    {
+//        red_flag = 0;
+//    }
+
+
+
 }
