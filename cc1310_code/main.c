@@ -63,10 +63,18 @@ int main(void)
 
       int counter = 0;
 
+      uint32_t since_last=0;
+
       while(1)
       {
-          sprintf(buffer,"%d\r\n", counter);
-          WriteUART0(buffer);
+
+          if(counter % 10 == 0)
+          {
+              since_last = 1;
+          }
+
+//          sprintf(buffer,"%d\r\n", counter);
+//          WriteUART0(buffer);
 //          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 
           //pause until character entered
@@ -77,20 +85,24 @@ int main(void)
 
 //          ReadADC(adc_vals);
           ReadIR(adc_vals);
+          if(since_last)
+          {
+              sprintf(buffer,"adc: %u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1], adc_vals[0], adc_vals[2], adc_vals[4]);
+              WriteUART0(buffer);
+              since_last = 0;
+          }
 
-          sprintf(buffer,"adc: %u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1], adc_vals[0], adc_vals[2], adc_vals[4]);
-          WriteUART0(buffer);
 
 //          driver(adc_vals);
           float IR_val = read_line(adc_vals);
-          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
-          WriteUART0(buffer);
+//          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
+//          WriteUART0(buffer);
           drive_line(IR_val, adc_vals);
 //          sprintf(buffer, "by cocks: %f\r\n", IR_val);
 //          WriteUART0(buffer);
 
 
-          delay(.1);
+//          delay(.05);
 //          WriteUART0("hi you \r\n");
           ++counter;
       }
