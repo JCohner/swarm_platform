@@ -14,7 +14,7 @@
 #include "uart.h"
 
 //#define NUM_SENSORS NUM_SENSOR //now defined in adc.h
-#define NUM_SAMPLES 1
+#define NUM_SAMPLES 2
 #define MAX_SAMPLE_TIME 1000 //in microseconds
 
 

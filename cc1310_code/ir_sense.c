@@ -105,6 +105,7 @@ void ReadIR(uint32_t * vals)
     uint32_t IRTime;
     char sensor_flag;
     SetTimerState(TIMER_ON);
+    for (i = 0; i < NUM_SAMPLES; i++){
     for (j = 0; j < NUM_SENSORS; j++)
     {
         emmitter_on(j);
@@ -119,7 +120,7 @@ void ReadIR(uint32_t * vals)
             //if voltage value l
             if ((temp_vals[j] < 2400)) // && !(sensor_flags[j]))
             {
-                vals[j] = IRTime;
+                vals[j] += IRTime / (float) NUM_SAMPLES;
                 sensor_flag = 1;
             }
         }
@@ -128,6 +129,7 @@ void ReadIR(uint32_t * vals)
         {
             vals[j] = MAX_SAMPLE_TIME;
         }
+    }
     }
     SetTimerState(TIMER_OFF);
     return;
