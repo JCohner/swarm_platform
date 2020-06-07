@@ -8,6 +8,7 @@
 #include "zumo.h"
 #include "uart.h"
 #include <math.h>
+#include "helpful.h"
 
 char buffer[50];
 char bleds[4] = {BLED0, BLED1, BLED2, BLED3};
@@ -184,10 +185,12 @@ void drive_line(float val, uint32_t * vals)
 }
 
 int red_flag = 0;
-uint16_t prev_vals[100];
+uint16_t prev_vals_size = 100;
+static uint16_t prev_vals[100]; //if current attempt works switch this to type char
+uint8_t prev_val_idx = 0;
 void detect_poi(uint32_t * vals)
 {
-//    int red_thresh = 75;
+    int red_thresh = 82;
 //    if(vals[2] < red_thresh || vals[3] < red_thresh || vals[4] < red_thresh)// && !red_flag)
 //    {
 //        GPIO_toggleDio(BLED0);
@@ -197,6 +200,32 @@ void detect_poi(uint32_t * vals)
 //    {
 //        red_flag = 0;
 //    }
+
+
+    char stash_val = 0;
+    int i ;
+    for (i = 0; i < 3; i++)
+    {
+        //trying to binarize it here, if this doesnt work store all values as uint16_t, average over window
+        if (vals[(i*2)] <= red_thresh)
+        {
+            stash_val = 1;
+//            break;
+        }
+    }
+
+    prev_vals[prev_val_idx] = stash_val;
+
+//    sprintf(buffer, "%u %u %u %u  %u %u  %u %u  %u %u \r\n", prev_vals[0], prev_vals[1], prev_vals[2],
+//                                                             prev_vals[3], prev_vals[4], prev_vals[5],
+//                                                             prev_vals[6], prev_vals[7], prev_vals[8],
+//                                                             prev_vals[9]);
+//    WriteUART0(buffer);
+
+    print_array(prev_vals, prev_vals_size);
+
+    prev_val_idx = (prev_val_idx + 1) % prev_vals_size;
+
 
 
 
