@@ -190,31 +190,25 @@ static uint16_t prev_vals[100]; //if current attempt works switch this to type c
 uint8_t prev_val_idx = 0;
 void detect_poi(uint32_t * vals)
 {
-    int red_thresh = 82;
-//    if(vals[2] < red_thresh || vals[3] < red_thresh || vals[4] < red_thresh)// && !red_flag)
-//    {
-//        GPIO_toggleDio(BLED0);
-//        red_flag = 1;
-//    }
-//    else
-//    {
-//        red_flag = 0;
-//    }
+    int red_thresh = 85;
 
-
-    char stash_val = 0;
+    uint8_t stash_val = 0;
     int i ;
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 4; i++)
     {
         //trying to binarize it here, if this doesnt work store all values as uint16_t, average over window
-        if (vals[(i*2)] <= red_thresh)
+        if (vals[(i + 2)] <= red_thresh)
         {
-            stash_val = 1;
-//            break;
+            stash_val += 1;
         }
     }
 
-    prev_vals[prev_val_idx] = stash_val;
+    prev_vals[prev_val_idx] = stash_val >> 1;
+
+    if (prev_vals[prev_val_idx] >= 1)
+    {
+        GPIO_toggleDio(BLED0);
+    }
 
 //    sprintf(buffer, "%u %u %u %u  %u %u  %u %u  %u %u \r\n", prev_vals[0], prev_vals[1], prev_vals[2],
 //                                                             prev_vals[3], prev_vals[4], prev_vals[5],
@@ -222,11 +216,12 @@ void detect_poi(uint32_t * vals)
 //                                                             prev_vals[9]);
 //    WriteUART0(buffer);
 
+    //TODO: make more general print function to facillitates connection to pyserial
     print_array(prev_vals, prev_vals_size);
 
     prev_val_idx = (prev_val_idx + 1) % prev_vals_size;
 
 
 
-
+    return;
 }
