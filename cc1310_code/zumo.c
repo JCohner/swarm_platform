@@ -217,7 +217,7 @@ void detect_poi(uint32_t * vals)
 //    WriteUART0(buffer);
 
     //TODO: make more general print function to facillitates connection to pyserial
-    print_array(prev_vals, prev_vals_size);
+//    print_array(prev_vals, prev_vals_size);
 
     prev_val_idx = (prev_val_idx + 1) % prev_vals_size;
 
