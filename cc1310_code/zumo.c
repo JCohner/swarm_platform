@@ -184,44 +184,78 @@ void drive_line(float val, uint32_t * vals)
     return;
 }
 
-int red_flag = 0;
-uint16_t prev_vals_size = 100;
-static uint16_t prev_vals[100]; //if current attempt works switch this to type char
-uint8_t prev_val_idx = 0;
+char curr_state = 0;
+char prev_state;
+uint8_t lorft = 0;
+uint8_t rioght = 0;
+uint8_t jones = 0;
+
+uint16_t prev_vals_size = 10;
+static uint16_t prev_vals[10];
+uint8_t prev_vals_idx = 0;
+uint8_t prev_vals_ave;
+
+char stash_val =0;
+
 void detect_poi(uint32_t * vals)
 {
-    int red_thresh = 85;
+    int red_thresh = 82;
 
-    uint8_t stash_val = 0;
-    int i ;
-    for (i = 0; i < 4; i++)
+    int i;
+    lorft = 0;
+    jones = 0;
+    stash_val = 0;
+    for (i = 0; i < 6; i++)
     {
         //trying to binarize it here, if this doesnt work store all values as uint16_t, average over window
-        if (vals[(i + 2)] <= red_thresh)
+        //checking for #800080
+        if (vals[(i)] < 140 && vals[(i)] > 100)
         {
-            stash_val += 1;
+            lorft += 1;
+        }
+        //checking for #333333
+        else if (vals[i] < 220 && vals[i] > 175 && !(i % 2))
+        {
+            jones +=1;
         }
     }
 
-    prev_vals[prev_val_idx] = stash_val >> 1;
-
-    if (prev_vals[prev_val_idx] >= 1)
+    if (jones >= 1)
     {
-        GPIO_toggleDio(BLED0);
+        stash_val = 1;
+    }
+    else {
+        stash_val = 0;
     }
 
-//    sprintf(buffer, "%u %u %u %u  %u %u  %u %u  %u %u \r\n", prev_vals[0], prev_vals[1], prev_vals[2],
-//                                                             prev_vals[3], prev_vals[4], prev_vals[5],
-//                                                             prev_vals[6], prev_vals[7], prev_vals[8],
-//                                                             prev_vals[9]);
-//    WriteUART0(buffer);
+    prev_vals[prev_vals_idx] = stash_val;
+    prev_vals_ave = 0;
+    for (i = 0; i < prev_vals_size; i++)
+    {
+        prev_vals_ave += prev_vals[i];
+    }
 
-    //TODO: make more general print function to facillitates connection to pyserial
-//    print_array(prev_vals, prev_vals_size);
+    sprintf(buffer, "ave: %u\r\n", prev_vals_ave);
+    WriteUART0(buffer);
 
-    prev_val_idx = (prev_val_idx + 1) % prev_vals_size;
+    if (prev_vals_ave > 5 && curr_state == 0)
+    {
+        GPIO_toggleDio(BLED0);
+        curr_state = 1;
+    }
+    else
+    {
+        curr_state = 0;
+    }
 
 
+    prev_vals_idx = (prev_vals_idx + 1) % prev_vals_size;
+//    if (prev_vals_idx == 0)
+//    {
+//        setMotor(M1, 0, MOTOR_OFF);
+//        setMotor(M2, 0, MOTOR_OFF);
+//        while(1);
+//    }
 
     return;
 }
