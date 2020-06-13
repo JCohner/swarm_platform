@@ -91,12 +91,12 @@ float read_line(uint32_t * vals)
     for (i = 0; i < 4; ++i)
     {
         int value = ordered_vals[i];
-        if (value > 200) //600
+        if (value > 250) //200// I've now made 220 match w upper end of grey
         {
             on_line = 1;
         }
 
-        if (value > 150) //460
+        if (value > 220) //150
         {
             avg += value * (i * 1000);
             sum += value;
@@ -184,73 +184,109 @@ void drive_line(float val, uint32_t * vals)
     return;
 }
 
-char curr_state = 0;
-char prev_state;
-uint8_t lorft = 0;
-uint8_t rioght = 0;
-uint8_t jones = 0;
+//char curr_state = 0;
+//char prev_state;
+//uint8_t purp = 0;
+//uint8_t grey = 0;
 
-uint16_t prev_vals_size = 10;
-static uint16_t prev_vals[10];
-uint8_t prev_vals_idx = 0;
-uint8_t prev_vals_ave;
+//uint16_t prev_vals_size = 10;
+//static uint16_t prev_grey_vals[10];
+//static uint16_t prev_purp_vals[10];
+//uint8_t prev_purp_idx = 0;
+//uint8_t prev_vals_ave;
 
-char stash_val =0;
+//char stash_val = 0;
+
+
+
+struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .idx = 0,
+                               .curr_state = 0, .accum = 0, .stash_val = 0};
+
+struct ColorTrack purp = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .idx = 0,
+                               .curr_state = 0, .accum = 0, .stash_val = 0};
 
 void detect_poi(uint32_t * vals)
 {
-    int red_thresh = 82;
-
     int i;
-    lorft = 0;
-    jones = 0;
-    stash_val = 0;
-    for (i = 0; i < 6; i++)
+    purp.accum = 0;
+    purp.stash_val = 0;
+
+    graphite.accum = 0;
+    graphite.stash_val = 0;
+//    uint16_t lhs_vals = vals[1] + vals[3];
+    for (i = 0; i < 4; i++)
     {
         //trying to binarize it here, if this doesnt work store all values as uint16_t, average over window
         //checking for #800080
-        if (vals[(i)] < 140 && vals[(i)] > 100)
+        if (vals[(i + 2)] < purp.high_bound && vals[(i+2)] > purp.low_bound)
         {
-            lorft += 1;
+            purp.accum += 1;
         }
         //checking for #333333
-        else if (vals[i] < 220 && vals[i] > 175 && !(i % 2))
+        //checks through RHS sensors
+        else if (vals[i+2] < graphite.high_bound && vals[i+2] > graphite.low_bound && !(i % 2))
         {
-            jones +=1;
+            graphite.accum +=1;
         }
     }
 
-    if (jones >= 1)
+    if (graphite.accum >= 1) //<- changing this might be huuge
     {
-        stash_val = 1;
+        graphite.stash_val = 1;
     }
     else {
-        stash_val = 0;
+        graphite.stash_val = 0;
     }
 
-    prev_vals[prev_vals_idx] = stash_val;
-    prev_vals_ave = 0;
-    for (i = 0; i < prev_vals_size; i++)
+    if (purp.accum >= 2)
     {
-        prev_vals_ave += prev_vals[i];
+        purp.stash_val = 1;
+    }
+    else {
+        purp.stash_val = 0;
     }
 
-    sprintf(buffer, "ave: %u\r\n", prev_vals_ave);
+    graphite.prev_vals[graphite.idx] = graphite.stash_val;
+    purp.prev_vals[purp.idx] = purp.stash_val;
+
+    graphite.prev_vals_ave = 0;
+    purp.prev_vals_ave = 0;
+    for (i = 0; i < NUM_PREV_VALS; i++)
+    {
+        graphite.prev_vals_ave += graphite.prev_vals[i];
+
+        purp.prev_vals_ave += purp.prev_vals[i];
+    }
+
+    sprintf(buffer, "ave: %u\r\n", purp.prev_vals_ave);
     WriteUART0(buffer);
 
-    if (prev_vals_ave > 5 && curr_state == 0)
+    if (graphite.prev_vals_ave > 5 && graphite.curr_state == 0)
     {
         GPIO_toggleDio(BLED0);
-        curr_state = 1;
+        graphite.curr_state = 1;
     }
     else
     {
-        curr_state = 0;
+        graphite.curr_state = 0;
+    }
+
+    if (purp.prev_vals_ave > 3 && purp.curr_state == 0)
+    {
+        GPIO_toggleDio(BLED2);
+//        GPIO_setDio(BLED0);
+        GPIO_toggleDio(BLED3);
+        purp.curr_state = 1;
+    }
+    else
+    {
+        purp.curr_state = 0;
     }
 
 
-    prev_vals_idx = (prev_vals_idx + 1) % prev_vals_size;
-//    if (prev_vals_idx == 0)
+    purp.idx = (purp.idx + 1) % NUM_PREV_VALS;
+    graphite.idx = (graphite.idx + 1) % NUM_PREV_VALS;
+//    if (graphite.idx == 0)
 //    {
 //        setMotor(M1, 0, MOTOR_OFF);
 //        setMotor(M2, 0, MOTOR_OFF);
