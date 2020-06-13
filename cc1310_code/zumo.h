@@ -27,6 +27,27 @@
 #define BLED2 IOID_13
 #define BLED3 IOID_14
 
+#define PURP_LOW 100
+#define PURP_HIGH 140
+
+#define GREY_LOW 175
+#define GREY_HIGH 220
+
+
+#define NUM_PREV_VALS 10
+struct ColorTrack {
+    char curr_state;
+    char prev_state;
+    uint8_t accum;
+    uint8_t stash_val;
+    uint16_t prev_vals[NUM_PREV_VALS];
+    uint8_t prev_vals_ave;
+    uint8_t idx;
+
+    uint16_t high_bound;
+    uint16_t low_bound;
+
+};
 
 
 //#define MR_Sense IOID_25
@@ -39,7 +60,7 @@
 //WILL HAVE TO ENABLE THIS BEFORE USE in gpio.c
 #define LED_Sense IOID_18 //connected to pin 2 on zum (with jumper on IR breakout set there) //
 
-#define MOTOR_ON 256
+#define MOTOR_ON 0//256
 #define MOTOR_OFF 0
 #define MOTOR_TURN 64//64
 
