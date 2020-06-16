@@ -29,5 +29,6 @@ static char adc_outputs[8] = {IR_Sense, IL_Sense, MR_Sense, ML_Sense, ER_Sense, 
 
 void InitADC();
 void ReadADC(uint32_t * vals);
+uint32_t Read1ADC(int pin);
 
 #endif /* ADC_H_ */
