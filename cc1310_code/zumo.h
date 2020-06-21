@@ -49,6 +49,24 @@ struct ColorTrack {
 
 };
 
+struct StateTrack{
+    //policy and target bits
+    uint8_t policy : 2;
+    uint8_t target : 1;
+
+    //intersection management bits
+
+    //state dia:
+    // 0b00 - no detect
+    // 0b01 - detect 1
+    // 0b10 - maneuver 1 done
+    // 0b11 - detect 2
+    // 0b00 - maneuver 2 done
+    uint8_t xc_flags : 2;
+    uint8_t err_flag : 1;
+} state_track;
+
+
 
 //#define MR_Sense IOID_25
 //#define IR_Sense IOID_23
@@ -60,7 +78,7 @@ struct ColorTrack {
 //WILL HAVE TO ENABLE THIS BEFORE USE in gpio.c
 #define LED_Sense IOID_18 //connected to pin 2 on zum (with jumper on IR breakout set there) //
 
-#define MOTOR_ON 0//256
+#define MOTOR_ON 256
 #define MOTOR_OFF 0
 #define MOTOR_TURN 64//64
 
@@ -68,6 +86,6 @@ void setMotor(int motor, int dir, int value);
 void driver(uint32_t * vals);
 float read_line(uint32_t * vals);
 void drive_line(float val, uint32_t * vals);
-void calibrate_line(void);
+void calibrate_line(int num_samps);
 void detect_poi(uint32_t * vals);
 #endif /* ZUMO_H_ */

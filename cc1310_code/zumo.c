@@ -59,18 +59,23 @@ void driver(uint32_t * vals)
 
 static uint32_t line_calib[8];
 
-void calibrate_line()
+void calibrate_line(int num_samps)
 {
 
     uint32_t temp_adc_vals[8];
     int i, j;
-    for (i = 0; i < 100; i++)
+    for (i = 0; i < num_samps; i++)
     {
         ReadIR(temp_adc_vals);
         for (j = 0; j < 6; j++)
         {
-            line_calib[j] += 0.01 * temp_adc_vals[j];
+            line_calib[j] += temp_adc_vals[j];
         }
+    }
+
+    for (j = 0; j < 6; j++)
+    {
+        line_calib[j] = line_calib[j]/(float)num_samps;
     }
 
     sprintf(buffer, "calib: %u, %u, %u, %u, %u, %u\r\n", line_calib[5], line_calib[3], line_calib[1], line_calib[0], line_calib[2], line_calib[4]);
@@ -179,52 +184,48 @@ void drive_line(float val, uint32_t * vals)
     ////////
     //CHECK FOR MESSAGES
     ///////
-    detect_poi(vals);
+//    detect_poi(vals);
 
     return;
 }
 
-//char curr_state = 0;
-//char prev_state;
-//uint8_t purp = 0;
-//uint8_t grey = 0;
-
-//uint16_t prev_vals_size = 10;
-//static uint16_t prev_grey_vals[10];
-//static uint16_t prev_purp_vals[10];
-//uint8_t prev_purp_idx = 0;
-//uint8_t prev_vals_ave;
-
-//char stash_val = 0;
-
-
-
 struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .idx = 0,
                                .curr_state = 0, .accum = 0, .stash_val = 0};
 
-struct ColorTrack purp = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .idx = 0,
+struct ColorTrack purp_left = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .idx = 0,
+                               .curr_state = 0, .accum = 0, .stash_val = 0};
+
+struct ColorTrack purp_right = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .idx = 0,
                                .curr_state = 0, .accum = 0, .stash_val = 0};
 
 void detect_poi(uint32_t * vals)
 {
     int i;
-    purp.accum = 0;
-    purp.stash_val = 0;
+    purp_left.accum = 0;
+    purp_left.stash_val = 0;
+
+    purp_right.accum = 0;
+    purp_right.stash_val = 0;
 
     graphite.accum = 0;
     graphite.stash_val = 0;
-//    uint16_t lhs_vals = vals[1] + vals[3];
+
     for (i = 0; i < 4; i++)
     {
         //trying to binarize it here, if this doesnt work store all values as uint16_t, average over window
         //checking for #800080
-        if (vals[(i + 2)] < purp.high_bound && vals[(i+2)] > purp.low_bound)
+        if (vals[(i + 2)] < purp_left.high_bound && vals[(i+2)] > purp_left.low_bound && (i % 2))
         {
-            purp.accum += 1;
+            purp_left.accum += 1;
         }
+        else if (vals[(i + 2)] < purp_right.high_bound && vals[(i+2)] > purp_right.low_bound && !(i % 2))
+        {
+            purp_right.accum += 1;
+        }
+
         //checking for #333333
         //checks through RHS sensors
-        else if (vals[i+2] < graphite.high_bound && vals[i+2] > graphite.low_bound && !(i % 2))
+        if (vals[i+2] < graphite.high_bound && vals[i+2] > graphite.low_bound && !(i % 2))
         {
             graphite.accum +=1;
         }
@@ -238,28 +239,40 @@ void detect_poi(uint32_t * vals)
         graphite.stash_val = 0;
     }
 
-    if (purp.accum >= 2)
+    if (purp_left.accum >= 2)
     {
-        purp.stash_val = 1;
+        purp_left.stash_val = 1;
     }
     else {
-        purp.stash_val = 0;
+        purp_left.stash_val = 0;
     }
 
+    if (purp_right.accum >= 2)
+    {
+        purp_right.stash_val = 1;
+    }
+    else {
+        purp_right.stash_val = 0;
+    }
+
+
     graphite.prev_vals[graphite.idx] = graphite.stash_val;
-    purp.prev_vals[purp.idx] = purp.stash_val;
+    purp_left.prev_vals[purp_left.idx] = purp_left.stash_val;
+    purp_right.prev_vals[purp_right.idx] = purp_right.stash_val;
 
     graphite.prev_vals_ave = 0;
-    purp.prev_vals_ave = 0;
+    purp_left.prev_vals_ave = 0;
+    purp_right.prev_vals_ave = 0;
     for (i = 0; i < NUM_PREV_VALS; i++)
     {
         graphite.prev_vals_ave += graphite.prev_vals[i];
 
-        purp.prev_vals_ave += purp.prev_vals[i];
+        purp_left.prev_vals_ave += purp_left.prev_vals[i];
+        purp_right.prev_vals_ave += purp_right.prev_vals[i];
     }
 
-    sprintf(buffer, "ave: %u\r\n", purp.prev_vals_ave);
-    WriteUART0(buffer);
+//    sprintf(buffer, "ave: %u\r\n", purp.prev_vals_ave);
+//    WriteUART0(buffer);
 
     if (graphite.prev_vals_ave > 5 && graphite.curr_state == 0)
     {
@@ -271,27 +284,18 @@ void detect_poi(uint32_t * vals)
         graphite.curr_state = 0;
     }
 
-    if (purp.prev_vals_ave > 3 && purp.curr_state == 0)
+    if (purp_left.prev_vals_ave > 4 && state_track.xc_flags == 0b00)
     {
-        GPIO_toggleDio(BLED2);
-//        GPIO_setDio(BLED0);
-        GPIO_toggleDio(BLED3);
-        purp.curr_state = 1;
+        state_track.xc_flags = 0b01;
     }
-    else
+    else if (purp_right.prev_vals_ave > 4 && state_track.xc_flags == 0b01)
     {
-        purp.curr_state = 0;
+        state_track.xc_flags = 0b10;
     }
 
-
-    purp.idx = (purp.idx + 1) % NUM_PREV_VALS;
+    purp_left.idx = (purp_left.idx + 1) % NUM_PREV_VALS;
+    purp_right.idx = (purp_right.idx + 1) % NUM_PREV_VALS;
     graphite.idx = (graphite.idx + 1) % NUM_PREV_VALS;
-//    if (graphite.idx == 0)
-//    {
-//        setMotor(M1, 0, MOTOR_OFF);
-//        setMotor(M2, 0, MOTOR_OFF);
-//        while(1);
-//    }
 
     return;
 }
