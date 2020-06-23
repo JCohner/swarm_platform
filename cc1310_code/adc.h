@@ -12,8 +12,6 @@
 #include <devices/cc13x0/driverlib/aux_adc.h>
 #include <devices/cc13x0/driverlib/ioc.h>
 
-#include "zumo.h"
-//
 #define NUM_SENSORS 6
 
 #define MR_Sense IOID_25
