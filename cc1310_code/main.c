@@ -79,8 +79,8 @@ int main(void)
       set_policy(0b10);
 //      test_leds();
 //      while(1);
-      init_openloop();
-      set_total_count(48000 * 2); //probably do half of this for 45 deg
+//      init_openloop();
+      set_total_count(100); //probably do half of this for 45 deg
 
       while(1)
       {
@@ -106,9 +106,10 @@ int main(void)
           WriteUART0(buffer);
           drive_line(IR_val, adc_vals);
           detect_poi(adc_vals);
-          sprintf(buffer, "flag val: %u\r\n", (get_flags() & 0b1100) >> 2);
+          sprintf(buffer, "flag val: %u\r\n", get_flags());
           WriteUART0(buffer);
           execute_policy();
+          openloop_turn(get_flags(),get_policy());
 
 //          delay(.05); //WILL MESS UP COLOR DETECT THRESHOLDING
 //          WriteUART0("hi you \r\n");
