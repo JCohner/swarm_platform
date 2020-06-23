@@ -72,7 +72,17 @@ void check_state()
     sprintf(buffer, "prev vals ave: %u, %u\r\n", purp_left.prev_vals_ave, purp_right.prev_vals_ave);
     WriteUART0(buffer);
     uint8_t prev_flag = get_flags();
-    set_prev_flags(prev_flag);
+    uint8_t actuation_flag = get_actuation_flag();
+
+    //if we are currently actuating, do not overwite prev flag and do not set a new flag
+    if (!actuation_flag){
+        set_prev_flags(prev_flag);
+    }
+    else
+    {
+        return;
+    }
+
     if (purp_left.prev_vals_ave >= purp_left.detect_thresh && prev_flag == NO_DETECT)
     {
         set_flags(DETECT_0);
@@ -81,37 +91,17 @@ void check_state()
     {
         set_flags(DETECT_1);
     }
-    else
+    else if (purp_left.prev_vals_ave >= purp_left.detect_thresh && prev_flag == DETECT_1)
     {
-        //do i need a no detect here
-        ;
+        //need to check return policy here
+        set_return_flag(1);
+        set_flags(DETECT_0);
+    } else if (purp_right.prev_vals_ave >= purp_right.detect_thresh && prev_flag == DETECT_0 && get_return_flag())
+    {
+        set_flags(NO_DETECT);
+        set_return_flag(0);
     }
 }
-
-
-
-//0b00 - graphite
-//0b01 - purp left
-//0b10 - purp right
-//struct ColorTrack * get_color(uint8_t color)
-//{
-//    struct ColorTrack * ret;
-//    switch(color){
-//        case 0b00:
-//            ret = &graphite;
-//            break;
-//        case 0b01:
-//            ret = &purp_left;
-//            break;
-//        case 0b10:
-//            ret = &purp_right;
-//            break;
-//        default:
-//            break;
-//    }
-//
-//    return ret;
-//}
 
 void reinit_stash_and_accum()
 {
