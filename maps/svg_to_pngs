@@ -1,0 +1,15 @@
+#!/bin/bash
+WIDTH=1056
+HEIGHT=816
+for ((i = 0; i < 3; i++))
+do 
+	for ((j = 0; j < 3; j++))
+	do
+		var=$(($i+$j)) 
+		echo ${i}_${j}
+		inkscape --export-filename=${i}_${j}_arena_4.png \
+				 --export-area=$((i*WIDTH)):$((j*HEIGHT)):$(((i+1)*WIDTH)):$(((j+1)*HEIGHT)) \
+				 arena_4.svg
+	done
+
+done
