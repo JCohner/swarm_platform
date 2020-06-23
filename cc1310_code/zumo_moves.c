@@ -61,10 +61,14 @@ void set_total_count(uint32_t tot_count)
 
 char buffer[50];
 
-void openloop_turn(uint8_t dir)
+void openloop_turn(uint8_t flag, uint8_t policy)
 {
-//    sprintf(buffer, "count: %u\r\n", counter);
-//    WriteUART0(buffer);
+    uint8_t dir;
+    dir = flag & policy;
+    sprintf(buffer, "state: %u\r\n", state);
+    WriteUART0(buffer);
+    sprintf(buffer, "count: %u\r\n", counter);
+    WriteUART0(buffer);
     if (state && counter < total_count)
     {
         setMotor(M1, dir, MOTOR_ON);

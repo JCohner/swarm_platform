@@ -15,8 +15,8 @@
 #include "pwm.h"
 
 void setMotor(int motor, int dir, int value);
-void openloop_turn(uint8_t dir);
 void init_openloop(void);
 void end_openloop(void);
 void set_total_count(uint32_t tot_count);
+void openloop_turn(uint8_t flag, uint8_t policy);
 #endif /* ZUMO_MOVES_H_ */
