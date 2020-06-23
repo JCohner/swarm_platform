@@ -10,52 +10,9 @@
 #include <math.h>
 #include "helpful.h"
 
+
 char buffer[50];
 char bleds[4] = {BLED0, BLED1, BLED2, BLED3};
-void setMotor(int motor, int dir, int value)
-{
-    int DIR_pin, PWM_pin;
-    if (motor == M1)
-    {
-       DIR_pin = M1_DIR;
-       PWM_pin = M1_PWM;
-    }
-    else if (motor == M2)
-    {
-        DIR_pin = M2_DIR;
-        PWM_pin = M2_PWM;
-    }
-
-    int set_val = 1022 - value;
-    if (set_val < 0){
-        set_val = 0;
-    }
-
-//    if (value < 0)
-//    {
-//        dir = !dir;
-//    }
-
-    GPIO_writeDio(DIR_pin, dir);
-    PWMSet(PWM_pin, set_val);
-
-}
-
-void driver(uint32_t * vals)
-{
-    if((vals[0] > 500) && vals[1] > 500)
-    {
-        setMotor(M1, 1, MOTOR_OFF);
-        setMotor(M2, 1, MOTOR_OFF);
-    }
-    else
-    {
-        setMotor(M1, 0, MOTOR_ON);
-        setMotor(M2, 0, MOTOR_ON);
-    }
-
-
-}
 
 static uint32_t line_calib[8];
 
@@ -189,113 +146,43 @@ void drive_line(float val, uint32_t * vals)
     return;
 }
 
-struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .idx = 0,
-                               .curr_state = 0, .accum = 0, .stash_val = 0};
 
-struct ColorTrack purp_left = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .idx = 0,
-                               .curr_state = 0, .accum = 0, .stash_val = 0};
 
-struct ColorTrack purp_right = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .idx = 0,
-                               .curr_state = 0, .accum = 0, .stash_val = 0};
-
-void detect_poi(uint32_t * vals)
+void execute_policy()
 {
-    int i;
-    purp_left.accum = 0;
-    purp_left.stash_val = 0;
+    uint8_t flags = get_flags();
+    uint8_t policy = get_policy();
+    uint8_t prev_flags =  get_prev_flags();
 
-    purp_right.accum = 0;
-    purp_right.stash_val = 0;
-
-    graphite.accum = 0;
-    graphite.stash_val = 0;
-
-    for (i = 0; i < 4; i++)
+    if (flags == DETECT_0 && prev_flags == NO_DETECT)
     {
-        //trying to binarize it here, if this doesnt work store all values as uint16_t, average over window
-        //checking for #800080
-        if (vals[(i + 2)] < purp_left.high_bound && vals[(i+2)] > purp_left.low_bound && (i % 2))
+        if (policy & 0b01) //mask 1st bit
         {
-            purp_left.accum += 1;
+            //turn right
         }
-        else if (vals[(i + 2)] < purp_right.high_bound && vals[(i+2)] > purp_right.low_bound && !(i % 2))
+        else
         {
-            purp_right.accum += 1;
-        }
-
-        //checking for #333333
-        //checks through RHS sensors
-        if (vals[i+2] < graphite.high_bound && vals[i+2] > graphite.low_bound && !(i % 2))
-        {
-            graphite.accum +=1;
+            //turn left
+            WriteUART0("AEJFBIFBIU\r\n");
+            GPIO_toggleDio(BLED0);
         }
     }
-
-    if (graphite.accum >= 1) //<- changing this might be huuge
+    else if (flags == DETECT_1 && prev_flags == DETECT_0)
     {
-        graphite.stash_val = 1;
-    }
-    else {
-        graphite.stash_val = 0;
-    }
-
-    if (purp_left.accum >= 2)
-    {
-        purp_left.stash_val = 1;
-    }
-    else {
-        purp_left.stash_val = 0;
+        if (policy & 0b10) //mask 2nd bit
+        {
+            //turn right
+            GPIO_toggleDio(BLED2);
+            WriteUART0("BDIUBIFDB\r\n");
+        }
+        else
+        {
+            //turn left
+        }
     }
 
-    if (purp_right.accum >= 2)
-    {
-        purp_right.stash_val = 1;
-    }
-    else {
-        purp_right.stash_val = 0;
-    }
-
-
-    graphite.prev_vals[graphite.idx] = graphite.stash_val;
-    purp_left.prev_vals[purp_left.idx] = purp_left.stash_val;
-    purp_right.prev_vals[purp_right.idx] = purp_right.stash_val;
-
-    graphite.prev_vals_ave = 0;
-    purp_left.prev_vals_ave = 0;
-    purp_right.prev_vals_ave = 0;
-    for (i = 0; i < NUM_PREV_VALS; i++)
-    {
-        graphite.prev_vals_ave += graphite.prev_vals[i];
-
-        purp_left.prev_vals_ave += purp_left.prev_vals[i];
-        purp_right.prev_vals_ave += purp_right.prev_vals[i];
-    }
-
-//    sprintf(buffer, "ave: %u\r\n", purp.prev_vals_ave);
-//    WriteUART0(buffer);
-
-    if (graphite.prev_vals_ave > 5 && graphite.curr_state == 0)
-    {
-        GPIO_toggleDio(BLED0);
-        graphite.curr_state = 1;
-    }
-    else
-    {
-        graphite.curr_state = 0;
-    }
-
-    if (purp_left.prev_vals_ave > 4 && state_track.xc_flags == 0b00)
-    {
-        state_track.xc_flags = 0b01;
-    }
-    else if (purp_right.prev_vals_ave > 4 && state_track.xc_flags == 0b01)
-    {
-        state_track.xc_flags = 0b10;
-    }
-
-    purp_left.idx = (purp_left.idx + 1) % NUM_PREV_VALS;
-    purp_right.idx = (purp_right.idx + 1) % NUM_PREV_VALS;
-    graphite.idx = (graphite.idx + 1) % NUM_PREV_VALS;
-
-    return;
+//    set_prev_flags(flags);
 }
+
+
+
