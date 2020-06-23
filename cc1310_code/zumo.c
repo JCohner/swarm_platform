@@ -156,6 +156,9 @@ void execute_policy()
 
     if (flags == DETECT_0 && prev_flags == NO_DETECT)
     {
+
+        init_openloop();
+
         if (policy & 0b01) //mask 1st bit
         {
             //turn right
@@ -169,6 +172,7 @@ void execute_policy()
     }
     else if (flags == DETECT_1 && prev_flags == DETECT_0)
     {
+        init_openloop();
         if (policy & 0b10) //mask 2nd bit
         {
             //turn right
