@@ -13,10 +13,13 @@
 #include "uart.h"
 #include "helpful.h"
 #include "pwm.h"
+#include "state_track.h"
 
 void setMotor(int motor, int dir, int value);
 void init_openloop(void);
 void end_openloop(void);
 void set_total_count(uint32_t tot_count);
-void openloop_turn(uint8_t flag, uint8_t policy);
+void set_offset(uint32_t offset);
+void openloop_turn();
+void execute_policy(void);
 #endif /* ZUMO_MOVES_H_ */

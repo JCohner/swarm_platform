@@ -11,6 +11,7 @@
 static uint32_t total_count = 0;
 static uint32_t counter = 0;
 static uint8_t state = 0;
+static uint16_t timer_offset = 0;
 
 void setMotor(int motor, int dir, int value)
 {
@@ -38,7 +39,6 @@ void setMotor(int motor, int dir, int value)
 
     GPIO_writeDio(DIR_pin, dir);
     PWMSet(PWM_pin, set_val);
-
 }
 
 
@@ -47,6 +47,7 @@ void init_openloop(void)
 {
     state = 1;
     counter = 0;
+    set_actuation_flag(1);
 }
 
 void end_openloop(void)
@@ -59,31 +60,87 @@ void set_total_count(uint32_t tot_count)
     total_count = tot_count;
 }
 
+
+void set_offset(uint32_t offset)
+{
+    timer_offset = offset;
+}
+
 char buffer[50];
 
-void openloop_turn(uint8_t flag, uint8_t policy)
+//0 - CCW (left)
+//1 - CW (right)s
+void rotate(int dir)
 {
+    //ensures all non zero inputs normalized to 1
+    if (dir)
+    {
+        dir = dir/dir;
+    }
+
+    setMotor(M1, dir, MOTOR_ON);
+    setMotor(M2, !dir, MOTOR_ON);
+}
+
+
+void openloop_turn()
+{
+    uint8_t flag = get_flags();
+    uint8_t policy= get_policy();
+    uint8_t ret_policy = get_return_policy();
+
     uint8_t dir;
-    dir = flag & policy;
+    if (!get_return_flag())
+    {
+        dir = flag & policy;
+    }
+    else
+    {
+        dir = flag & ret_policy;
+    }
+
     sprintf(buffer, "state: %u\r\n", state);
     WriteUART0(buffer);
     sprintf(buffer, "count: %u\r\n", counter);
     WriteUART0(buffer);
-    if (state && counter < total_count)
+    if (state && counter < total_count + timer_offset)
     {
-        setMotor(M1, dir, MOTOR_ON);
-        setMotor(M2, !dir, MOTOR_ON);
+        if (counter > timer_offset)
+        {
+            rotate(dir);
+        }
         counter++;
     }
-    else if (counter >= total_count && state)
+    else if (counter >= total_count + timer_offset && state)
     {
         end_openloop();
         GPIO_toggleDio(BLED0);
         setMotor(M1, dir, MOTOR_OFF);
         setMotor(M2, !dir, MOTOR_OFF);
+
+        set_actuation_flag(0);
         state = 0;
     }
 
     return;
 }
+
+void execute_policy()
+{
+    uint8_t flags = get_flags();
+    uint8_t policy = get_policy();
+    uint8_t prev_flags =  get_prev_flags();
+
+    if (flags == DETECT_0 && (prev_flags == NO_DETECT || prev_flags == DETECT_1) && !get_actuation_flag())
+    {
+        init_openloop();
+        GPIO_toggleDio(BLED0);
+    }
+    else if (flags == DETECT_1 && prev_flags == DETECT_0 && !get_actuation_flag())
+    {
+        init_openloop();
+        GPIO_toggleDio(BLED2);
+    }
+}
+
 
