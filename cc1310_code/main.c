@@ -76,12 +76,13 @@ int main(void)
       int counter = 0;
 
 //      uint32_t since_last=0;
-      set_policy(0b10);
+      set_policy(0b00);
 //      test_leds();
+//
 //      while(1);
 //      init_openloop();
-      set_total_count(100); //probably do half of this for 45 deg
-
+      set_total_count(10); //probably do half of this for 45 degree
+      set_offset(10);
       while(1)
       {
 
@@ -109,7 +110,7 @@ int main(void)
           sprintf(buffer, "flag val: %u\r\n", get_flags());
           WriteUART0(buffer);
           execute_policy();
-          openloop_turn(get_flags(),get_policy());
+          openloop_turn();
 
 //          delay(.05); //WILL MESS UP COLOR DETECT THRESHOLDING
 //          WriteUART0("hi you \r\n");
