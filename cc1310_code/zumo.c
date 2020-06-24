@@ -137,55 +137,7 @@ void drive_line(float val, uint32_t * vals)
 
     }
 
-
-    ////////
-    //CHECK FOR MESSAGES
-    ///////
-//    detect_poi(vals);
-
     return;
-}
-
-
-
-void execute_policy()
-{
-    uint8_t flags = get_flags();
-    uint8_t policy = get_policy();
-    uint8_t prev_flags =  get_prev_flags();
-
-    if (flags == DETECT_0 && prev_flags == NO_DETECT)
-    {
-
-        init_openloop();
-
-        if (policy & 0b01) //mask 1st bit
-        {
-            //turn right
-        }
-        else
-        {
-            //turn left
-            WriteUART0("AEJFBIFBIU\r\n");
-            GPIO_toggleDio(BLED0);
-        }
-    }
-    else if (flags == DETECT_1 && prev_flags == DETECT_0)
-    {
-        init_openloop();
-        if (policy & 0b10) //mask 2nd bit
-        {
-            //turn right
-            GPIO_toggleDio(BLED2);
-            WriteUART0("BDIUBIFDB\r\n");
-        }
-        else
-        {
-            //turn left
-        }
-    }
-
-//    set_prev_flags(flags);
 }
 
 

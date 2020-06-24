@@ -34,7 +34,7 @@
 //WILL HAVE TO ENABLE THIS BEFORE USE in gpio.c
 #define LED_Sense IOID_18 //connected to pin 2 on zum (with jumper on IR breakout set there) //
 
-#define MOTOR_ON 256
+#define MOTOR_ON 200//256
 #define MOTOR_OFF 0
 #define MOTOR_TURN 64//64
 
@@ -42,5 +42,5 @@ float read_line(uint32_t * vals);
 void drive_line(float val, uint32_t * vals);
 void calibrate_line(int num_samps);
 
-void execute_policy(void);
+
 #endif /* ZUMO_H_ */
