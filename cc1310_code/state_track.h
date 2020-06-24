@@ -48,6 +48,7 @@ uint8_t get_actuation_flag();
 
 void set_return_flag(uint8_t flag);
 uint8_t get_return_flag();
+void toggle_return_flag();
 
 //void update_state(struct ColorTrack *left, struct ColorTrack *right);
 

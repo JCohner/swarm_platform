@@ -84,7 +84,10 @@ uint8_t get_return_flag()
     return state_track.return_flag;
 }
 
-
+void toggle_return_flag()
+{
+    state_track.return_flag = !state_track.return_flag;
+}
 
 
 
