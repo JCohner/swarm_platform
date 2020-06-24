@@ -23,22 +23,22 @@ struct StateTrack{
     uint8_t target : 1;
 
     //intersection management bits
-    uint8_t flags : 2;
-    uint8_t prev_flags : 2;
+    uint8_t xc_state : 2;
+    uint8_t prev_xc_state : 2;
     uint8_t actuation_flag : 1;
     uint8_t return_flag : 1;
-//    uint8_t first_send : 1;
+    uint8_t detect_flag : 1;
 };
 
 void set_policy(uint8_t policy);
 uint8_t get_policy();
 uint8_t get_return_policy();
 
-void set_flags(uint8_t flags);
-uint8_t get_flags();
+void set_xc_state(uint8_t state);
+uint8_t get_xc_state();
 
-void set_prev_flags(uint8_t flags);
-uint8_t get_prev_flags();
+void set_prev_xc_state(uint8_t flags);
+uint8_t get_prev_xc_state();
 
 void set_target(uint8_t target);
 uint8_t get_target();
@@ -50,6 +50,10 @@ void set_return_flag(uint8_t flag);
 uint8_t get_return_flag();
 void toggle_return_flag();
 
-//void update_state(struct ColorTrack *left, struct ColorTrack *right);
+void set_detect_flag(uint8_t flag);
+uint8_t get_detect_flag();
+
+
+
 
 #endif /* STATE_TRACK_H_ */

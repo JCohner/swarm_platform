@@ -22,19 +22,24 @@
 struct ColorTrack {
     char curr_state;
     char prev_state;
-    uint8_t accum;
-    uint8_t stash_val;
-    uint16_t prev_vals[NUM_PREV_VALS];
-    uint8_t prev_vals_ave;
+
+    uint8_t left_accum;
+    uint8_t right_accum;
+    uint8_t left_stash_val;
+    uint8_t right_stash_val;
+    uint16_t left_prev_vals[NUM_PREV_VALS];
+    uint16_t right_prev_vals[NUM_PREV_VALS];
+    uint8_t left_prev_vals_ave;
+    uint8_t right_prev_vals_ave;
+
     uint8_t idx;
 
     uint8_t detect_thresh;
 
     uint16_t high_bound;
     uint16_t low_bound;
-
 };
-void check_state();
+void check_detect();
 void detect_poi(uint32_t * vals);
 struct ColorTrack * get_color(uint8_t color);
 void reinit_stash_and_accum();

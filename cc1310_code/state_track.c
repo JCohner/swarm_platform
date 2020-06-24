@@ -35,24 +35,24 @@ uint8_t get_return_policy()
     return state_track.return_policy;
 }
 
-void set_flags(uint8_t flags)
+void set_xc_state(uint8_t state)
 {
-    state_track.flags = flags & 0x03;
+    state_track.xc_state = state & 0x03;
 }
 
-uint8_t get_flags()
+uint8_t get_xc_state()
 {
-    return state_track.flags;
+    return state_track.xc_state;
 }
 
-void set_prev_flags(uint8_t flags)
+void set_prev_xc_state(uint8_t state)
 {
-    state_track.prev_flags = flags & 0x03;
+    state_track.prev_xc_state = state & 0x03;
 }
 
-uint8_t get_prev_flags()
+uint8_t get_prev_xc_state()
 {
-    return state_track.prev_flags;
+    return state_track.prev_xc_state;
 }
 
 void set_target(uint8_t target)
@@ -89,8 +89,15 @@ void toggle_return_flag()
     state_track.return_flag = !state_track.return_flag;
 }
 
+void set_detect_flag(uint8_t flag)
+{
+    state_track.detect_flag = flag;
+}
 
-
+uint8_t get_detect_flag()
+{
+    return state_track.detect_flag;
+}
 
 
 

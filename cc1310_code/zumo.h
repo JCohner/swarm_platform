@@ -34,9 +34,10 @@
 //WILL HAVE TO ENABLE THIS BEFORE USE in gpio.c
 #define LED_Sense IOID_18 //connected to pin 2 on zum (with jumper on IR breakout set there) //
 
-#define MOTOR_ON 200//256
+#define MOTOR_ON 180//256//seems like we need to limit based on bat
+#define MOTOR_TURN 256
 #define MOTOR_OFF 0
-#define MOTOR_TURN 64//64
+//#define MOTOR_TURN 64//64
 
 float read_line(uint32_t * vals);
 void drive_line(float val, uint32_t * vals);

@@ -120,13 +120,13 @@ void drive_line(float val, uint32_t * vals)
 
     if (fabs(error) == 1.5 || error == 0) {
         if (error < 0){
-            setMotor(M1, 1, MOTOR_ON);
-            setMotor(M2, 0, MOTOR_ON);
+            setMotor(M1, 1, MOTOR_TURN);
+            setMotor(M2, 0, MOTOR_TURN);
 //            WriteUART0("turning clockwise");
         }
         else if (error > 0){
-            setMotor(M1, 0, MOTOR_ON);
-            setMotor(M2, 1, MOTOR_ON);
+            setMotor(M1, 0, MOTOR_TURN);
+            setMotor(M2, 1, MOTOR_TURN);
 //            WriteUART0("turning CCW");
         }
         else if (vals[0] == vals[2] && vals[1] == vals[3])

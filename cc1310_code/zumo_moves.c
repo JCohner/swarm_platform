@@ -78,30 +78,30 @@ void rotate(int dir)
         dir = dir/dir;
     }
 
-    setMotor(M1, dir, MOTOR_ON);
-    setMotor(M2, !dir, MOTOR_ON);
+    setMotor(M1, dir, MOTOR_TURN);
+    setMotor(M2, !dir, MOTOR_TURN);
 }
 
 
 void openloop_turn()
 {
-    uint8_t flag = get_flags();
+    uint8_t xc_state = get_xc_state();
     uint8_t policy= get_policy();
     uint8_t ret_policy = get_return_policy();
 
     uint8_t dir;
     if (!get_return_flag())
     {
-        dir = flag & policy;
+        dir = xc_state & policy;
     }
     else
     {
-        dir = flag & ret_policy;
+        dir = xc_state & ret_policy;
     }
 
-    sprintf(buffer, "state: %u\r\n", state);
+    sprintf(buffer, "return flag: %u\r\n", get_return_flag());
     WriteUART0(buffer);
-    sprintf(buffer, "count: %u\r\n", counter);
+    sprintf(buffer, "dir effort %u\r\n", dir);
     WriteUART0(buffer);
     if (state && counter < total_count + timer_offset)
     {
@@ -114,7 +114,7 @@ void openloop_turn()
     else if (counter >= total_count + timer_offset && state)
     {
         end_openloop();
-        GPIO_toggleDio(BLED0);
+//        GPIO_toggleDio(BLED0);
         setMotor(M1, dir, MOTOR_OFF);
         setMotor(M2, !dir, MOTOR_OFF);
 
@@ -127,16 +127,17 @@ void openloop_turn()
 
 void execute_policy()
 {
-    uint8_t flags = get_flags();
+    uint8_t xc_state = get_xc_state();
     uint8_t policy = get_policy();
-    uint8_t prev_flags =  get_prev_flags();
+    uint8_t prev_xc_state=  get_prev_xc_state();
 
-    if (flags == DETECT_0 && (prev_flags == NO_DETECT || prev_flags == DETECT_1) && !get_actuation_flag())
+    if (xc_state == DETECT_0 && (prev_xc_state == NO_DETECT || prev_xc_state == DETECT_1)
+            && !get_actuation_flag())
     {
         init_openloop();
         GPIO_toggleDio(BLED0);
     }
-    else if (flags == DETECT_1 && prev_flags == DETECT_0 && !get_actuation_flag())
+    else if (xc_state == DETECT_1 && prev_xc_state == DETECT_0 && !get_actuation_flag())
     {
         init_openloop();
         GPIO_toggleDio(BLED2);

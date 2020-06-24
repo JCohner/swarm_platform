@@ -76,9 +76,15 @@ int main(void)
       int counter = 0;
 
 //      uint32_t since_last=0;
-      set_policy(0b00);
-//      test_leds();
+      set_policy(0b10);
+      set_return_flag(1); //starting from return position
+
 //
+//      sprintf(buffer, "pol: %u, return pol: %u\r\n", get_policy(), get_return_policy());
+//      WriteUART0(buffer);
+////
+////      test_leds();
+////
 //      while(1);
 //      init_openloop();
       set_total_count(10); //probably do half of this for 45 degree
@@ -107,7 +113,8 @@ int main(void)
           WriteUART0(buffer);
           drive_line(IR_val, adc_vals);
           detect_poi(adc_vals);
-          sprintf(buffer, "flag val: %u\r\n", get_flags());
+          check_detect();
+          sprintf(buffer, "flag val: %u\r\n", get_xc_state());
           WriteUART0(buffer);
           execute_policy();
           openloop_turn();
