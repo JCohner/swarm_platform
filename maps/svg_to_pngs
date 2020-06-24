@@ -7,9 +7,9 @@ do
 	do
 		var=$(($i+$j)) 
 		echo ${i}_${j}
-		inkscape --export-filename=${i}_${j}_arena_4.png \
+		inkscape --export-filename=${i}_${j}_$1.png \
 				 --export-area=$((i*WIDTH)):$((j*HEIGHT)):$(((i+1)*WIDTH)):$(((j+1)*HEIGHT)) \
-				 arena_4.svg
+				 $1
 	done
 
 done
