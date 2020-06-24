@@ -31,6 +31,11 @@ uint32_t ticsToMicrosec(uint32_t tics)
     return (tics / 48.0);
 }
 
+//uint32_t microsecToTic(float usec)
+//{
+//
+//}
+
 
 void EnableTimer()
 {
@@ -72,3 +77,15 @@ void print_array(uint16_t * array, uint8_t num_els)
     }
     WriteUART0("\r\n");
 }
+
+void test_leds(){
+  while(1)
+  {
+      GPIO_toggleDio(BLED0);
+      GPIO_toggleDio(BLED1);
+      GPIO_toggleDio(BLED2);
+      GPIO_toggleDio(BLED3);
+      delay(.1);
+  }
+}
+
