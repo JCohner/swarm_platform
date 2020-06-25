@@ -39,7 +39,7 @@ struct ColorTrack {
     uint16_t high_bound;
     uint16_t low_bound;
 };
-void check_detect();
+
 void detect_poi(uint32_t * vals);
 struct ColorTrack * get_color(uint8_t color);
 void reinit_stash_and_accum();

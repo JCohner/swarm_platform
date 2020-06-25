@@ -17,6 +17,7 @@ static struct ColorTrack purp = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH,
 //static struct ColorTrack purp_right = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .idx = 0,
 //                                       .curr_state = 0, .accum = 0, .stash_val = 0, .detect_thresh = 5};
 
+char buffer[50];
 void detect_poi(uint32_t * vals)
 {
     reinit_stash_and_accum();
@@ -42,53 +43,23 @@ void detect_poi(uint32_t * vals)
         purp.right_prev_vals_ave += purp.right_prev_vals[i];
     }
 
-//    sprintf(buffer, "ave: %u\r\n", purp.prev_vals_ave);
-//    WriteUART0(buffer);
-
-//    if (graphite.prev_vals_ave > 5 && graphite.curr_state == 0)
-//    {
-//        GPIO_toggleDio(BLED0);
-//        graphite.curr_state = 1;
-//    }
-//    else
-//    {
-//        graphite.curr_state = 0;
-//    }
-
-
-//    check_state();
-
     purp.idx = (purp.idx + 1) % NUM_PREV_VALS;
-//    purp_right.idx = (purp_right.idx + 1) % NUM_PREV_VALS;
-//    graphite.idx = (graphite.idx + 1) % NUM_PREV_VALS;
+    //    graphite.idx = (graphite.idx + 1) % NUM_PREV_VALS;
 
-    return;
-}
-
-char buffer[50];
-/// \brief updates state of state flagss
-void check_detect()
-{
     sprintf(buffer, "prev vals ave: %u, %u\r\n", purp.left_prev_vals_ave, purp.right_prev_vals_ave);
     WriteUART0(buffer);
-    uint8_t prev_xc_state= get_xc_state();
-    uint8_t actuation_flag = get_actuation_flag();
-
-    //if we are currently actuating, do not overwite prev flag and do not set a new flag
-    if (!actuation_flag){
-        set_prev_xc_state(prev_xc_state);
-    }
-    else
-    {
-        return;
-    }
 
     if (purp.left_prev_vals_ave >= purp.detect_thresh ||
             purp.right_prev_vals_ave >= purp.detect_thresh)
     {
-        ;
+        set_detect_flag(1);
+    }
+    else
+    {
+        set_detect_flag(0);
     }
 
+    return;
 }
 
 void reinit_stash_and_accum()
