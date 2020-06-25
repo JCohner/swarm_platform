@@ -82,6 +82,11 @@ void rotate(int dir)
     setMotor(M2, !dir, MOTOR_TURN);
 }
 
+/*!
+ *  \brief Called once per main loop, if state is active will take over controlling
+ *      motors and open loop turn the robot. Uses state as a mask to get policy bit OR
+ *      return_policy bit relevant to current intersection
+ */
 
 void openloop_turn()
 {
@@ -113,35 +118,36 @@ void openloop_turn()
     }
     else if (counter >= total_count + timer_offset && state)
     {
-        end_openloop();
+
 //        GPIO_toggleDio(BLED0);
         setMotor(M1, dir, MOTOR_OFF);
         setMotor(M2, !dir, MOTOR_OFF);
-
+        end_openloop();
         set_actuation_flag(0);
-        state = 0;
     }
 
     return;
 }
 
+/*!
+ *  \brief calls flag getters from StateTrack, calls open loop controller to turn
+ *      if state change detected
+ *
+ */
 void execute_policy()
 {
     uint8_t xc_state = get_xc_state();
-    uint8_t policy = get_policy();
     uint8_t prev_xc_state=  get_prev_xc_state();
 
-    if (xc_state == DETECT_0 && (prev_xc_state == NO_DETECT || prev_xc_state == DETECT_1)
-            && !get_actuation_flag())
+    uint8_t ret_flag = get_return_flag();
+    uint8_t prev_ret_flag = get_prev_return_flag();
+
+    if (xc_state != prev_xc_state || ret_flag != prev_ret_flag)
     {
         init_openloop();
-        GPIO_toggleDio(BLED0);
     }
-    else if (xc_state == DETECT_1 && prev_xc_state == DETECT_0 && !get_actuation_flag())
-    {
-        init_openloop();
-        GPIO_toggleDio(BLED2);
-    }
+
+    return;
 }
 
 
