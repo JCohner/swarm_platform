@@ -27,6 +27,7 @@ struct StateTrack{
     uint8_t prev_xc_state : 2;
     uint8_t actuation_flag : 1;
     uint8_t return_flag : 1;
+    uint8_t prev_return_flag : 1;
     uint8_t detect_flag : 1;
 };
 
@@ -36,6 +37,7 @@ uint8_t get_return_policy();
 
 void set_xc_state(uint8_t state);
 uint8_t get_xc_state();
+void inc_xc_state();
 
 void set_prev_xc_state(uint8_t flags);
 uint8_t get_prev_xc_state();
@@ -48,12 +50,15 @@ uint8_t get_actuation_flag();
 
 void set_return_flag(uint8_t flag);
 uint8_t get_return_flag();
+uint8_t get_prev_return_flag();
 void toggle_return_flag();
+
+
 
 void set_detect_flag(uint8_t flag);
 uint8_t get_detect_flag();
 
-
+void evaluate_state();
 
 
 #endif /* STATE_TRACK_H_ */

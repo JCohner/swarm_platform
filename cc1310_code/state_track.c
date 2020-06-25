@@ -7,7 +7,36 @@
 
 #include "state_track.h"
 
-static struct StateTrack state_track;
+static struct StateTrack state_track = {.xc_state = 0b01, .return_flag = 0b1};
+
+/*!
+ *  \brief examines flags, determines if state transition is needed
+ *
+ *  If the actuation flag is high the state will not be evaluated
+ *  If not actuating, will set the current xc_state to the previous
+ *  If the detect flag is high a new poi has been detected, will increment the
+ *      xc_state variable that tracks which intersection the robot believes it is at
+ *
+ */
+
+void evaluate_state()
+{
+    //if we are currently actuating, do not overwite prev flag and do not set a new flag
+    if (!state_track.actuation_flag){
+        set_prev_xc_state(state_track.xc_state);
+    }
+    else
+    {
+        return;
+    }
+
+    if(state_track.detect_flag)
+    {
+        inc_xc_state();
+    }
+
+
+}
 
 void set_policy(uint8_t policy)
 {
@@ -34,6 +63,17 @@ uint8_t get_return_policy()
 {
     return state_track.return_policy;
 }
+
+
+void inc_xc_state()
+{
+    state_track.xc_state = ~state_track.xc_state;
+    if (state_track.xc_state == 0b01)
+    {
+        toggle_return_flag();
+    }
+}
+
 
 void set_xc_state(uint8_t state)
 {
@@ -84,8 +124,14 @@ uint8_t get_return_flag()
     return state_track.return_flag;
 }
 
+uint8_t get_prev_return_flag()
+{
+    return state_track.prev_return_flag;
+}
+
 void toggle_return_flag()
 {
+    state_track.prev_return_flag = state_track.return_flag;
     state_track.return_flag = !state_track.return_flag;
 }
 
