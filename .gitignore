@@ -14,3 +14,9 @@ driverlib_cc13xx_cc26xx
 /kbot_sim/bin
 /kbot_sim/simulation.log
 maps/*.png
+
+maps/tests
+maps/swatches
+maps/open_loop_tests
+maps/arena/arena_[3,4,5].svg
+maps/arena/arena_old
