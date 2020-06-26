@@ -1,0 +1,9 @@
+for ((i = 0; i < 3; i++))
+do 
+	for ((j = 0; j < 3; j++))
+	do
+		echo ${i}_${j}
+		lp ${i}_${j}_arena_6.png
+	done
+
+done
