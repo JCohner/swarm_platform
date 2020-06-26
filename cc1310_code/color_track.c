@@ -12,7 +12,7 @@
 //static struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .idx = 0,
 //                                     .curr_state = 0, .accum = 0, .stash_val = 0, .detect_thresh = 7};
 
-static struct ColorTrack purp = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .detect_thresh = 5};
+static struct ColorTrack purp = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .detect_thresh = 7};
 
 //static struct ColorTrack purp_right = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .idx = 0,
 //                                       .curr_state = 0, .accum = 0, .stash_val = 0, .detect_thresh = 5};
@@ -49,10 +49,11 @@ void detect_poi(uint32_t * vals)
     sprintf(buffer, "prev vals ave: %u, %u\r\n", purp.left_prev_vals_ave, purp.right_prev_vals_ave);
     WriteUART0(buffer);
 
-    if (purp.left_prev_vals_ave >= purp.detect_thresh ||
-            purp.right_prev_vals_ave >= purp.detect_thresh)
+    if ((purp.left_prev_vals_ave >= purp.detect_thresh ||
+            purp.right_prev_vals_ave >= purp.detect_thresh) && !get_detect_flag())
     {
         set_detect_flag(1);
+        GPIO_toggleDio(BLED0);
     }
     else
     {
