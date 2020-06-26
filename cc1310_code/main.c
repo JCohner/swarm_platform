@@ -76,19 +76,33 @@ int main(void)
       int counter = 0;
 
 //      uint32_t since_last=0;
-      set_policy(0b10);
-      set_return_flag(1); //starting from return position
-
+//      set_policy(0b10);
+//      set_return_flag(1); //starting from return position
 //
 //      sprintf(buffer, "pol: %u, return pol: %u\r\n", get_policy(), get_return_policy());
 //      WriteUART0(buffer);
 ////
-////      test_leds();
+//      test_leds();
 ////
 //      while(1);
 //      init_openloop();
-      set_total_count(10); //probably do half of this for 45 degree
-      set_offset(10);
+      set_total_count(8); //probably do half of this for 45 degree
+      set_offset(22);
+//      init_openloop();
+//
+//      while(1)
+//      {
+//          openloop_turn();
+//      }
+
+
+      set_policy(0b10);
+
+//
+//      sprintf(buffer, "pol: %u, ret pol: %u\r\n", get_policy(), get_return_policy());
+//      WriteUART0(buffer);
+//
+//      while(1);
       while(1)
       {
 
@@ -104,18 +118,16 @@ int main(void)
           ReadIR(adc_vals);
 
           //ODD IS LEFT
-          sprintf(buffer,"adc: %u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
-                                                                            adc_vals[0], adc_vals[2], adc_vals[4]);
-          WriteUART0(buffer);
+//          sprintf(buffer,"adc: %u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
+//                            adc_vals[0], adc_vals[2], adc_vals[4]);
+//          WriteUART0(buffer);
 
           float IR_val = read_line(adc_vals);
-          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
-          WriteUART0(buffer);
+//          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
+//          WriteUART0(buffer);
           drive_line(IR_val, adc_vals);
           detect_poi(adc_vals);
-          check_detect();
-          sprintf(buffer, "flag val: %u\r\n", get_xc_state());
-          WriteUART0(buffer);
+          evaluate_state();
           execute_policy();
           openloop_turn();
 

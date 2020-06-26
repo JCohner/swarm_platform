@@ -7,7 +7,13 @@
 
 #include "state_track.h"
 
-static struct StateTrack state_track = {.xc_state = 0b01, .return_flag = 0b1};
+#include "uart.h"
+#include <stdio.h>
+
+static struct StateTrack state_track =
+                                {.xc_state = 0b10, .prev_xc_state=0b10,
+                                 .return_flag = 0b0, .prev_return_flag = 0b0,
+                                 .actuation_flag = 0};
 
 /*!
  *  \brief examines flags, determines if state transition is needed
@@ -18,21 +24,26 @@ static struct StateTrack state_track = {.xc_state = 0b01, .return_flag = 0b1};
  *      xc_state variable that tracks which intersection the robot believes it is at
  *
  */
-
+static char buffer[50];
 void evaluate_state()
 {
     //if we are currently actuating, do not overwite prev flag and do not set a new flag
+    sprintf(buffer, "xc state: %u\r\nactuation flag: %u\r\n",
+            state_track.xc_state, state_track.actuation_flag);
+    WriteUART0(buffer);
+
     if (!state_track.actuation_flag){
         set_prev_xc_state(state_track.xc_state);
     }
     else
     {
-        return;
+        set_detect_flag(0);
     }
 
     if(state_track.detect_flag)
     {
         inc_xc_state();
+//        GPIO_toggleDio(BLED2);
     }
 
 
@@ -64,13 +75,15 @@ uint8_t get_return_policy()
     return state_track.return_policy;
 }
 
-
 void inc_xc_state()
 {
-    state_track.xc_state = ~state_track.xc_state;
+    state_track.xc_state = (state_track.xc_state ^ 0b11) &0x03;
+
+    GPIO_toggleDio(BLED2);
     if (state_track.xc_state == 0b01)
     {
         toggle_return_flag();
+//        GPIO_toggleDio(BLED2);
     }
 }
 
@@ -133,6 +146,11 @@ void toggle_return_flag()
 {
     state_track.prev_return_flag = state_track.return_flag;
     state_track.return_flag = !state_track.return_flag;
+}
+
+void update_prev_return_flag()
+{
+    state_track.prev_return_flag = state_track.return_flag;
 }
 
 void set_detect_flag(uint8_t flag)

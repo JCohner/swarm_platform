@@ -52,6 +52,7 @@ void init_openloop(void)
 
 void end_openloop(void)
 {
+    GPIO_toggleDio(BLED0);
     state = 0;
 }
 
@@ -90,6 +91,11 @@ void rotate(int dir)
 
 void openloop_turn()
 {
+
+//    sprintf(buffer, "tot count: %u, offset: %u\r\n", total_count, timer_offset);
+//    WriteUART0(buffer);
+//    while(1);
+
     uint8_t xc_state = get_xc_state();
     uint8_t policy= get_policy();
     uint8_t ret_policy = get_return_policy();
@@ -104,17 +110,16 @@ void openloop_turn()
         dir = xc_state & ret_policy;
     }
 
-    sprintf(buffer, "return flag: %u\r\n", get_return_flag());
-    WriteUART0(buffer);
-    sprintf(buffer, "dir effort %u\r\n", dir);
-    WriteUART0(buffer);
-    if (state && counter < total_count + timer_offset)
+    if (state && counter < (total_count + timer_offset))
     {
         if (counter > timer_offset)
         {
+            WriteUART0("ACTUATING\r\n");
             rotate(dir);
         }
         counter++;
+        sprintf(buffer, "counter %u\r\n", counter);
+        WriteUART0(buffer);
     }
     else if (counter >= total_count + timer_offset && state)
     {
@@ -124,6 +129,7 @@ void openloop_turn()
         setMotor(M2, !dir, MOTOR_OFF);
         end_openloop();
         set_actuation_flag(0);
+
     }
 
     return;
@@ -140,12 +146,19 @@ void execute_policy()
     uint8_t prev_xc_state=  get_prev_xc_state();
 
     uint8_t ret_flag = get_return_flag();
-    uint8_t prev_ret_flag = get_prev_return_flag();
+//    uint8_t prev_ret_flag = get_prev_return_flag();
 
-    if (xc_state != prev_xc_state || ret_flag != prev_ret_flag)
+    uint8_t actuation_flag = get_actuation_flag();
+
+    sprintf(buffer, "xc: %u, %u \t ret %u\r\n", xc_state, prev_xc_state, ret_flag);
+    WriteUART0(buffer);
+    if (xc_state != prev_xc_state && !actuation_flag)
     {
+//        GPIO_toggleDio(BLED0);
         init_openloop();
     }
+
+//    update_prev_return_flag();
 
     return;
 }

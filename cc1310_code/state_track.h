@@ -9,7 +9,8 @@
 #define STATE_TRACK_H_
 
 #include <stdint.h>
-
+#include "gpio.h"
+#include "helpful.h"
 #define NO_DETECT 0b00
 #define DETECT_0 0b01 //first intersection marker on left
 #define DETECT_1 0b10 //second intersection marker on right
@@ -25,10 +26,13 @@ struct StateTrack{
     //intersection management bits
     uint8_t xc_state : 2;
     uint8_t prev_xc_state : 2;
-    uint8_t actuation_flag : 1;
-    uint8_t return_flag : 1;
-    uint8_t prev_return_flag : 1;
-    uint8_t detect_flag : 1;
+
+    uint8_t actuation_flag : 1; //raised if: xc_state != prev_xc_state || ret_flag != prev_ret_flag
+                                   // in execute_policy() in zumo_moves
+    uint8_t return_flag : 1; //whether on return path or forward path
+    uint8_t prev_return_flag : 1; //prev state of return such that
+                                    //state transition can be handled
+    uint8_t detect_flag : 1; //if poi detected flag raised
 };
 
 void set_policy(uint8_t policy);
@@ -52,7 +56,7 @@ void set_return_flag(uint8_t flag);
 uint8_t get_return_flag();
 uint8_t get_prev_return_flag();
 void toggle_return_flag();
-
+void update_prev_return_flag();
 
 
 void set_detect_flag(uint8_t flag);

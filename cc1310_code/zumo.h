@@ -20,7 +20,7 @@
 #define M1 1
 #define M2 2
 #define M2_PWM IOID_12//pin 9 on zumo
-#define M2_DIR IOID_19//pin 7 on zumo  //THIS SWITCHES TO IOID_19 for future revisions!!!
+#define M2_DIR IOID_19//pin 7 on zumo
 #define M1_PWM IOID_11//pin 10 on zumo
 #define M1_DIR IOID_20//pin 8 on zumo
 
@@ -34,7 +34,7 @@
 //WILL HAVE TO ENABLE THIS BEFORE USE in gpio.c
 #define LED_Sense IOID_18 //connected to pin 2 on zum (with jumper on IR breakout set there) //
 
-#define MOTOR_ON 180//256//seems like we need to limit based on bat
+#define MOTOR_ON 160//256//seems like we need to limit based on bat
 #define MOTOR_TURN 256
 #define MOTOR_OFF 0
 //#define MOTOR_TURN 64//64
