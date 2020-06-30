@@ -32,7 +32,7 @@ struct StateTrack{
     uint8_t return_flag : 1; //whether on return path or forward path
     uint8_t prev_return_flag : 1; //prev state of return such that
                                     //state transition can be handled
-    uint8_t detect_flag : 1; //if poi detected flag raised
+    uint8_t detect_flag : 2; //if poi detected flag raised
 };
 
 void set_policy(uint8_t policy);
@@ -46,8 +46,8 @@ void inc_xc_state();
 void set_prev_xc_state(uint8_t flags);
 uint8_t get_prev_xc_state();
 
-void set_target(uint8_t target);
-uint8_t get_target();
+void set_target_flag(uint8_t target);
+uint8_t get_target_flag();
 
 void set_actuation_flag(uint8_t flag);
 uint8_t get_actuation_flag();

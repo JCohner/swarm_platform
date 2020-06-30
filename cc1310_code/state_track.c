@@ -37,16 +37,34 @@ void evaluate_state()
     }
     else
     {
+        //was actuating, false alarm
         set_detect_flag(0);
+        return; //could probably remove
     }
 
-    if(state_track.detect_flag)
+
+    uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
+
+    if(state_track.detect_flag == 1 && stator == 0b010)
     {
-        inc_xc_state();
-//        GPIO_toggleDio(BLED2);
+        state_track.return_flag = 0b1;
+        state_track.xc_state = 0b01;
     }
-
-
+    else if (state_track.detect_flag == 2 && stator == 0b101)
+    {
+        state_track.return_flag = 0b1;
+        state_track.xc_state = 0b10;
+    }
+    else if (state_track.detect_flag = 1 && stator == 0b110)
+    {
+        state_track.return_flag = 0b0;
+        state_track.xc_state = 0b01;
+    }
+    else if (state_track.detect_flag = 2 && stator == 0b001)
+    {
+        state_track.return_flag = 0b0;
+        state_track.xc_state = 0b10;
+    }
 }
 
 void set_policy(uint8_t policy)
@@ -108,12 +126,12 @@ uint8_t get_prev_xc_state()
     return state_track.prev_xc_state;
 }
 
-void set_target(uint8_t target)
+void set_target_flag(uint8_t target)
 {
     state_track.target = target & 0x01;
 }
 
-uint8_t get_target()
+uint8_t get_target_flag()
 {
     return state_track.target;
 }
