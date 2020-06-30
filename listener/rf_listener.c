@@ -133,7 +133,7 @@ RF_CmdHandle txCommandHandle;
 RF_EventMask events;
 
 uint32_t curr_count = 0;
-uint8_t resp_flag = 0;
+static uint8_t resp_flag = 0;
 
 
 char trigNo = 0;
@@ -144,12 +144,11 @@ void rf_main()
     if (resp_flag)
     {
         rxCommandHandle =
-            RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRxSniff, RF_PriorityNormal,
-              &listen_callback, (RF_EventCmdDone |
-                      RF_EventLastCmdDone | RF_EventRxEntryDone));
+                RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRx, RF_PriorityNormal,
+                                      &listen_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
         resp_flag = 0;
     }
-    WriteUART0(buffer);
+//    WriteUART0(buffer);
     //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
 
     if (rxCommandHandle < 0)
@@ -164,7 +163,7 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
     WriteUART0(buffer);
     //if we successfully recevied
-    if (e & RF_EventRxEntryDone)
+    if (e & RF_EventRxEntryDone || e & RF_EventCmdDone)
     {
         /* Get current unhandled data entry */
         currentDataEntry = RFQueue_getDataEntry();
@@ -178,7 +177,12 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
         sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
         WriteUART0(buffer);
-        WriteUART0((char *) (packetDataPointer + 2));
+
+        sprintf(buffer, "policy: %u\r\ntarget flag: %u\r\nxc_state: %u\r\nret_state: %u\r\n", *(packetDataPointer + 2),
+                        *(packetDataPointer + 3), *(packetDataPointer + 4), *(packetDataPointer + 5));
+        WriteUART0(buffer);
+
+//        WriteUART0((char *) (packetDataPointer + 2));
 
         resp_flag = 1;
 
