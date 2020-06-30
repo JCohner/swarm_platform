@@ -40,23 +40,16 @@ int main(void)
     //configures rf driver, configures application specific packages, makes initial chirp call
     rf_setup();
 
+
     setMotor(M2, 0, 0);
     setMotor(M1, 0, 0);
 
     //start up neccesarries for ir sensing
     IR_SenseSetup();
-//    char data;
-//    while(1){
-//        //pause until character entered
-//        data = UARTCharGet(UART0_BASE);
-//        ReadIR(adc_vals);
-//        float IR_val = read_line(adc_vals);
-//        drive_line(IR_val, adc_vals);
-//        WriteUART0("collecting...\r\n");
-//        calibrate_line(10); //not sure of utility yet
-//        setMotor(M2, 0, 0);
-//        setMotor(M1, 0, 0);
-//    }
+
+    //    char data;
+    ////pause until character entered
+    //data = UARTCharGet(UART0_BASE);
 
 
 
@@ -74,46 +67,20 @@ int main(void)
 //      while(1);
 
       int counter = 0;
-
-//      uint32_t since_last=0;
-//      set_policy(0b10);
-//      set_return_flag(1); //starting from return position
-//
-//      sprintf(buffer, "pol: %u, return pol: %u\r\n", get_policy(), get_return_policy());
-//      WriteUART0(buffer);
-////
 //      test_leds();
-////
-//      while(1);
-//      init_openloop();
-      set_total_count(8); //probably do half of this for 45 degree
+
+      //sets open loop control characteristics
+      set_total_count(8);
       set_offset(22);
-//      init_openloop();
-//
-//      while(1)
-//      {
-//          openloop_turn();
-//      }
 
-
+      //sets inital policy pursued by robot
       set_policy(0b10);
 
-//
-//      sprintf(buffer, "pol: %u, ret pol: %u\r\n", get_policy(), get_return_policy());
-//      WriteUART0(buffer);
-//
-//      while(1);
       while(1)
       {
 
-//          sprintf(buffer,"%d\r\n", counter);
-//          WriteUART0(buffer);
-
-          //pause until character entered
-//          char data = UARTCharGet(UART0_BASE);
-
 //          read_imu();
-//          rf_main();
+          rf_main();
 
           ReadIR(adc_vals);
 
