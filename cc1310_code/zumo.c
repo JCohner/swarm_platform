@@ -87,7 +87,7 @@ float read_line(uint32_t * vals)
 float error, e, prev_error, d_error;
 float dt = 0.05;
 int policy = 0;
-char do_once = 0;
+//char do_once = 0;
 
 void drive_line(float val, uint32_t * vals)
 {
@@ -109,25 +109,28 @@ void drive_line(float val, uint32_t * vals)
 //    sprintf(buffer, "rhs: %f, lhs: %f\r\n", rhs, lhs);
 //    WriteUART0(buffer);
 
-    if (error < .3 && error > 0)
-    {
-        do_once = 0;
-    }
+//    if (error < .3 && error > 0)
+//    {
+//        do_once = 0;
+//    }
 
 
     setMotor(M2, 0, lhs);
     setMotor(M1, 0, rhs);
 
-    if (fabs(error) == 1.5 || error == 0) {
+    //if we've lost the line
+
+    uint8_t bias = get_bias_override_flag();
+
+    //normal lost line following
+    if (fabs(error) == 1.5 || error == 0 && !bias) {
         if (error < 0){
-            setMotor(M1, 1, MOTOR_TURN);
-            setMotor(M2, 0, MOTOR_TURN);
-//            WriteUART0("turning clockwise");
+            rotate(1);
+            //WriteUART0("turning clockwise");
         }
         else if (error > 0){
-            setMotor(M1, 0, MOTOR_TURN);
-            setMotor(M2, 1, MOTOR_TURN);
-//            WriteUART0("turning CCW");
+            rotate(0);
+            //WriteUART0("turning CCW");
         }
         else if (vals[0] == vals[2] && vals[1] == vals[3])
         {
@@ -136,6 +139,26 @@ void drive_line(float val, uint32_t * vals)
         }
 
     }
+    //biased lost line following
+    else if (fabs(error) == 1.5 || error == 0 && bias)
+    {
+        uint8_t xc_state = get_xc_state();
+        uint8_t policy= get_policy();
+        uint8_t ret_policy = get_return_policy();
+
+        uint8_t dir;
+        if (!get_return_flag())
+        {
+            dir = xc_state & policy;
+        }
+        else
+        {
+            dir = xc_state & ret_policy;
+        }
+
+        rotate(dir);
+    }
+
 
     return;
 }

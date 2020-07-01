@@ -112,6 +112,8 @@ void openloop_turn()
 
     if (state && counter < (total_count + timer_offset))
     {
+        set_bias_override_flag(1);
+
         if (counter > timer_offset)
         {
             WriteUART0("ACTUATING\r\n");
@@ -129,7 +131,8 @@ void openloop_turn()
         setMotor(M2, !dir, MOTOR_OFF);
         end_openloop();
         set_actuation_flag(0);
-
+        state = 0;
+        set_bias_override_flag(0);
     }
 
     return;
@@ -146,15 +149,14 @@ void execute_policy()
     uint8_t prev_xc_state=  get_prev_xc_state();
 
     uint8_t ret_flag = get_return_flag();
-//    uint8_t prev_ret_flag = get_prev_return_flag();
 
     uint8_t actuation_flag = get_actuation_flag();
 
-    sprintf(buffer, "xc: %u, %u \t ret %u\r\n", xc_state, prev_xc_state, ret_flag);
-    WriteUART0(buffer);
+//    sprintf(buffer, "xc: %u, prev: %u \t ret %u\r\n", xc_state, prev_xc_state, ret_flag);
+//    WriteUART0(buffer);
     if (xc_state != prev_xc_state && !actuation_flag)
     {
-//        GPIO_toggleDio(BLED0);
+        GPIO_toggleDio(BLED3);
         init_openloop();
     }
 
