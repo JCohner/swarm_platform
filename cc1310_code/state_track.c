@@ -27,44 +27,46 @@ static struct StateTrack state_track =
 static char buffer[50];
 void evaluate_state()
 {
-    //if we are currently actuating, do not overwite prev flag and do not set a new flag
-    sprintf(buffer, "xc state: %u\r\nactuation flag: %u\r\n",
-            state_track.xc_state, state_track.actuation_flag);
+    uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
+    uint8_t detector = state_track.detect_flag;
+
+    sprintf(buffer, "stator: %u\r\ndetect: %u\r\nact: %u\r\n",
+            stator, detector, state_track.actuation_flag);
     WriteUART0(buffer);
 
-    if (!state_track.actuation_flag){
-        set_prev_xc_state(state_track.xc_state);
-    }
-    else
-    {
-        //was actuating, false alarm
-        set_detect_flag(0);
-        return; //could probably remove
-    }
+    set_prev_xc_state(state_track.xc_state);
 
+//    if (!state_track.actuation_flag && state_track.detect_flag){
+//        set_prev_xc_state(state_track.xc_state);
+//    }
+//    else
+//    {
+//        //was actuating, false alarm
+//        set_detect_flag(0);
+//        return; //could probably remove
+//    }
 
-    uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
-
-    if(state_track.detect_flag == 1 && stator == 0b010)
+    if(detector == 1 && stator == 0b010)
     {
         state_track.return_flag = 0b1;
         state_track.xc_state = 0b01;
     }
-    else if (state_track.detect_flag == 2 && stator == 0b101)
+    if (detector == 2 && stator == 0b101)
     {
         state_track.return_flag = 0b1;
         state_track.xc_state = 0b10;
     }
-    else if (state_track.detect_flag = 1 && stator == 0b110)
+    if (detector == 1 && stator == 0b110)
     {
         state_track.return_flag = 0b0;
         state_track.xc_state = 0b01;
     }
-    else if (state_track.detect_flag = 2 && stator == 0b001)
+    if (detector == 2 && stator == 0b001)
     {
         state_track.return_flag = 0b0;
         state_track.xc_state = 0b10;
     }
+//    GPIO_toggleDio(BLED2);
 }
 
 void set_policy(uint8_t policy)
