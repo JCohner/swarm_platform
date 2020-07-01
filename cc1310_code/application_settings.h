@@ -43,4 +43,5 @@ extern rfc_CMD_NOP_t RF_cmdNop;
 extern rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff;
 extern rfc_CMD_FLUSH_QUEUE_t RF_cmdFlush;
 extern rfc_CMD_TRIGGER_t triggerCmd;
+extern rfc_CMD_SET_TX_POWER_t setTxPowerCmd;
 #endif // APPLICATION_SETTINGS_H

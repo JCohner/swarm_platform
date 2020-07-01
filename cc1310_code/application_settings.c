@@ -175,7 +175,7 @@ rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
  .address1 = 0xBB,
  .endTrigger.triggerType = TRIG_NEVER, //changed from TRIG_NEVER
  .endTrigger.bEnaCmd = 0x1, //enable imediate command to kill this binch
- .endTrigger.triggerNo = 0x1,
+ .endTrigger.triggerNo = 0x2,
  .endTrigger.pastTrig = 0x1,
  .endTime = 0x00000000, //Set RX end time in application
  .pQueue = 0, // INSERT APPLICABLE POINTER: (dataQueue_t*)&xxx
@@ -192,5 +192,13 @@ rfc_CMD_TRIGGER_t triggerCmd =
 {
     .commandNo = CMD_TRIGGER,
     .triggerNo = 2,                   // Chose the same value as for the
-                                      // radio operation command trigger                              // above.
+                                    // radio operation command trigger                              // above.
 };
+
+rfc_CMD_SET_TX_POWER_t setTxPowerCmd =
+{
+    .commandNo = CMD_SET_TX_POWER,
+    .txPower = 0x0001,                   // Chose the same value as for the
+                                    // radio operation command trigger                              // above.
+};
+
