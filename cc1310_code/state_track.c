@@ -183,6 +183,14 @@ uint8_t get_detect_flag()
     return state_track.detect_flag;
 }
 
+void set_bias_override_flag(uint8_t flag)
+{
+    state_track.bias_override_flag = flag;
+}
+uint8_t get_bias_override_flag()
+{
+    return state_track.bias_override_flag;
+}
 
 
 

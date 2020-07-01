@@ -33,6 +33,10 @@ struct StateTrack{
     uint8_t prev_return_flag : 1; //prev state of return such that
                                     //state transition can be handled
     uint8_t detect_flag : 2; //if poi detected flag raised
+
+    uint8_t bias_override_flag : 1; //induces bias in line following to ensure
+                                        //policy is followed
+
 };
 
 void set_policy(uint8_t policy);
@@ -61,6 +65,10 @@ void update_prev_return_flag();
 
 void set_detect_flag(uint8_t flag);
 uint8_t get_detect_flag();
+
+void set_bias_override_flag(uint8_t flag);
+uint8_t get_bias_override_flag();
+
 
 void evaluate_state();
 
