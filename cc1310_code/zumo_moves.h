@@ -22,4 +22,5 @@ void set_total_count(uint32_t tot_count);
 void set_offset(uint32_t offset);
 void openloop_turn();
 void execute_policy(void);
+void rotate(int dir);
 #endif /* ZUMO_MOVES_H_ */
