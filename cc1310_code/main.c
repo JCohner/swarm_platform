@@ -43,7 +43,7 @@ int main(void)
 
     setMotor(M2, 0, 0);
     setMotor(M1, 0, 0);
-
+    delay(1);
     //start up neccesarries for ir sensing
     IR_SenseSetup();
 
@@ -61,17 +61,16 @@ int main(void)
 //      GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 
       //returns frequency of system clock: 48 MHz rn
-      uint32_t freq = SysCtrlClockGet();
-      sprintf(buffer, "freq: %u\r\n", freq);
-      WriteUART0(buffer);
+//      uint32_t freq = SysCtrlClockGet();
+//      sprintf(buffer, "freq: %u\r\n", freq);
+//      WriteUART0(buffer);
 //      while(1);
 
-      int counter = 0;
 //      test_leds();
 
       //sets open loop control characteristics
-      set_total_count(8);
-      set_offset(22);
+      set_on_time(10);
+      set_offset_time(15);
 
       //sets inital policy pursued by robot
       set_policy(0b10);
@@ -88,6 +87,10 @@ int main(void)
 //          sprintf(buffer,"adc: %u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
 //                            adc_vals[0], adc_vals[2], adc_vals[4]);
 //          WriteUART0(buffer);
+          int offset = sprintf(buffer, "stator: %u\r\n", get_return_flag() << 2 | get_xc_state());
+          offset += sprintf(buffer + offset, "prev_stator: %u\r\n", get_prev_return_flag() << 2 | get_prev_xc_state());
+          offset += sprintf(buffer + offset, "act: %u\r\n", get_actuation_flag());
+          WriteRF(buffer);
 
           float IR_val = read_line(adc_vals);
 //          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
@@ -98,9 +101,6 @@ int main(void)
           execute_policy();
           openloop_turn();
 
-//          delay(.05); //WILL MESS UP COLOR DETECT THRESHOLDING
-//          WriteUART0("hi you \r\n");
-          ++counter;
       }
 
 
