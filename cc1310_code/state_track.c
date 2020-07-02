@@ -34,19 +34,19 @@ void evaluate_state()
             stator, detector, state_track.actuation_flag);
     WriteUART0(buffer);
 
-    set_prev_xc_state(state_track.xc_state);
+//    set_prev_xc_state(state_track.xc_state);
 
-//    if (!state_track.actuation_flag && state_track.detect_flag){
-//        set_prev_xc_state(state_track.xc_state);
-//    }
-//    else
-//    {
-//        //was actuating, false alarm
-//        set_detect_flag(0);
-//        return; //could probably remove
-//    }
+    if (!state_track.actuation_flag && state_track.detect_flag){
+        set_prev_xc_state(state_track.xc_state);
+    }
+    else
+    {
+        //was actuating, false alarm
+        set_detect_flag(0);
+        return; //could probably remove
+    }
 
-    if(detector == 1 && stator == 0b010)
+    if(detector == 2 && stator == 0b010)
     {
         state_track.return_flag = 0b1;
         state_track.xc_state = 0b01;
@@ -56,7 +56,7 @@ void evaluate_state()
         state_track.return_flag = 0b1;
         state_track.xc_state = 0b10;
     }
-    if (detector == 1 && stator == 0b110)
+    if (detector == 2 && stator == 0b110)
     {
         state_track.return_flag = 0b0;
         state_track.xc_state = 0b01;
