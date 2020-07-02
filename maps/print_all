@@ -3,7 +3,7 @@ do
 	for ((j = 0; j < 3; j++))
 	do
 		echo ${i}_${j}
-		lp ${i}_${j}_arena_6.png
+		lp ${i}_${j}_arena_$1.png
 	done
 
 done
