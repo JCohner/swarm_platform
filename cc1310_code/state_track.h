@@ -58,9 +58,9 @@ uint8_t get_actuation_flag();
 
 void set_return_flag(uint8_t flag);
 uint8_t get_return_flag();
+void set_prev_return_flag(uint8_t flag);
 uint8_t get_prev_return_flag();
 void toggle_return_flag();
-void update_prev_return_flag();
 
 
 void set_detect_flag(uint8_t flag);

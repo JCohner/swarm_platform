@@ -34,10 +34,8 @@ void evaluate_state()
             stator, detector, state_track.actuation_flag);
     WriteUART0(buffer);
 
-//    set_prev_xc_state(state_track.xc_state);
-
     if (!state_track.actuation_flag && state_track.detect_flag){
-        set_prev_xc_state(state_track.xc_state);
+        ;
     }
     else
     {
@@ -162,15 +160,15 @@ uint8_t get_prev_return_flag()
     return state_track.prev_return_flag;
 }
 
+void set_prev_return_flag(uint8_t flag)
+{
+    state_track.prev_return_flag = flag;
+}
+
 void toggle_return_flag()
 {
     state_track.prev_return_flag = state_track.return_flag;
     state_track.return_flag = !state_track.return_flag;
-}
-
-void update_prev_return_flag()
-{
-    state_track.prev_return_flag = state_track.return_flag;
 }
 
 void set_detect_flag(uint8_t flag)
