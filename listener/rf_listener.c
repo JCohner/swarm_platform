@@ -143,6 +143,7 @@ char buffer[50];
 void rf_main()
 {
     //if response received issue new RxSniff
+//    WriteUART0("sup\r\n");
     if (resp_flag)
     {
         rxCommandHandle =
@@ -177,14 +178,14 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
          * - Data starts from the second byte */
         packetLength      = *(uint8_t *)(&(currentDataEntry->data));
         packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
-//        RFQueue_nextEntry();
+        RFQueue_nextEntry();
 
-//        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
-//        WriteUART0(buffer);
+        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
+        WriteUART0(buffer);
 
 //        sprintf(buffer, "policy: %u\r\ntarget flag: %u\r\nxc_state: %u\r\nret_state: %u\r\n", *(packetDataPointer + 2),
 //                        *(packetDataPointer + 3), *(packetDataPointer + 4), *(packetDataPointer + 5));
-        WriteUART0(buffer);
+//        WriteUART0(buffer);
 //        WriteUART0("me guy: ");
         WriteUART0((char *) (packetDataPointer + 2));
 
