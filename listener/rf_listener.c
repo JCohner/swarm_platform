@@ -23,7 +23,7 @@
 #include <stdlib.h>
 
 /***** Defines *****/
-#define PAYLOAD_LENGTH          30
+#define PAYLOAD_LENGTH          50
 #define PACKET_INTERVAL_US      200000
 /* Number of times the CS command should run when the channel is BUSY */
 #define CS_RETRIES_WHEN_BUSY    100
@@ -125,6 +125,8 @@ void rf_setup()
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdFs, RF_PriorityNormal, NULL, 0);
 
    /*init listen*/
+
+
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRx, RF_PriorityNormal,
                          &listen_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 }
@@ -156,12 +158,14 @@ void rf_main()
         WriteUART0("queue full\r\n");
     }
 
+
+    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
 }
 
 void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {
-    sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
-    WriteUART0(buffer);
+//    sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
+//    WriteUART0(buffer);
     //if we successfully recevied
     if (e & RF_EventRxEntryDone || e & RF_EventCmdDone)
     {
@@ -173,16 +177,16 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
          * - Data starts from the second byte */
         packetLength      = *(uint8_t *)(&(currentDataEntry->data));
         packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
-        RFQueue_nextEntry();
+//        RFQueue_nextEntry();
 
-        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
+//        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
+//        WriteUART0(buffer);
+
+//        sprintf(buffer, "policy: %u\r\ntarget flag: %u\r\nxc_state: %u\r\nret_state: %u\r\n", *(packetDataPointer + 2),
+//                        *(packetDataPointer + 3), *(packetDataPointer + 4), *(packetDataPointer + 5));
         WriteUART0(buffer);
-
-        sprintf(buffer, "policy: %u\r\ntarget flag: %u\r\nxc_state: %u\r\nret_state: %u\r\n", *(packetDataPointer + 2),
-                        *(packetDataPointer + 3), *(packetDataPointer + 4), *(packetDataPointer + 5));
-        WriteUART0(buffer);
-
-//        WriteUART0((char *) (packetDataPointer + 2));
+//        WriteUART0("me guy: ");
+        WriteUART0((char *) (packetDataPointer + 2));
 
         resp_flag = 1;
 
