@@ -120,8 +120,8 @@ void drive_line(float val, uint32_t * vals)
 
     //if we've lost the line
 
-    uint8_t bias = get_actuation_flag();
-
+//    uint8_t bias = get_actuation_flag();
+    uint8_t bias = 0;
     //normal lost line following
     if (fabs(error) == 1.5 || error == 0 && !bias) {
         if (error < 0){

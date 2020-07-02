@@ -138,11 +138,12 @@ void openloop_turn()
         end_openloop();
         set_actuation_flag(0);
         state = 0;
-    } else if (counter < on_time + offset_time + reset_time
-            && counter > on_time + offset_time)
-    {
-        counter++;
     }
+//    else if (counter < on_time + offset_time + reset_time
+//            && counter > on_time + offset_time)
+//    {
+//        counter++;
+//    }
 
     return;
 }
@@ -168,7 +169,7 @@ void execute_policy()
         GPIO_toggleDio(BLED3);
         setMotor(M1, 0, MOTOR_OFF);
         setMotor(M2, 0, MOTOR_OFF);
-        delay(1);
+        delay(0.25);
         init_openloop();
     }
 
