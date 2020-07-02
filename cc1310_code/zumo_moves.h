@@ -16,11 +16,16 @@
 #include "state_track.h"
 
 void setMotor(int motor, int dir, int value);
+
 void init_openloop(void);
 void end_openloop(void);
-void set_total_count(uint32_t tot_count);
-void set_offset(uint32_t offset);
+
 void openloop_turn();
 void execute_policy(void);
 void rotate(int dir);
+
+void set_on_time(uint32_t counts);
+void set_offset_time(uint32_t counts);
+void set_reset_time(uint32_t counts);
+
 #endif /* ZUMO_MOVES_H_ */

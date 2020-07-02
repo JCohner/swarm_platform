@@ -8,10 +8,12 @@
 #include "gpio.h"
 #include "uart.h"
 
-static uint32_t total_count = 0;
+static uint32_t on_time = 0;
+static uint16_t reset_time = 0;
+static uint16_t offset_time = 0;
 static uint32_t counter = 0;
 static uint8_t state = 0;
-static uint16_t timer_offset = 0;
+
 
 void setMotor(int motor, int dir, int value)
 {
@@ -56,15 +58,20 @@ void end_openloop(void)
     state = 0;
 }
 
-void set_total_count(uint32_t tot_count)
+void set_on_time(uint32_t counts)
 {
-    total_count = tot_count;
+    on_time = counts;
 }
 
 
-void set_offset(uint32_t offset)
+void set_offset_time(uint32_t counts)
 {
-    timer_offset = offset;
+    offset_time = counts;
+}
+
+void set_reset_time(uint32_t counts)
+{
+    reset_time = counts;
 }
 
 char buffer[50];
@@ -110,11 +117,10 @@ void openloop_turn()
         dir = xc_state & ret_policy;
     }
 
-    if (state && counter < (total_count + timer_offset))
+    if (state && counter < (on_time + offset_time))
     {
-        set_bias_override_flag(1);
 
-        if (counter > timer_offset)
+        if (counter > offset_time)
         {
             WriteUART0("ACTUATING\r\n");
             rotate(dir);
@@ -123,7 +129,7 @@ void openloop_turn()
         sprintf(buffer, "counter %u\r\n", counter);
         WriteUART0(buffer);
     }
-    else if (counter >= total_count + timer_offset && state)
+    else if (counter >= on_time + offset_time && state)
     {
 
 //        GPIO_toggleDio(BLED0);
@@ -132,7 +138,10 @@ void openloop_turn()
         end_openloop();
         set_actuation_flag(0);
         state = 0;
-        set_bias_override_flag(0);
+    } else if (counter < on_time + offset_time + reset_time
+            && counter > on_time + offset_time)
+    {
+        counter++;
     }
 
     return;
@@ -157,8 +166,14 @@ void execute_policy()
     if (xc_state != prev_xc_state && !actuation_flag)
     {
         GPIO_toggleDio(BLED3);
+        setMotor(M1, 0, MOTOR_OFF);
+        setMotor(M2, 0, MOTOR_OFF);
+        delay(1);
         init_openloop();
     }
+
+    set_prev_xc_state(xc_state);
+    set_prev_return_flag(ret_flag);
 
 //    update_prev_return_flag();
 
