@@ -25,7 +25,7 @@
 #include <stdlib.h>
 
 /***** Defines *****/
-#define PAYLOAD_LENGTH          30
+#define PAYLOAD_LENGTH          50
 #define PACKET_INTERVAL_US      200000
 /* Number of times the CS command should run when the channel is BUSY */
 #define CS_RETRIES_WHEN_BUSY    100
@@ -173,7 +173,10 @@ void rf_setup()
    RF_cmdFlush.pQueue = &dataQueue;
    resp_flag = 1;
 
-   sprintf((packet + 2), "MACH: 0\r\n"); //TODO: would be nice to tie t
+   //set tx power
+//   RF_runImmediateCmd(rfHandle, (uint32_t*)&setTxPowerCmd);
+
+//   sprintf((packet + 2), "MACH: 0\r\n"); //TODO: would be nice tie to serial number of guy
    /*init shout*/
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                          &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
@@ -194,80 +197,13 @@ void rf_main()
         packet[0] = (uint8_t)(seqNumber >> 8);
         packet[1] = (uint8_t)(seqNumber);
 
-        packet[2] = (uint8_t)(get_policy());
-        packet[3] = (uint8_t)(get_target_flag());
-        packet[4] = (uint8_t) (get_xc_state());
-        packet[5] = (uint8_t) (get_return_flag());
+
+//        sprintf((packet + 2), "%u %u %u\r\n", get_policy(), get_target_flag(), (get_return_flag() << 2 | get_xc_state()));
 
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                                              &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
         sent_flag = 0;
     }
-
-
-
-
-//    curr_count++; //TODO: just use mains
-//
-//    //if response received issue new RxSniff
-//    if (resp_flag)
-//    {
-//        rxCommandHandle =
-//            RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRxSniff, RF_PriorityNormal,
-//              &sniff_callback, (RF_EventCmdDone |
-//                      RF_EventLastCmdDone | RF_EventRxEntryDone));
-//        resp_flag = 0;
-//    }
-//    //if no response increment idle counter
-//    if (resp_flag == 0)
-//    {
-//        idle_count++;
-//    }
-//    sprintf(buffer, "idle count is: %u\n\rdelta message time: %u\r\n", idle_count, delta_message_time);
-//    WriteUART0(buffer);
-//    //make sure hdmt what we think it is
-//    uint32_t hdmt = (uint32_t) delta_message_time/2.0;
-//    uint32_t it_count = idle_count % delta_message_time;
-////    sprintf(buffer, "1/2 dmt: %u\r\nit_count: %u\r\n", hdmt,it_count);
-////    WriteUART0(buffer);
-//    sprintf(buffer, "dmt ave: %u\r\n", delta_message_time);
-//    WriteUART0(buffer);
-//    //if we're starting a new period
-//    if (it_count == 0)
-//    {
-//        period_flag = 1;
-//    }
-//
-//    //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: implement some modulo
-////    if ((idle_count > hdmt) && (heard_since_last ==1)) //works but need to make periodic with modulo and use averaged value
-//    if ((it_count > hdmt) && (period_flag)) //switch to averaged value
-//    {
-//        RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
-//        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-//                                 &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
-//
-//        //also probably rerun listen / receive command after this posting
-//        period_flag = 0;
-//        resp_flag = 1;
-////        idle_count = 0; //only set idle count to 0 on real receive
-//        heard_since_last = 0;
-//    }
-//
-//    //if you havent heard from anyone and idle count is greater than idle max, chirp
-//    if (idle_count > IDLE_MAX)
-//    {
-//        RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
-//        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-//                                 &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
-//        resp_flag = 1;
-//        idle_count = 0;
-//    }
-//
-//
-//    if (rxCommandHandle < 0)
-//    {
-//        WriteUART0("queue full\r\n");
-//    }
 
 }
 
@@ -278,110 +214,22 @@ void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
     {
         seqNumber++;
-        GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
-        GPIO_clearDio(CC1310_LAUNCHXL_PIN_GLED);
-        WriteUART0("AH SHOUTING\r\n");
+//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+//        WriteUART0("AH SHOUTING\r\n");
         sent_flag = 1;
     }
-
 }
 
 
-
+void WriteRF(const char * string)
+{
+    sprintf(packet+2, string);
+//    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+//                                                 &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+//    sent_flag = 0;
+}
 
 //void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //{
-//    sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
-//    WriteUART0(buffer);
-//
-//    //fuck this for rn
-////    //if sniff returned idle
-////    if(RF_cmdPropRxSniff.status == PROP_DONE_IDLE)
-////    {
-////        idle_count++;
-////        sprintf(buffer, "idle count at: %u\r\n", idle_count);
-////        WriteUART0(buffer);
-////        resp_flag = 0;
-////    }
-//
-//    //if sniff returned bsy
-//    if(RF_cmdPropRxSniff.status == PROP_DONE_BUSY)
-//    {
-//        WriteUART0("line busy\r\n");
-//        resp_flag = 1;
-//    }
-//
-//
-//    if(RF_cmdCountBranch.status == DONE_COUNTDOWN)
-//    {
-//        WriteUART0("didnt here someone for 100 sniffs\r\n");
-//    }
-//
-//    //if we successfully recevied
-//    if (e & RF_EventRxEntryDone)
-//    {
-//
-//
-//        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
-//        GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
-//        message_time = curr_count;
-//        delta_message_time = message_time - prev_message_time;
-//        prev_message_time = message_time;
-//        if (delta_message_time < 5)
-//        {
-//            delta_message_time = 5;
-//        }
-//
-//        //FIFO buffer of 10 most recent messages //TODO: replace 10 with constant
-//        num_receives = (num_receives + 1) % DELTA_TIME_BUFF_SIZE;
-//        delta_message_time_buff[num_receives] = delta_message_time;
-//
-//        //deals with averaging the delta message time
-//        if (!receive_buff_full_flag)
-//        {
-//            if (num_receives > 8) {
-//                receive_buff_full_flag = true;
-//            }
-//            delta_message_time_average = 0;
-//            int i;
-//            for (i = 0; i < num_receives; i++)
-//            {
-//                delta_message_time_average += (uint32_t) (1.0/((float) num_receives) *  delta_message_time_buff[i]);
-//            }
-//        }
-//        else //we've filled the buffer
-//        {
-//            delta_message_time_average = 0;
-//            int i;
-//            for (i = 0; i < DELTA_TIME_BUFF_SIZE; i++)
-//            {
-//                delta_message_time_average += (uint32_t) (1.0/((float) DELTA_TIME_BUFF_SIZE) *  delta_message_time_buff[i]);
-//            }
-//        }
-//
-//        /* Get current unhandled data entry */
-//        currentDataEntry = RFQueue_getDataEntry();
-//
-//        /* Handle the packet data, located at &currentDataEntry->data:
-//         * - Length is the first byte with the current configuration
-//         * - Data starts from the second byte */
-//        packetLength      = *(uint8_t *)(&(currentDataEntry->data));
-//        packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
-//        RFQueue_nextEntry();
-//
-//        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
-//        WriteUART0(buffer);
-//        WriteUART0((char *) (packetDataPointer + 2));
-//
-//        sprintf(buffer, " delta time: %u\r\n", delta_message_time);
-//        WriteUART0(buffer);
-//
-//        //on successful rx set resp flag high
-//        idle_count = 0;
-//        resp_flag = 1;
-//        heard_since_last = 1;
-//        WriteUART0("heard from someone resp flag set high\r\n");
-//
-//    }
 //}
 
