@@ -9,7 +9,7 @@
 #include "uart.h"
 #define NUM_COLORS 3
 
-static struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .detect_thresh = 3};
+static struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .detect_thresh = 4};
 
 static struct ColorTrack purp = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .detect_thresh = 7};
 
@@ -56,7 +56,7 @@ void detect_poi(uint32_t * vals)
         if (purp.left_prev_vals_ave > purp.detect_thresh || purp.right_prev_vals_ave > purp.detect_thresh)
         {
             set_detect_flag(1);
-            GPIO_toggleDio(BLED0);
+//            GPIO_toggleDio(BLED0);
         }
         if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > graphite.detect_thresh)
         {
