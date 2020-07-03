@@ -34,8 +34,8 @@ struct StateTrack{
                                     //state transition can be handled
     uint8_t detect_flag : 2; //if poi detected flag raised
 
-    uint8_t bias_override_flag : 1; //induces bias in line following to ensure
-                                        //policy is followed
+    uint8_t intersection_flag : 1; //indicates robot is at intersection
+    uint8_t prep_flag : 1; //indicates ready for next intersection
 
 };
 
@@ -66,8 +66,11 @@ void toggle_return_flag();
 void set_detect_flag(uint8_t flag);
 uint8_t get_detect_flag();
 
-void set_bias_override_flag(uint8_t flag);
-uint8_t get_bias_override_flag();
+void set_intersection_flag(uint8_t flag);
+uint8_t get_intersection_flag();
+
+void set_prep_flag(uint8_t flag);
+uint8_t get_prep_flag();
 
 
 void evaluate_state();

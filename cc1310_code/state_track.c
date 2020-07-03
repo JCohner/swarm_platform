@@ -30,8 +30,7 @@ void evaluate_state()
     uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
     uint8_t detector = state_track.detect_flag;
 
-    sprintf(buffer, "stator: %u\r\ndetect: %u\r\nact: %u\r\n",
-            stator, detector, state_track.actuation_flag);
+    sprintf(buffer, "stator: %u\r\n",stator);
     WriteUART0(buffer);
 
     if (!state_track.actuation_flag && state_track.detect_flag){
@@ -44,26 +43,31 @@ void evaluate_state()
         return; //could probably remove
     }
 
-    if(detector == 2 && stator == 0b010)
+    if (detector)
     {
-        state_track.return_flag = 0b1;
-        state_track.xc_state = 0b01;
+        if(stator == 0b010)
+        {
+            state_track.return_flag = 0b1;
+            state_track.xc_state = 0b01;
+        }
+        if (stator == 0b101)
+        {
+            state_track.return_flag = 0b1;
+            state_track.xc_state = 0b10;
+        }
+        if (stator == 0b110)
+        {
+            state_track.return_flag = 0b0;
+            state_track.xc_state = 0b01;
+        }
+        if (stator == 0b001)
+        {
+            state_track.return_flag = 0b0;
+            state_track.xc_state = 0b10;
+        }
     }
-    if (detector == 2 && stator == 0b101)
-    {
-        state_track.return_flag = 0b1;
-        state_track.xc_state = 0b10;
-    }
-    if (detector == 2 && stator == 0b110)
-    {
-        state_track.return_flag = 0b0;
-        state_track.xc_state = 0b01;
-    }
-    if (detector == 2 && stator == 0b001)
-    {
-        state_track.return_flag = 0b0;
-        state_track.xc_state = 0b10;
-    }
+
+
 //    GPIO_toggleDio(BLED2);
 }
 
@@ -181,15 +185,22 @@ uint8_t get_detect_flag()
     return state_track.detect_flag;
 }
 
-void set_bias_override_flag(uint8_t flag)
+void set_intersection_flag(uint8_t flag)
 {
-    state_track.bias_override_flag = flag;
+    state_track.intersection_flag = flag;
 }
-uint8_t get_bias_override_flag()
+uint8_t get_intersection_flag()
 {
-    return state_track.bias_override_flag;
+    return state_track.intersection_flag;
 }
 
-
+void set_prep_flag(uint8_t flag)
+{
+    state_track.prep_flag = flag;
+}
+uint8_t get_prep_flag()
+{
+    return state_track.prep_flag;
+}
 
 
