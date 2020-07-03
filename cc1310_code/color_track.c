@@ -7,6 +7,7 @@
 
 #include "color_track.h"
 #include "uart.h"
+
 #define NUM_COLORS 3
 
 static struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .detect_thresh = 4};
@@ -38,30 +39,47 @@ void detect_poi(uint32_t * vals)
         graphite.left_prev_vals_ave += graphite.left_prev_vals[i];
         graphite.right_prev_vals_ave += graphite.right_prev_vals[i];
 
-        purp.left_prev_vals_ave += purp.left_prev_vals[i];
-        purp.right_prev_vals_ave += purp.right_prev_vals[i];
+//        purp.left_prev_vals_ave += purp.left_prev_vals[i];
+//        purp.right_prev_vals_ave += purp.right_prev_vals[i];
     }
 
     purp.idx = (purp.idx + 1) % NUM_PREV_VALS;
     graphite.idx = (graphite.idx + 1) % NUM_PREV_VALS;
 
-    sprintf(buffer, "purp prev vals ave: %u, %u\r\n", purp.left_prev_vals_ave, purp.right_prev_vals_ave);
-    WriteUART0(buffer);
+//    sprintf(buffer, "purp prev vals ave: %u, %u\r\n", purp.left_prev_vals_ave, purp.right_prev_vals_ave);
+//    WriteUART0(buffer);
     sprintf(buffer, "graph prev vals ave: %u, %u\r\n", graphite.left_prev_vals_ave, graphite.right_prev_vals_ave);
     WriteUART0(buffer);
 
 
+    //check for white traingle
+    if (vals[0] < 150 && vals[1] < 150 && vals[2] < 150 && vals[3] < 150)
+    {
+        set_intersection_flag(1);
+        return;
+    }
+//    else
+//    {
+//        set_intersection_flag(0);
+//    }
+
     if (!get_detect_flag())
     {
-        if (purp.left_prev_vals_ave > purp.detect_thresh || purp.right_prev_vals_ave > purp.detect_thresh)
-        {
-            set_detect_flag(1);
-//            GPIO_toggleDio(BLED0);
-        }
+//        if (purp.left_prev_vals_ave > purp.detect_thresh || purp.right_prev_vals_ave > purp.detect_thresh)
+//        {
+//            set_detect_flag(1);
+////            GPIO_toggleDio(BLED0);
+//        }
         if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > graphite.detect_thresh)
         {
             set_detect_flag(2);
             GPIO_toggleDio(BLED1);
+            for (i = 0; i < NUM_PREV_VALS; i++)
+            {
+                graphite.left_prev_vals[i] = 0;
+                graphite.right_prev_vals[i] = 0;
+            }
+
         }
         else
         {
