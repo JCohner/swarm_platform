@@ -22,6 +22,7 @@ void end_openloop(void);
 
 void openloop_turn();
 void execute_policy(void);
+void manage_intersection();
 void rotate(int dir);
 
 void set_on_time(uint32_t counts);

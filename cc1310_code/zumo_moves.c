@@ -77,17 +77,38 @@ void set_reset_time(uint32_t counts)
 char buffer[50];
 
 //0 - CCW (left)
-//1 - CW (right)s
+//1 - CW (right)
 void rotate(int dir)
 {
     //ensures all non zero inputs normalized to 1
     if (dir)
     {
-        dir = dir/dir;
+        dir = 1;
+        WriteUART0("turning CW\r\n");
+    }
+    else
+    {
+        WriteUART0("turning CounterCW\r\n");
     }
 
     setMotor(M1, dir, MOTOR_TURN);
     setMotor(M2, !dir, MOTOR_TURN);
+}
+
+//0 - CCW (left)
+//1 - CW (right)
+void steer(int dir)
+{
+    if (dir)
+    {
+        setMotor(M1, 0, MOTOR_ON - 50);
+        setMotor(M2, 0, MOTOR_ON + 50);
+    }
+    else
+    {
+        setMotor(M1, 0, MOTOR_ON + 50);
+        setMotor(M2, 0, MOTOR_ON - 50);
+    }
 }
 
 /*!
@@ -123,11 +144,20 @@ void openloop_turn()
         if (counter > offset_time)
         {
             WriteUART0("ACTUATING\r\n");
+//            setMotor(M1, 0, MOTOR_OFF);
+//            setMotor(M2, 0, MOTOR_OFF);
+//            delay(1);
             rotate(dir);
         }
+        else
+        {
+            setMotor(M1, 0, MOTOR_ON - 50);
+            setMotor(M2, 0, MOTOR_ON - 50);
+        }
+
         counter++;
-        sprintf(buffer, "counter %u\r\n", counter);
-        WriteUART0(buffer);
+//        sprintf(buffer, "counter %u\r\n", counter);
+//        WriteUART0(buffer);
     }
     else if (counter >= on_time + offset_time && state)
     {
@@ -135,15 +165,11 @@ void openloop_turn()
 //        GPIO_toggleDio(BLED0);
         setMotor(M1, dir, MOTOR_OFF);
         setMotor(M2, !dir, MOTOR_OFF);
+//        delay(5);
         end_openloop();
         set_actuation_flag(0);
         state = 0;
     }
-//    else if (counter < on_time + offset_time + reset_time
-//            && counter > on_time + offset_time)
-//    {
-//        counter++;
-//    }
 
     return;
 }
@@ -153,32 +179,55 @@ void openloop_turn()
  *      if state change detected
  *
  */
-void execute_policy()
+//void execute_policy()
+//{
+//    uint8_t xc_state = get_xc_state();
+//    uint8_t prev_xc_state=  get_prev_xc_state();
+//
+//    uint8_t ret_flag = get_return_flag();
+//
+//    uint8_t actuation_flag = get_actuation_flag();
+//
+////    sprintf(buffer, "xc: %u, prev: %u \t ret %u\r\n", xc_state, prev_xc_state, ret_flag);
+////    WriteUART0(buffer);
+//    if (xc_state != prev_xc_state && !actuation_flag)
+//    {
+//        GPIO_toggleDio(BLED3);
+//
+////        WriteUART0("state change detected\r\n");
+//        set_prep_flag(1);
+//    }
+//
+//    if (get_intersection_flag() && get_prep_flag())
+//    {
+////        WriteUART0("intersection detected\r\n");
+//        init_openloop();
+//        set_intersection_flag(0);
+//        set_prep_flag(0);
+//    }
+//
+//    set_prev_xc_state(xc_state);
+//    set_prev_return_flag(ret_flag);
+//
+////    update_prev_return_flag();
+//
+//    return;
+//}
+
+void manage_intersection()
 {
     uint8_t xc_state = get_xc_state();
     uint8_t prev_xc_state=  get_prev_xc_state();
-
     uint8_t ret_flag = get_return_flag();
 
-    uint8_t actuation_flag = get_actuation_flag();
-
-//    sprintf(buffer, "xc: %u, prev: %u \t ret %u\r\n", xc_state, prev_xc_state, ret_flag);
-//    WriteUART0(buffer);
-    if (xc_state != prev_xc_state && !actuation_flag)
+    if (xc_state != prev_xc_state)
     {
         GPIO_toggleDio(BLED3);
-        setMotor(M1, 0, MOTOR_OFF);
-        setMotor(M2, 0, MOTOR_OFF);
-        delay(0.25);
         init_openloop();
     }
 
     set_prev_xc_state(xc_state);
     set_prev_return_flag(ret_flag);
-
-//    update_prev_return_flag();
-
+    set_intersection_flag(0);
     return;
 }
-
-
