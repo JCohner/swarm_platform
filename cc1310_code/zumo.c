@@ -67,6 +67,7 @@ float read_line(uint32_t * vals)
 
     if (!on_line)
     {
+//        set_on_line_flag(0);
         // If it last read to the left of center, return 0.
         if (lastValue < (4 -  1) * 1000/2.0)
         {
@@ -78,6 +79,11 @@ float read_line(uint32_t * vals)
             return (4 - 1);
         }
 //        return lastValue/1000.0;
+    }
+    else
+    {
+//        set_on_line_flag(1);
+        ;
     }
 
     lastValue = avg/(float)sum;
@@ -109,28 +115,28 @@ void drive_line(float val, uint32_t * vals)
 //    sprintf(buffer, "rhs: %f, lhs: %f\r\n", rhs, lhs);
 //    WriteUART0(buffer);
 
-//    if (error < .3 && error > 0)
+//    if (get_actuation_flag())
 //    {
-//        do_once = 0;
+//        return;
 //    }
-
-
     setMotor(M2, 0, lhs);
     setMotor(M1, 0, rhs);
 
     //if we've lost the line
 
-//    uint8_t bias = get_actuation_flag();
-    uint8_t bias = 0;
+//    uint8_t bias = get_prep_flag();
+//    uint8_t bias = 0;
     //normal lost line following
-    if (fabs(error) == 1.5 || error == 0 && !bias) {
+    if ((fabs(error) == 1.5 || error == 0)){// && !bias) {
         if (error < 0){
+
+            WriteUART0("LL: turning clockwise");
             rotate(1);
-            //WriteUART0("turning clockwise");
         }
         else if (error > 0){
+            WriteUART0("LL: turning CCW");
             rotate(0);
-            //WriteUART0("turning CCW");
+
         }
         else if (vals[0] == vals[2] && vals[1] == vals[3])
         {
@@ -139,26 +145,10 @@ void drive_line(float val, uint32_t * vals)
         }
 
     }
-    //biased lost line following
-    else if (fabs(error) == 1.5 || error == 0 && bias)
-    {
-        uint8_t xc_state = get_xc_state();
-        uint8_t policy= get_policy();
-        uint8_t ret_policy = get_return_policy();
-
-        uint8_t dir;
-        if (!get_return_flag())
-        {
-            dir = xc_state & policy;
-        }
-        else
-        {
-            dir = xc_state & ret_policy;
-        }
-
-        rotate(dir);
-    }
-
+//    else if ((fabs(error) == 1.5 || error == 0) && !bias)
+//    {
+//     rotate(get_next_dir());
+//    }
 
     return;
 }
