@@ -25,7 +25,52 @@ static struct StateTrack state_track =
  *
  */
 static char buffer[50];
-void evaluate_state()
+//void evaluate_state()
+//{
+//    uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
+//    uint8_t detector = state_track.detect_flag;
+//
+//    sprintf(buffer, "stator: %u\r\n",stator);
+//    WriteUART0(buffer);
+//
+//    if (!state_track.actuation_flag && state_track.detect_flag){
+//        ;
+//    }
+//    else
+//    {
+//        //was actuating, false alarm
+//        set_detect_flag(0);
+//        return; //could probably remove
+//    }
+//
+//    if (detector)
+//    {
+//        if(stator == 0b010)
+//        {
+//            state_track.return_flag = 0b1;
+//            state_track.xc_state = 0b01;
+//        }
+//        if (stator == 0b101)
+//        {
+//            state_track.return_flag = 0b1;
+//            state_track.xc_state = 0b10;
+//        }
+//        if (stator == 0b110)
+//        {
+//            state_track.return_flag = 0b0;
+//            state_track.xc_state = 0b01;
+//        }
+//        if (stator == 0b001)
+//        {
+//            state_track.return_flag = 0b0;
+//            state_track.xc_state = 0b10;
+//        }
+//    }
+////    GPIO_toggleDio(BLED2);
+//}
+
+//after an intersection has been dealt with we can increment the state
+void inc_state()
 {
     uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
     uint8_t detector = state_track.detect_flag;
@@ -33,42 +78,42 @@ void evaluate_state()
     sprintf(buffer, "stator: %u\r\n",stator);
     WriteUART0(buffer);
 
-    if (!state_track.actuation_flag && state_track.detect_flag){
-        ;
-    }
-    else
+    if (get_intersection_flag() && !get_actuation_flag())
     {
-        //was actuating, false alarm
-        set_detect_flag(0);
-        return; //could probably remove
+        //stash next decision
+//        uint8_t dir;
+//        if (!get_return_flag())
+//        {
+//            dir = state_track.xc_state & state_track.policy;
+//        }
+//        else
+//        {
+//            dir = state_track.xc_state & state_track.return_policy;
+//        }
+//        state_track.next_dir = dir;
+
+        switch(stator)
+        {
+            case 0b010:
+                state_track.return_flag = 0b1;
+                state_track.xc_state = 0b01;
+                break;
+            case 0b101:
+                state_track.return_flag = 0b1;
+                state_track.xc_state = 0b10;
+                break;
+            case 0b110:
+                state_track.return_flag = 0b0;
+                state_track.xc_state = 0b01;
+                break;
+            case 0b001:
+                state_track.return_flag = 0b0;
+                state_track.xc_state = 0b10;
+                break;
+        }
+
+//        set_intersection_flag(0); //going to set this low when managed by manage_intersection()
     }
-
-    if (detector)
-    {
-        if(stator == 0b010)
-        {
-            state_track.return_flag = 0b1;
-            state_track.xc_state = 0b01;
-        }
-        if (stator == 0b101)
-        {
-            state_track.return_flag = 0b1;
-            state_track.xc_state = 0b10;
-        }
-        if (stator == 0b110)
-        {
-            state_track.return_flag = 0b0;
-            state_track.xc_state = 0b01;
-        }
-        if (stator == 0b001)
-        {
-            state_track.return_flag = 0b0;
-            state_track.xc_state = 0b10;
-        }
-    }
-
-
-//    GPIO_toggleDio(BLED2);
 }
 
 void set_policy(uint8_t policy)
@@ -97,17 +142,17 @@ uint8_t get_return_policy()
     return state_track.return_policy;
 }
 
-void inc_xc_state()
-{
-    state_track.xc_state = (state_track.xc_state ^ 0b11) &0x03;
-
-    GPIO_toggleDio(BLED2);
-    if (state_track.xc_state == 0b01)
-    {
-        toggle_return_flag();
-//        GPIO_toggleDio(BLED2);
-    }
-}
+//void inc_xc_state()
+//{
+//    state_track.xc_state = (state_track.xc_state ^ 0b11) &0x03;
+//
+//    GPIO_toggleDio(BLED2);
+//    if (state_track.xc_state == 0b01)
+//    {
+//        toggle_return_flag();
+////        GPIO_toggleDio(BLED2);
+//    }
+//}
 
 
 void set_xc_state(uint8_t state)
@@ -203,4 +248,7 @@ uint8_t get_prep_flag()
     return state_track.prep_flag;
 }
 
-
+uint8_t get_next_dir()
+{
+    return state_track.next_dir;
+}

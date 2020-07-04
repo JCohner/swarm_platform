@@ -23,19 +23,21 @@ struct StateTrack{
     uint8_t return_policy : 2;
     uint8_t target : 1;
 
-    //intersection management bits
+    //state management bits
     uint8_t xc_state : 2;
     uint8_t prev_xc_state : 2;
-
-    uint8_t actuation_flag : 1; //raised if: xc_state != prev_xc_state || ret_flag != prev_ret_flag
-                                   // in execute_policy() in zumo_moves
     uint8_t return_flag : 1; //whether on return path or forward path
     uint8_t prev_return_flag : 1; //prev state of return such that
                                     //state transition can be handled
-    uint8_t detect_flag : 2; //if poi detected flag raised
 
-    uint8_t intersection_flag : 1; //indicates robot is at intersection
-    uint8_t prep_flag : 1; //indicates ready for next intersection
+    uint8_t detect_flag : 2; //raised when grey detected
+    uint8_t intersection_flag : 1; //rasied when white intersection detected
+    uint8_t prep_flag: 1; //indicates grey pre white detected
+
+    uint8_t next_dir : 1;
+
+    uint8_t actuation_flag : 1; //raised if: xc_state != prev_xc_state || ret_flag != prev_ret_flag
+                                   // in execute_policy() in zumo_moves
 
 };
 
@@ -72,8 +74,9 @@ uint8_t get_intersection_flag();
 void set_prep_flag(uint8_t flag);
 uint8_t get_prep_flag();
 
+uint8_t get_next_dir();
 
 void evaluate_state();
-
+void inc_state();
 
 #endif /* STATE_TRACK_H_ */
