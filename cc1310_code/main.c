@@ -20,6 +20,8 @@
 #include "ir_sense.h"
 #include "zumo_moves.h"
 #include "color_track.h"
+#include "rtc.h"
+
 
 static char buffer[60];
 uint32_t adc_vals[8];
@@ -70,7 +72,7 @@ int main(void)
 //      test_leds();
 
       //sets open loop control characteristics
-      set_on_time(10);
+      set_on_time(9);
       set_offset_time(10);
 //      init_openloop();
 //      while(1)
@@ -82,11 +84,11 @@ int main(void)
       //sets inital policy pursued by robot
       set_policy(0b10);
 
+//      InitRTC();
+      struct RTCVal time_prev = GetRTCVal();
       while(1)
       {
           GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED); //pin6
-
-
 //          read_imu();
           rf_main();
 
@@ -107,11 +109,19 @@ int main(void)
           drive_line(IR_val, adc_vals);
 //          detect_poi(adc_vals);
           detect_xc(adc_vals);
+          detect_poi(adc_vals);
           //evaluate_state();
           inc_state(); //if at intersection
           //execute_policy();
           manage_intersection();
           openloop_turn();
+
+          struct RTCVal time_curr = GetRTCVal();
+          struct RTCVal delta_time = GetDeltaTime(time_prev, time_curr);
+
+          sprintf(buffer, "delt_sec: %u\r\ndelt_frac: %u\r\n", delta_time.sec, delta_time.frac);
+          WriteUART0(buffer);
+          time_prev = time_curr;
 
       }
 
