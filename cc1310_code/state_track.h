@@ -30,7 +30,7 @@ struct StateTrack{
     uint8_t prev_return_flag : 1; //prev state of return such that
                                     //state transition can be handled
 
-    uint8_t detect_flag : 2; //raised when grey detected
+    uint8_t detect_flag : 1; //raised when grey detected
     uint8_t intersection_flag : 1; //rasied when white intersection detected
     uint8_t prep_flag: 1; //indicates grey pre white detected
 

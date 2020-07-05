@@ -78,7 +78,7 @@ void inc_state()
     sprintf(buffer, "stator: %u\r\n",stator);
     WriteUART0(buffer);
 
-    if (get_intersection_flag() && !get_actuation_flag())
+    if (get_intersection_flag() && !get_actuation_flag() && get_detect_flag())
     {
         //stash next decision
 //        uint8_t dir;
@@ -112,7 +112,8 @@ void inc_state()
                 break;
         }
 
-//        set_intersection_flag(0); //going to set this low when managed by manage_intersection()
+        //set_intersection_flag(0); //going to set this low when managed by manage_intersection()
+        set_detect_flag(0);
     }
 }
 
