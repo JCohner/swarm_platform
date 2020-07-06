@@ -21,7 +21,7 @@
 #include "zumo_moves.h"
 #include "color_track.h"
 #include "rtc.h"
-
+#include "interrupt_timer.h"
 
 static char buffer[60];
 uint32_t adc_vals[8];
@@ -85,10 +85,11 @@ int main(void)
       set_policy(0b10);
 
 //      InitRTC();
+      InterTimerEnable();
       struct RTCVal time_prev = GetRTCVal();
       while(1)
       {
-          GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED); //pin6
+//          GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED); //pin6
 //          read_imu();
           rf_main();
 
@@ -119,9 +120,9 @@ int main(void)
           struct RTCVal time_curr = GetRTCVal();
           struct RTCVal delta_time = GetDeltaTime(time_prev, time_curr);
 
-          sprintf(buffer, "delt_sec: %u\r\ndelt_frac: %u\r\n", delta_time.sec, delta_time.frac);
-          WriteUART0(buffer);
-          time_prev = time_curr;
+//          sprintf(buffer, "delt_sec: %u\r\ndelt_frac: %u\r\n", delta_time.sec, delta_time.frac);
+//          WriteUART0(buffer);
+//          time_prev = time_curr;
 
       }
 
