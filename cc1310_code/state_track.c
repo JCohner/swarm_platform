@@ -25,60 +25,16 @@ static struct StateTrack state_track =
  *
  */
 static char buffer[50];
-//void evaluate_state()
-//{
-//    uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
-//    uint8_t detector = state_track.detect_flag;
-//
-//    sprintf(buffer, "stator: %u\r\n",stator);
-//    WriteUART0(buffer);
-//
-//    if (!state_track.actuation_flag && state_track.detect_flag){
-//        ;
-//    }
-//    else
-//    {
-//        //was actuating, false alarm
-//        set_detect_flag(0);
-//        return; //could probably remove
-//    }
-//
-//    if (detector)
-//    {
-//        if(stator == 0b010)
-//        {
-//            state_track.return_flag = 0b1;
-//            state_track.xc_state = 0b01;
-//        }
-//        if (stator == 0b101)
-//        {
-//            state_track.return_flag = 0b1;
-//            state_track.xc_state = 0b10;
-//        }
-//        if (stator == 0b110)
-//        {
-//            state_track.return_flag = 0b0;
-//            state_track.xc_state = 0b01;
-//        }
-//        if (stator == 0b001)
-//        {
-//            state_track.return_flag = 0b0;
-//            state_track.xc_state = 0b10;
-//        }
-//    }
-////    GPIO_toggleDio(BLED2);
-//}
-
 //after an intersection has been dealt with we can increment the state
 void inc_state()
 {
     uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
     uint8_t detector = state_track.detect_flag;
 
-    sprintf(buffer, "stator: %u\r\n",stator);
-    WriteUART0(buffer);
+//    sprintf(buffer, "stator: %u\r\n",stator);
+//    WriteUART0(buffer);
 
-    if (get_intersection_flag() && !get_actuation_flag() && get_detect_flag())
+    if (get_intersection_flag() && !get_actuation_flag() && get_detect_flag() && get_on_line_flag())
     {
         //stash next decision
 //        uint8_t dir;
@@ -114,6 +70,7 @@ void inc_state()
 
         //set_intersection_flag(0); //going to set this low when managed by manage_intersection()
         set_detect_flag(0);
+        set_on_line_flag(0);
     }
 }
 
@@ -240,16 +197,16 @@ uint8_t get_intersection_flag()
     return state_track.intersection_flag;
 }
 
-void set_prep_flag(uint8_t flag)
+void set_on_line_flag(uint8_t flag)
 {
-    state_track.prep_flag = flag;
+    state_track.on_line_flag = flag;
 }
-uint8_t get_prep_flag()
+uint8_t get_on_line_flag()
 {
-    return state_track.prep_flag;
+    return state_track.on_line_flag;
 }
 
-uint8_t get_next_dir()
-{
-    return state_track.next_dir;
-}
+//uint8_t get_next_dir()
+//{
+//    return state_track.next_dir;
+//}

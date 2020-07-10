@@ -32,10 +32,12 @@ struct StateTrack{
 
     uint8_t detect_flag : 1; //raised when grey detected
     uint8_t intersection_flag : 1; //rasied when white intersection detected
-    uint8_t prep_flag: 1; //indicates grey pre white detected
 
-    uint8_t next_dir : 1;
 
+//    uint8_t prep_flag: 1; //indicates grey pre white detected
+
+//    uint8_t next_dir : 1;
+    uint8_t on_line_flag : 1; // raised if robot on line
     uint8_t actuation_flag : 1; //raised if: xc_state != prev_xc_state || ret_flag != prev_ret_flag
                                    // in execute_policy() in zumo_moves
 
@@ -71,8 +73,8 @@ uint8_t get_detect_flag();
 void set_intersection_flag(uint8_t flag);
 uint8_t get_intersection_flag();
 
-void set_prep_flag(uint8_t flag);
-uint8_t get_prep_flag();
+void set_on_line_flag(uint8_t flag);
+uint8_t get_on_line_flag();
 
 uint8_t get_next_dir();
 
