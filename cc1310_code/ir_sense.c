@@ -49,9 +49,11 @@ void ReadIR(uint32_t * vals)
     char sensor_flag;
     SetTimerState(TIMER_ON);
     for (i = 0; i < NUM_SAMPLES; i++){
+    emmitters_on();
+
     for (j = 0; j < NUM_SENSORS; j++)
     {
-        emmitter_on(j);
+//        emmitter_on(j);
         startTime = GetTime();
         IRTime = 0;
         sensor_flag = 0;
