@@ -86,7 +86,7 @@ rxDataEntryBuffer[RF_QUEUE_DATA_ENTRY_BUFFER_SIZE(NUM_DATA_ENTRIES,
 
 /***** Prototypes *****/
 //static void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
-void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
+void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 /*Globals for biosynchronicity*/
 //uint32_t curr_time;
@@ -127,42 +127,26 @@ void rf_setup()
     triggerCmd.triggerNo = 1;
 
     /* Customize the CMD_PROP_TX command for this application */
+//    RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
+//    RF_cmdPropTx.pPkt = packet;
+//    RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
+
     RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
     RF_cmdPropTx.pPkt = packet;
-    RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
-//    RF_cmdNop.startTrigger.triggerType = TRIG_ABSTIME;
-//    RF_cmdNop.startTrigger.pastTrig = 1;
-//
-//   /* Modify CMD_PROP_TX and CMD_PROP_RX commands for application needs */
-//   /* Set the Data Entity queue for received data */
-//   RF_cmdPropRxSniff.pQueue = &dataQueue;
-//   /* Discard ignored packets from Rx queue */
-//   RF_cmdPropRxSniff.rxConf.bAutoFlushIgnored = 1;
-//   /* Discard packets with CRC error from Rx queue */
-//   RF_cmdPropRxSniff.rxConf.bAutoFlushCrcErr = 1;
-//   /* Implement packet length filtering to avoid PROP_ERROR_RXBUF */
-//   RF_cmdPropRxSniff.maxPktLen = PAYLOAD_LENGTH;
-//   /* End RX operation when a packet is received correctly and move on to the
-//    * next command in the chain */
-//   RF_cmdPropRxSniff.pktConf.bRepeatOk = 0;
-//   RF_cmdPropRxSniff.pktConf.bRepeatNok = 0; //just keeps listening after failed receive
-//   RF_cmdPropRxSniff.startTrigger.triggerType = TRIG_NOW;
-////   RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t *)&RF_cmdPropTx;
-   /* Only run the TX command if RX is successful */
-//   RF_cmdPropRxSniff.condition.rule = COND_SKIP_ON_FALSE;
-//   RF_cmdPropRxSniff.condition.nSkip = 0x0; //repeat the rxsniff if it retruns idle
-//   RF_cmdPropRxSniff.pOutput = (uint8_t *)&rxStatistics;
+    RF_cmdNop.startTrigger.triggerType = TRIG_ABSTIME;
+    RF_cmdNop.startTrigger.pastTrig = 1;
 
-//
-//   /*Set Carrier Sense Properties*/
-//   RF_cmdPropRxSniff.rssiThr  = RSSI_THRESHOLD_DBM;
-//   RF_cmdPropRxSniff.csEndTime = (IDLE_TIME_US + 150) * 4;
-////   RF_cmdPropRxSniff.endTime = (IDLE_TIME_US + 150) * 16;
-////   RF_cmdPropRxSniff.numRssiIdle = 0x10;
-//
-//    /*Nop gives us clean entry point*/
-//    RF_cmdNop.startTrigger.triggerType = TRIG_ABSTIME;
-//    RF_cmdNop.startTrigger.pastTrig = 1;
+
+    /* Set up the next pointers for the command chain */
+    RF_cmdNop.pNextOp = (rfc_radioOp_t*)&RF_cmdPropCs;
+    RF_cmdPropCs.pNextOp = (rfc_radioOp_t*)&RF_cmdCountBranch;
+    RF_cmdCountBranch.pNextOp = (rfc_radioOp_t*)&RF_cmdPropTx;
+    RF_cmdCountBranch.pNextOpIfOk = (rfc_radioOp_t*)&RF_cmdPropCs;
+
+    /* Customize the API commands with application specific defines */
+    RF_cmdPropCs.rssiThr = RSSI_THRESHOLD_DBM;
+    RF_cmdPropCs.csEndTime = (IDLE_TIME_US + 150) * 4; /* Add some margin */
+    RF_cmdCountBranch.counter = CS_RETRIES_WHEN_BUSY;
 
 
    rfHandle = RF_open(&rfObject, &RF_prop, (RF_RadioSetup*)&RF_cmdPropRadioDivSetup, &rfParams);
@@ -171,15 +155,17 @@ void rf_setup()
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdFs, RF_PriorityNormal, NULL, 0);
 
    RF_cmdFlush.pQueue = &dataQueue;
-   resp_flag = 1;
+   sent_flag = 1;
 
-   //set tx power
-//   RF_runImmediateCmd(rfHandle, (uint32_t*)&setTxPowerCmd);
-
+   /* Get current time */
+   time = RF_getCurrentTime();
+   RF_postCmd(rfHandle, (RF_Op*)&RF_cmdNop, RF_PriorityNormal,
+             &callback, 0);
+   //MIGHT WANNA SWITCH THIS INITAL TX TO AN INITAL NOP CALL
 //   sprintf((packet + 2), "MACH: 0\r\n"); //TODO: would be nice tie to serial number of guy
    /*init shout*/
-   RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-                         &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+//   RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+//                         &callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 }
 RF_CmdHandle rxCommandHandle;
 RF_CmdHandle txCommandHandle;
@@ -194,30 +180,53 @@ void rf_main()
     /* Create packet with incrementing sequence number & random payload */
     if (sent_flag)
     {
+        /* Set absolute TX time to utilize automatic power management */
+        time += (PACKET_INTERVAL_US * 4);
+        RF_cmdNop.startTime = time;
+
         packet[0] = (uint8_t)(seqNumber >> 8);
         packet[1] = (uint8_t)(seqNumber);
+
+        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdNop, RF_PriorityNormal,
+                  &callback, 0);
+
+        WriteUART0("posting\r\n");
+
+
 
 
 //        sprintf((packet + 2), "%u %u %u\r\n", get_policy(), get_target_flag(), (get_return_flag() << 2 | get_xc_state()));
 
-        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-                                             &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+//        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+//                                             &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
         sent_flag = 0;
     }
-
 }
 
 
 
-void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
+void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {
-    if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
+//    if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
+    if ((e & RF_EventLastCmdDone) && (RF_cmdPropTx.status == PROP_DONE_OK))
     {
         seqNumber++;
-//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
-//        WriteUART0("AH SHOUTING\r\n");
-        sent_flag = 1;
+        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+        WriteUART0("AH SHOUTING\r\n");
+
+
     }
+
+    //encode logic for the other states (ie when the carrier sense detects the line is busy
+
+    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
+
+    RF_cmdNop.status = IDLE;
+    RF_cmdPropCs.status = IDLE;
+    RF_cmdCountBranch.status = IDLE;
+    RF_cmdPropTx.status = IDLE;
+    RF_cmdCountBranch.counter = CS_RETRIES_WHEN_BUSY;
+    sent_flag = 1;
 }
 
 
@@ -228,6 +237,13 @@ void WriteRF(const char * string)
 //                                                 &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 //    sent_flag = 0;
 }
+
+//bit writes states
+void WriteRFState(uint8_t state)
+{
+    packet[2] = state;
+}
+
 
 //void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //{

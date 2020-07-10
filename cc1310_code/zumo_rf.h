@@ -12,5 +12,6 @@ void rf_setup();
 void rf_main();
 
 void WriteRF(const char * string);
+void WriteRFState(uint8_t state);
 
 #endif /* ZUMO_RF_H_ */
