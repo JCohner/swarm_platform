@@ -82,7 +82,7 @@ float read_line(uint32_t * vals)
     }
     else
     {
-//        set_on_line_flag(1);
+        set_on_line_flag(1);
         ;
     }
 
@@ -111,6 +111,17 @@ void drive_line(float val, uint32_t * vals)
     float speed_delim = 1 - fabs(error)/1.5;
     float rhs = speed_delim * MOTOR_ON + (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
     float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
+
+//    if (speed_delim < .4)
+//    {
+//        //increase on time if we're going slow
+//        set_on_time(11);
+//    }
+//    else
+//    {
+//        //set back to normal if we're going at reasonable speed
+//        set_on_time(9);
+//    }
 
 //    sprintf(buffer, "rhs: %f, lhs: %f\r\n", rhs, lhs);
 //    WriteUART0(buffer);
