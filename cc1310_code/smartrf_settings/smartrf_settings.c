@@ -45,8 +45,6 @@ RF_Mode RF_prop =
     .rfePatchFxn = &rf_patch_rfe_genfsk,
 };
 
-
-
 // Overrides for CMD_PROP_RADIO_DIV_SETUP
 uint32_t pOverrides[] =
 {
@@ -90,9 +88,9 @@ uint32_t pOverrides[] =
     HW_REG_OVERRIDE(0x6084,0x35F1),
     // override_phy_gfsk_pa_ramp_agc_reflevel_0x1a.xml
     // Tx: Configure PA ramping setting (0x41). Rx: Set AGC reference level to 0x1A.
-    HW_REG_OVERRIDE(0x6088, 0x411A), //tried to overrid with 0x001A
+    HW_REG_OVERRIDE(0x6088,0x411A),
     // Tx: Configure PA ramping setting
-    HW_REG_OVERRIDE(0x608C,8213), //tried to override this
+    HW_REG_OVERRIDE(0x608C,0x8213),
     // override_phy_rx_rssi_offset_5db.xml
     // Rx: Set RSSI offset to adjust reported RSSI by +5 dB (default: 0), trimmed for external bias and differential configuration
     (uint32_t)0x00FB88A3,
@@ -102,7 +100,6 @@ uint32_t pOverrides[] =
     ADI_REG_OVERRIDE(0,12,0xF8),
 #endif
     (uint32_t)0xFFFFFFFF,
-//    (uint32_t)0x0000000F, //my attempt
 };
 
 
@@ -136,7 +133,7 @@ rfc_CMD_PROP_RADIO_DIV_SETUP_t RF_cmdPropRadioDivSetup =
     .config.biasMode = 0x1,
     .config.analogCfgMode = 0x0,
     .config.bNoFsPowerUp = 0x0,
-    .txPower = 0xA73F, //have tried to set txPower here
+    .txPower = 0xA73F,
     .pRegOverride = pOverrides,
     .centerFreq = 0x0364,
     .intFreq = 0x8000,
