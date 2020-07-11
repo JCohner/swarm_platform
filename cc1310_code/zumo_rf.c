@@ -181,7 +181,7 @@ void rf_main()
     if (sent_flag)
     {
         /* Set absolute TX time to utilize automatic power management */
-        time += (PACKET_INTERVAL_US * 4);
+        time += (PACKET_INTERVAL_US);
         RF_cmdNop.startTime = time;
 
         packet[0] = (uint8_t)(seqNumber >> 8);
@@ -190,7 +190,7 @@ void rf_main()
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdNop, RF_PriorityNormal,
                   &callback, 0);
 
-        WriteUART0("posting\r\n");
+//        WriteUART0("posting\r\n");
 
 
 
@@ -212,7 +212,7 @@ void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     {
         seqNumber++;
         GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
-        WriteUART0("AH SHOUTING\r\n");
+//        WriteUART0("AH SHOUTING\r\n");
 
 
     }
