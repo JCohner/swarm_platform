@@ -53,12 +53,12 @@ float read_line(uint32_t * vals)
     for (i = 0; i < 4; ++i)
     {
         int value = ordered_vals[i];
-        if (value > 250) //200// I've now made 220 match w upper end of grey
+        if (value > 700)
         {
             on_line = 1;
         }
 
-        if (value > 220) //150
+        if (value > 650)
         {
             avg += value * (i * 1000);
             sum += value;
@@ -138,14 +138,14 @@ void drive_line(float val, uint32_t * vals)
 //    uint8_t bias = get_prep_flag();
 //    uint8_t bias = 0;
     //normal lost line following
-    if ((fabs(error) == 1.5 || error == 0)){// && !bias) {
+    if ((fabs(error) == 1.5)){// && !bias) {
         if (error < 0){
 
-            WriteUART0("LL: turning clockwise");
+//            WriteUART0("LL: turning clockwise");
             rotate(1);
         }
         else if (error > 0){
-            WriteUART0("LL: turning CCW");
+//            WriteUART0("LL: turning CCW");
             rotate(0);
 
         }

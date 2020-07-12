@@ -12,11 +12,11 @@
 #include "helpful.h"
 #include "state_track.h"
 
-#define PURP_LOW 100
-#define PURP_HIGH 140
+#define PURP_LOW 325
+#define PURP_HIGH 425
 
-#define GREY_LOW 175
-#define GREY_HIGH 220
+#define GREY_LOW 450
+#define GREY_HIGH 600
 
 
 #define NUM_PREV_VALS 10

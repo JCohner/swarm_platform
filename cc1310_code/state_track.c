@@ -31,8 +31,8 @@ void inc_state()
     uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
     uint8_t detector = state_track.detect_flag;
 
-//    sprintf(buffer, "stator: %u\r\n",stator);
-//    WriteUART0(buffer);
+    sprintf(buffer, "stator: %u\r\n",stator);
+    WriteUART0(buffer);
 
     if (get_intersection_flag() && !get_actuation_flag() && get_detect_flag() && get_on_line_flag())
     {

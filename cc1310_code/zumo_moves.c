@@ -84,11 +84,11 @@ void rotate(int dir)
     if (dir)
     {
         dir = 1;
-        WriteUART0("turning CW\r\n");
+//        WriteUART0("turning CW\r\n");
     }
     else
     {
-        WriteUART0("turning CounterCW\r\n");
+//        WriteUART0("turning CounterCW\r\n");
     }
 
     setMotor(M1, dir, MOTOR_TURN);
@@ -128,6 +128,7 @@ void openloop_turn()
     uint8_t policy= get_policy();
     uint8_t ret_policy = get_return_policy();
 
+    //this gets the single bit rotation value we need
     uint8_t dir;
     if (!get_return_flag())
     {
@@ -138,19 +139,17 @@ void openloop_turn()
         dir = xc_state & ret_policy;
     }
 
+
     if (state && counter < (on_time + offset_time))
     {
-
         if (counter > offset_time)
         {
-            WriteUART0("ACTUATING\r\n");
-//            setMotor(M1, 0, MOTOR_OFF);
-//            setMotor(M2, 0, MOTOR_OFF);
-//            delay(1);
+//            WriteUART0("ACTUATING\r\n");
             rotate(dir);
         }
         else
         {
+            //drive forward cautiously
             setMotor(M1, 0, MOTOR_ON - 50);
             setMotor(M2, 0, MOTOR_ON - 50);
         }
@@ -179,41 +178,6 @@ void openloop_turn()
  *      if state change detected
  *
  */
-//void execute_policy()
-//{
-//    uint8_t xc_state = get_xc_state();
-//    uint8_t prev_xc_state=  get_prev_xc_state();
-//
-//    uint8_t ret_flag = get_return_flag();
-//
-//    uint8_t actuation_flag = get_actuation_flag();
-//
-////    sprintf(buffer, "xc: %u, prev: %u \t ret %u\r\n", xc_state, prev_xc_state, ret_flag);
-////    WriteUART0(buffer);
-//    if (xc_state != prev_xc_state && !actuation_flag)
-//    {
-//        GPIO_toggleDio(BLED3);
-//
-////        WriteUART0("state change detected\r\n");
-//        set_prep_flag(1);
-//    }
-//
-//    if (get_intersection_flag() && get_prep_flag())
-//    {
-////        WriteUART0("intersection detected\r\n");
-//        init_openloop();
-//        set_intersection_flag(0);
-//        set_prep_flag(0);
-//    }
-//
-//    set_prev_xc_state(xc_state);
-//    set_prev_return_flag(ret_flag);
-//
-////    update_prev_return_flag();
-//
-//    return;
-//}
-
 void manage_intersection()
 {
     uint8_t xc_state = get_xc_state();
