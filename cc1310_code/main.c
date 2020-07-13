@@ -20,8 +20,10 @@
 #include "ir_sense.h"
 #include "zumo_moves.h"
 #include "color_track.h"
-#include "rtc.h"
-#include "interrupt_timer.h"
+//#include "rtc.h"
+//#include "interrupt_timer.h"
+#include "comm_packet.h"
+
 
 static char buffer[60];
 uint32_t adc_vals[8];
@@ -81,7 +83,7 @@ int main(void)
 //      }
       //sets inital policy pursued by robot
       set_policy(0b10);
-
+      set_mach_id(2);
 //      InitRTC();
 //      InterTimerEnable();
 //      struct RTCVal time_prev = GetRTCVal();
@@ -101,8 +103,8 @@ int main(void)
 
 //          WriteRF(buffer);
 
-          WriteRFState(get_return_flag() << 2 | get_xc_state());
-
+//          WriteRFState(get_return_flag() << 2 | get_xc_state());
+          WriteRFPacket(get_packet());
           float IR_val = read_line(adc_vals);
 //          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
 //          WriteUART0(buffer);
