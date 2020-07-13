@@ -25,13 +25,14 @@ int main(void)
 
     InitUART0();
     rf_setup();
-
+    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
+    WriteUART0("got here\r\n");
       while(1)
       {
 //          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
           //proceed on space
 //          char data = UARTCharGet(UART0_BASE);
-
+//          WriteUART0("got here\r\n");
           rf_main();
       }
 
