@@ -120,6 +120,83 @@ rfc_CMD_COUNT_BRANCH_t RF_cmdCountBranch =
     .pNextOpIfOk              = 0, // Set this to (uint8_t*)&RF_cmdPropCs in the application
 };
 
+rfc_CMD_PROP_RX_SNIFF_t RF_cmdPropRxSniff =
+{
+ .commandNo = CMD_PROP_RX_SNIFF,
+ .status = 0x0000,
+ .pNextOp = 0, // INSERT APPLICABLE POINTER: (uint8_t*)&xxx
+ .startTime = 0x00000000,
+ .startTrigger.triggerType = TRIG_NOW,
+ .startTrigger.bEnaCmd = 0x0,
+ .startTrigger.triggerNo = 0x0,
+ .startTrigger.pastTrig = 0x0,
+ .condition.rule           = COND_SKIP_ON_FALSE, // Run next command if this command returned TRUE,
+                                                 // skip a number of commands (.condition.nSkip - 1) if it returned FALSE
+                                                 // End causes for the CMD_PROP_CS command:
+                                                 // Observed channel state Busy with csConf.busyOp = 1:                            PROP_DONE_BUSY        TRUE
+                                                 // 0bserved channel state Idle with csConf.idleOp = 1:                            PROP_DONE_IDLE        FALSE
+                                                 // Timeout trigger observed with channel state Busy:                              PROP_DONE_BUSY        TRUE
+                                                 // Timeout trigger observed with channel state Idle:                              PROP_DONE_IDLE        FALSE
+                                                 // Timeout trigger observed with channel state Invalid and csConf.timeoutRes = 0: PROP_DONE_BUSYTIMEOUT TRUE
+                                                 // Timeout trigger observed with channel state Invalid and csConf.timeoutRes = 1: PROP_DONE_IDLETIMEOUT FALSE
+                                                 // Received CMD_STOP after command started:
+ .condition.nSkip = 0x2,
+ //RX pktconft struct
+ .pktConf.bFsOff = 0x0,
+ .pktConf.bRepeatOk = 0x0,
+ .pktConf.bRepeatNok = 0x0,
+ .pktConf.bUseCrc = 0x1,
+ .pktConf.bVarLen = 0x1,
+ .pktConf.bChkAddress = 0x0,
+ .pktConf.endType = 0x0,
+ .pktConf.filterOp = 0x0,
+ .rxConf.bAutoFlushIgnored = 0x0,
+ .rxConf.bAutoFlushCrcErr = 0x0,
+ .rxConf.bIncludeHdr = 0x1,
+ .rxConf.bIncludeCrc = 0x0,
+ .rxConf.bAppendRssi = 0x0, //could append rssi value to packet in rx queue
+ .rxConf.bAppendTimestamp = 0x0,
+ .rxConf.bAppendStatus = 0x1,
+
+ /*CS Config*/
+ .csConf.bEnaRssi = 0x1,
+ .csConf.bEnaCorr = 0x0,
+ .csConf.operation = 0x1,
+ .csConf.busyOp = 0x1, //if busy no longer check carrier sense
+ .csConf.idleOp = 0x0, //end if channel idle
+ .csConf.timeoutRes = 0x0, //we want receive operation to continue
+ .rssiThr                  = 0x0, // Set the RSSI threshold in the application
+ .numRssiIdle              = 0x0, // Number of consecutive RSSI measurements - 1 below the threshold
+                                  // needed before the channel is declared Idle
+ .numRssiBusy              = 0x0, // Number of consecutive RSSI measurements -1 above the threshold
+                                  // needed before the channel is declared Busy
+
+
+.corrConfig.numCorrInv    = 0x0, // N/A since .csConf.bEnaCorr = 0
+.corrConfig.numCorrBusy   = 0x0, // N/A since .csConf.bEnaCorr = 0
+.csEndTrigger.triggerType = TRIG_REL_START, // Trigs at a time relative to the command started
+.csEndTrigger.bEnaCmd     = 0x0,
+.csEndTrigger.triggerNo   = 0x0,
+.csEndTrigger.pastTrig    = 0x0,
+.csEndTime                = 0x00000000, // Set the CS end time in the application
+
+ .syncWord = 0x930B51DE,
+ .maxPktLen = 0xFF, // MAKE SURE DATA ENTRY IS LARGE ENOUGH
+ .address0 = 0xAA,
+ .address1 = 0xBB,
+ .endTrigger.triggerType = TRIG_NEVER, //changed from TRIG_NEVER
+ .endTrigger.bEnaCmd = 0x1, //enable imediate command to kill this binch
+ .endTrigger.triggerNo = 0x1,
+ .endTrigger.pastTrig = 0x1,
+ .endTime = 0x00000000, //Set RX end time in application
+ .pQueue = 0, // INSERT APPLICABLE POINTER: (dataQueue_t*)&xxx
+ .pOutput = 0, // INSERT APPLICABLE POINTER: (uint8_t*)&xxx
+};
+
+
+
+
+
 rfc_CMD_FLUSH_QUEUE_t RF_cmdFlush =
 {
  .commandNo = 0x0007,
