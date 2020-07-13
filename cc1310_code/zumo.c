@@ -112,26 +112,24 @@ void drive_line(float val, uint32_t * vals)
     float rhs = speed_delim * MOTOR_ON + (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
     float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
 
-//    if (speed_delim < .4)
-//    {
-//        //increase on time if we're going slow
-//        set_on_time(11);
-//    }
-//    else
-//    {
-//        //set back to normal if we're going at reasonable speed
-//        set_on_time(9);
-//    }
+    if (lhs < MOTOR_ON)
+    {
+        setMotor(M2, 0, lhs);
+    }
+    else
+    {
+        setMotor(M2, 0, MOTOR_ON);
+    }
 
-//    sprintf(buffer, "rhs: %f, lhs: %f\r\n", rhs, lhs);
-//    WriteUART0(buffer);
+    if (rhs < MOTOR_ON)
+    {
+        setMotor(M1, 0, rhs);
+    }
+    else
+    {
+        setMotor(M1, 0, MOTOR_ON);
+    }
 
-//    if (get_actuation_flag())
-//    {
-//        return;
-//    }
-    setMotor(M2, 0, lhs);
-    setMotor(M1, 0, rhs);
 
     //if we've lost the line
 
