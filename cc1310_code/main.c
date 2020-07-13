@@ -21,7 +21,7 @@
 #include "zumo_moves.h"
 #include "color_track.h"
 //#include "rtc.h"
-//#include "interrupt_timer.h"
+#include "interrupt_timer.h"
 #include "comm_packet.h"
 
 
@@ -56,8 +56,6 @@ int main(void)
     ////pause until character entered
     //data = UARTCharGet(UART0_BASE);
 
-
-
     //light green LED to show setup is done
     GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
 
@@ -74,8 +72,8 @@ int main(void)
 //      test_leds();
 
       //sets open loop control characteristics
-      set_on_time(11);
-      set_offset_time(11);
+      set_on_time(300);
+      set_offset_time(500);
 //      init_openloop();
 //      while(1)
 //      {
@@ -83,9 +81,9 @@ int main(void)
 //      }
       //sets inital policy pursued by robot
       set_policy(0b10);
-      set_mach_id(2);
+      set_mach_id(1);
 //      InitRTC();
-//      InterTimerEnable();
+      InterTimerEnable();
 //      struct RTCVal time_prev = GetRTCVal();
       while(1)
       {
@@ -96,9 +94,9 @@ int main(void)
           ReadIR(adc_vals);
 
           //ODD IS LEFT
-//          sprintf(buffer,"%u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
-//                            adc_vals[0], adc_vals[2], adc_vals[4]);
-//          WriteUART0(buffer);
+          sprintf(buffer,"%u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
+                            adc_vals[0], adc_vals[2], adc_vals[4]);
+          WriteUART0(buffer);
 //          sprintf(buffer, "int: %u\r\ndet: %u\r\n, line:%u\r\n", )
 
 //          WriteRF(buffer);
@@ -113,7 +111,7 @@ int main(void)
           detect_xc(adc_vals);
           inc_state(); //if at intersection
           manage_intersection();
-          openloop_turn();
+//          openloop_turn();
 
 //          struct RTCVal time_curr = GetRTCVal();
 //          struct RTCVal delta_time = GetDeltaTime(time_prev, time_curr);
