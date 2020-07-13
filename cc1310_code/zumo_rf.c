@@ -174,7 +174,7 @@ void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
     {
         seqNumber++;
-        GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
+        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
         WriteUART0("ah shouting\r\n");
     }
 
@@ -187,7 +187,8 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     //if we successfully recevied
     if (e & RF_EventRxEntryDone)
     {
-        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
+        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+
         message_time = curr_count;
         delta_message_time = message_time - prev_message_time;
         prev_message_time = message_time;
@@ -201,18 +202,20 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
         RFQueue_nextEntry();
 
-        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
-        WriteUART0(buffer);
-        WriteUART0((char *) (packetDataPointer + 2));
+//        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
+//        WriteUART0(buffer);
+//        WriteUART0((char *) (packetDataPointer + 2));
 
-        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
-        WriteUART0(buffer);
+//        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
+//        WriteUART0(buffer);
+
+//        interpret_packet(*(packetDataPointer + 2));
 
         //on successful rx set resp flag high
         idle_count = 0;
         resp_flag = 1;
         heard_since_last = 1;
-        WriteUART0("heard from someone resp flag set high\r\n");
+//        WriteUART0("heard from someone resp flag set high\r\n");
     }
 }
 
