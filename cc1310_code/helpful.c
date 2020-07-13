@@ -40,30 +40,30 @@ uint32_t ticsToMicrosec(uint32_t tics)
 void EnableTimer()
 {
     //enable peripheral
-   PRCMPeripheralRunEnable(PRCM_PERIPH_TIMER1);
+   PRCMPeripheralRunEnable(PRCM_PERIPH_TIMER2);
    PRCMLoadSet();
    while ( !PRCMLoadGet() );
-   TimerDisable(GPT1_BASE,TIMER_A);
-   TimerConfigure(GPT1_BASE, TIMER_CFG_PERIODIC_UP);
-   TimerEnable(GPT1_BASE ,TIMER_A);
+   TimerDisable(GPT2_BASE,TIMER_A);
+   TimerConfigure(GPT2_BASE, TIMER_CFG_PERIODIC_UP);
+   TimerEnable(GPT2_BASE ,TIMER_A);
 }
 
 void SetTimerState(int timer_state_command)
 {
     if(timer_state_command)
     {
-        TimerDisable(GPT1_BASE,TIMER_A);
+        TimerDisable(GPT2_BASE,TIMER_A);
     }
     else
     {
-        TimerEnable(GPT1_BASE,TIMER_A);
+        TimerEnable(GPT2_BASE,TIMER_A);
     }
 
 }
 
 uint32_t GetTime()
 {
-    return TimerValueGet(GPT1_BASE ,TIMER_A);
+    return TimerValueGet(GPT2_BASE ,TIMER_A);
 }
 
 void print_array(uint16_t * array, uint8_t num_els)
