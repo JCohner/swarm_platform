@@ -74,38 +74,29 @@ static uint8_t
 rxDataEntryBuffer[RF_QUEUE_DATA_ENTRY_BUFFER_SIZE(NUM_DATA_ENTRIES,
                                                   PAYLOAD_LENGTH,
                                                   NUM_APPENDED_BYTES)];
-#elif defined(__GNUC__)
-static uint8_t
-rxDataEntryBuffer[RF_QUEUE_DATA_ENTRY_BUFFER_SIZE(NUM_DATA_ENTRIES,
-                                                  PAYLOAD_LENGTH,
-                                                  NUM_APPENDED_BYTES)]
-                                                  __attribute__((aligned(4)));
-#else
-#error This compiler is not supported
 #endif //defined(__TI_COMPILER_VERSION__)
 
 /***** Prototypes *****/
 //static void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
-void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
-void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
+void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
+void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 /*Globals for biosynchronicity*/
 //uint32_t curr_time;
 
-//uint32_t message_time;
-//uint32_t prev_message_time = 0;
-//uint32_t delta_message_time = 10;
-//uint32_t idle_count = 0;
-//uint32_t delta_message_time_buff[DELTA_TIME_BUFF_SIZE];
-//bool receive_buff_full_flag = false;
-//
-//uint32_t delta_message_time_average = 10;
-//uint32_t num_receives = 0;
+static uint32_t message_time;
+static  uint32_t prev_message_time = 0;
+static  uint32_t delta_message_time = 10;
+static  uint32_t idle_count = 0;
+static  uint32_t delta_message_time_buff[DELTA_TIME_BUFF_SIZE];
+static  bool receive_buff_full_flag = false;
+
+static uint32_t delta_message_time_average = 10;
+static uint32_t num_receives = 0;
 
 static uint8_t resp_flag;
-//uint8_t heard_since_last;
-//uint32_t curr_count = 0;
-//uint8_t period_flag = 1;
-
+static uint8_t heard_since_last;
+static uint32_t curr_count = 0;
+static uint8_t period_flag = 1;
 static uint8_t sent_flag;
 
 void rf_setup()
@@ -127,27 +118,32 @@ void rf_setup()
     triggerCmd.triggerNo = 1;
 
     /* Customize the CMD_PROP_TX command for this application */
-//    RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
-//    RF_cmdPropTx.pPkt = packet;
-//    RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
-
     RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
     RF_cmdPropTx.pPkt = packet;
-    RF_cmdNop.startTrigger.triggerType = TRIG_ABSTIME;
-    RF_cmdNop.startTrigger.pastTrig = 1;
+    RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
 
+    /* Modify CMD_PROP_TX and CMD_PROP_RX commands for application needs */
+    /* Set the Data Entity queue for received data */
+    RF_cmdPropRx.pQueue = &dataQueue;
+    /* Discard ignored packets from Rx queue */
+    RF_cmdPropRx.rxConf.bAutoFlushIgnored = 1;
+    /* Discard packets with CRC error from Rx queue */
+    RF_cmdPropRx.rxConf.bAutoFlushCrcErr = 1;
+    /* Implement packet length filtering to avoid PROP_ERROR_RXBUF */
+    RF_cmdPropRx.maxPktLen = PAYLOAD_LENGTH;
+    /* End RX operation when a packet is received correctly and move on to the
+     * next command in the chain */
+    RF_cmdPropRx.pktConf.bRepeatOk = 0;
+    RF_cmdPropRx.pktConf.bRepeatNok = 0; //just keeps listening after failed receive
+    RF_cmdPropRx.startTrigger.triggerType = TRIG_NOW;
+ //   RF_cmdPropRxSniff.pNextOp = (rfc_radioOp_t *)&RF_cmdPropTx;
+    /* Only run the TX command if RX is successful */
+ //   RF_cmdPropRxSniff.condition.rule = COND_SKIP_ON_FALSE;
+ //   RF_cmdPropRxSniff.condition.nSkip = 0x0; //repeat the rxsniff if it retruns idle
+    RF_cmdPropRx.pOutput = (uint8_t *)&rxStatistics;
 
-    /* Set up the next pointers for the command chain */
-    RF_cmdNop.pNextOp = (rfc_radioOp_t*)&RF_cmdPropCs;
-    RF_cmdPropCs.pNextOp = (rfc_radioOp_t*)&RF_cmdCountBranch;
-    RF_cmdCountBranch.pNextOp = (rfc_radioOp_t*)&RF_cmdPropTx;
-    RF_cmdCountBranch.pNextOpIfOk = (rfc_radioOp_t*)&RF_cmdPropCs;
-
-    /* Customize the API commands with application specific defines */
-    RF_cmdPropCs.rssiThr = RSSI_THRESHOLD_DBM;
-    RF_cmdPropCs.csEndTime = (IDLE_TIME_US + 150) * 4; /* Add some margin */
-    RF_cmdCountBranch.counter = CS_RETRIES_WHEN_BUSY;
-
+    RF_cmdFlush.pQueue = &dataQueue;
+    resp_flag = 1;
 
    rfHandle = RF_open(&rfObject, &RF_prop, (RF_RadioSetup*)&RF_cmdPropRadioDivSetup, &rfParams);
 
@@ -158,14 +154,9 @@ void rf_setup()
    sent_flag = 1;
 
    /* Get current time */
-   time = RF_getCurrentTime();
-   RF_postCmd(rfHandle, (RF_Op*)&RF_cmdNop, RF_PriorityNormal,
-             &callback, 0);
-   //MIGHT WANNA SWITCH THIS INITAL TX TO AN INITAL NOP CALL
-//   sprintf((packet + 2), "MACH: 0\r\n"); //TODO: would be nice tie to serial number of guy
-   /*init shout*/
-//   RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-//                         &callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+//   time = RF_getCurrentTime();
+   RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+                         &TX_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 }
 RF_CmdHandle rxCommandHandle;
 RF_CmdHandle txCommandHandle;
@@ -173,60 +164,60 @@ RF_EventMask events;
 
 
 
-
+//uint32_t curr_count = 0;
+char trigNo = 0;
 char buffer[50];
 void rf_main()
 {
     /* Create packet with incrementing sequence number & random payload */
-    if (sent_flag)
+    packet[0] = (uint8_t)(seqNumber >> 8);
+    packet[1] = (uint8_t)(seqNumber);
+
+    curr_count++; //TODO: just use mains
+
+    //if response received issue new RxSniff
+    if (resp_flag)
     {
-        /* Set absolute TX time to utilize automatic power management */
-        time += (PACKET_INTERVAL_US);
-        RF_cmdNop.startTime = time;
-
-        packet[0] = (uint8_t)(seqNumber >> 8);
-        packet[1] = (uint8_t)(seqNumber);
-
-        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdNop, RF_PriorityNormal,
-                  &callback, 0);
-
-//        WriteUART0("posting\r\n");
-
-
-
-
-//        sprintf((packet + 2), "%u %u %u\r\n", get_policy(), get_target_flag(), (get_return_flag() << 2 | get_xc_state()));
-
-//        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-//                                             &sneeze_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
-        sent_flag = 0;
+        rxCommandHandle =
+            RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRxSniff, RF_PriorityNormal,
+              &RX_callback, (RF_EventCmdDone |
+                      RF_EventLastCmdDone | RF_EventRxEntryDone));
+        resp_flag = 0;
     }
-}
-
-
-
-void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
-{
-//    if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
-    if ((e & RF_EventLastCmdDone) && (RF_cmdPropTx.status == PROP_DONE_OK))
+    //if no response increment idle counter
+    if (resp_flag == 0)
     {
-        seqNumber++;
-        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
-//        WriteUART0("AH SHOUTING\r\n");
-
-
+        idle_count++;
+    }
+    sprintf(buffer, "idle count is: %u\n\rcurr count is: %u\r\ndelta message time: %u\r\n", idle_count, curr_count, delta_message_time);
+    WriteUART0(buffer);
+    //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
+    if ((idle_count > delta_message_time/2) && (heard_since_last == 1))
+    {
+        RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
+        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+                                 &TX_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+        resp_flag = 1;
+        idle_count = 0;
+        heard_since_last = 0;
     }
 
-    //encode logic for the other states (ie when the carrier sense detects the line is busy
+    //if you havent heard from anyone and idle count is greater than idle max, chirp
+    if (idle_count > IDLE_MAX)
+    {
+        RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
+        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+                                 &TX_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+        resp_flag = 1;
+        idle_count = 0;
+    }
 
-    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
 
-    RF_cmdNop.status = IDLE;
-    RF_cmdPropCs.status = IDLE;
-    RF_cmdCountBranch.status = IDLE;
-    RF_cmdPropTx.status = IDLE;
-    RF_cmdCountBranch.counter = CS_RETRIES_WHEN_BUSY;
-    sent_flag = 1;
+    if (rxCommandHandle < 0)
+    {
+        WriteUART0("queue full\r\n");
+    }
+
 }
 
 
@@ -244,8 +235,69 @@ void WriteRFState(uint8_t state)
     packet[2] = state;
 }
 
+void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
+{
+    if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
+    {
+        seqNumber++;
+        GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
+        WriteUART0("ah shouting\r\n");
+    }
 
-//void sniff_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
-//{
-//}
+}
+
+void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
+{
+    sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
+    WriteUART0(buffer);
+
+    //fuck this for rn
+//    //if sniff returned idle
+//    if(RF_cmdPropRxSniff.status == PROP_DONE_IDLE)
+//    {
+//        idle_count++;
+//        sprintf(buffer, "idle count at: %u\r\n", idle_count);
+//        WriteUART0(buffer);
+//        resp_flag = 0;
+//    }
+
+//    //if sniff returned bsy
+//    if(RF_cmdPropRxSniff.status == PROP_DONE_BUSY)
+//    {
+//        WriteUART0("line busy\r\n");
+//        resp_flag = 1;
+//    }
+//
+
+    //if we successfully recevied
+    if (e & RF_EventRxEntryDone)
+    {
+        GPIO_clearDio(CC1310_LAUNCHXL_PIN_RLED);
+        message_time = curr_count;
+        delta_message_time = message_time - prev_message_time;
+        prev_message_time = message_time;
+        /* Get current unhandled data entry */
+        currentDataEntry = RFQueue_getDataEntry();
+
+        /* Handle the packet data, located at &currentDataEntry->data:
+         * - Length is the first byte with the current configuration
+         * - Data starts from the second byte */
+        packetLength      = *(uint8_t *)(&(currentDataEntry->data));
+        packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
+        RFQueue_nextEntry();
+
+        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
+        WriteUART0(buffer);
+        WriteUART0((char *) (packetDataPointer + 2));
+
+        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
+        WriteUART0(buffer);
+
+        //on successful rx set resp flag high
+        idle_count = 0;
+        resp_flag = 1;
+        heard_since_last = 1;
+        WriteUART0("heard from someone resp flag set high\r\n");
+    }
+}
 
