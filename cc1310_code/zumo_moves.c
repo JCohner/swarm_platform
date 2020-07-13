@@ -11,8 +11,8 @@
 static uint32_t on_time = 0;
 static uint16_t reset_time = 0;
 static uint16_t offset_time = 0;
-static uint32_t counter = 0;
-static uint8_t state = 0;
+static volatile uint32_t counter = 0;
+static volatile uint8_t state = 0;
 
 
 void setMotor(int motor, int dir, int value)
@@ -89,6 +89,7 @@ void rotate(int dir)
     else
     {
 //        WriteUART0("turning CounterCW\r\n");
+        ;
     }
 
     setMotor(M1, dir, MOTOR_TURN);
@@ -139,7 +140,8 @@ void openloop_turn()
         dir = xc_state & ret_policy;
     }
 
-
+    //it is recommended that clearing the interrupt flag is not the last command
+    TimerIntClear(GPT1_BASE, TIMER_TIMA_TIMEOUT);
     if (state && counter < (on_time + offset_time))
     {
         if (counter > offset_time)
@@ -150,8 +152,8 @@ void openloop_turn()
         else
         {
             //drive forward cautiously
-            setMotor(M1, 0, MOTOR_ON - 50);
-            setMotor(M2, 0, MOTOR_ON - 50);
+            setMotor(M1, 0, MOTOR_ON);
+            setMotor(M2, 0, MOTOR_ON);
         }
 
         counter++;
@@ -169,6 +171,13 @@ void openloop_turn()
         set_actuation_flag(0);
         state = 0;
     }
+
+
+
+//    if(state)
+//    {
+//        WriteUART0("hi\r\n");
+//    }
 
     return;
 }
