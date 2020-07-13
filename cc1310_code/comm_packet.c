@@ -23,3 +23,14 @@ uint8_t get_packet()
     return  mach_id << 6 | get_target_flag() << 5 | get_policy() << 3 | stator;
 
 }
+
+void interpret_packet(uint8_t packet)
+{
+    //if target flag of packet is high& yours is not
+    if (packet & 0x20 && !get_target_flag())
+    {
+        //set their policy as your own policy
+        uint8_t policy = packet & 0x18;
+        set_policy(policy);
+    }
+}

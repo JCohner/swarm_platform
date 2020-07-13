@@ -18,5 +18,6 @@
 
 uint8_t get_packet();
 void set_mach_id(uint8_t id);
+void interpret_packet(uint8_t packet);
 
 #endif /* COMM_PACKET_H_ */
