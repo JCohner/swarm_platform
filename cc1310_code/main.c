@@ -58,30 +58,21 @@ int main(void)
 
     //light green LED to show setup is done
     GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
-
-//
 //      callibrate();
-//      GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
-
-      //returns frequency of system clock: 48 MHz rn
-//      uint32_t freq = SysCtrlClockGet();
-//      sprintf(buffer, "freq: %u\r\n", freq);
-//      WriteUART0(buffer);
-//      while(1);
-
 //      test_leds();
 
       //sets open loop control characteristics
       set_on_time(300);
       set_offset_time(500);
-//      init_openloop();
-//      while(1)
-//      {
-//          openloop_turn();
-//      }
+
       //sets inital policy pursued by robot
-      set_policy(0b10);
+      set_policy(0b01);
       set_mach_id(1);
+
+//
+//      set_policy(0b10);
+//      set_mach_id(2);
+
 //      InitRTC();
       InterTimerEnable();
 //      struct RTCVal time_prev = GetRTCVal();
@@ -94,32 +85,25 @@ int main(void)
           ReadIR(adc_vals);
 
           //ODD IS LEFT
-          sprintf(buffer,"%u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
-                            adc_vals[0], adc_vals[2], adc_vals[4]);
-          WriteUART0(buffer);
+//          sprintf(buffer,"%u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
+//                            adc_vals[0], adc_vals[2], adc_vals[4]);
+//          WriteUART0(buffer);
 //          sprintf(buffer, "int: %u\r\ndet: %u\r\n, line:%u\r\n", )
 
 //          WriteRF(buffer);
 
 //          WriteRFState(get_return_flag() << 2 | get_xc_state());
           WriteRFPacket(get_packet());
+
           float IR_val = read_line(adc_vals);
 //          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
 //          WriteUART0(buffer);
           drive_line(IR_val, adc_vals);
+
           detect_poi(adc_vals);
           detect_xc(adc_vals);
           inc_state(); //if at intersection
           manage_intersection();
-//          openloop_turn();
-
-//          struct RTCVal time_curr = GetRTCVal();
-//          struct RTCVal delta_time = GetDeltaTime(time_prev, time_curr);
-
-//          sprintf(buffer, "delt_sec: %u\r\ndelt_frac: %u\r\n", delta_time.sec, delta_time.frac);
-//          WriteUART0(buffer);
-//          time_prev = time_curr;
-
       }
 
 
