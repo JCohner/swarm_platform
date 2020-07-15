@@ -108,7 +108,7 @@ void rf_main()
     if (resp_flag)
     {
         rxCommandHandle =
-            RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRxSniff, RF_PriorityNormal,
+            RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropRx, RF_PriorityNormal,
               &RX_callback, (RF_EventCmdDone |
                       RF_EventLastCmdDone | RF_EventRxEntryDone));
         resp_flag = 0;
@@ -118,8 +118,8 @@ void rf_main()
     {
         idle_count++;
     }
-    sprintf(buffer, "idle count is: %u\n\rcurr count is: %u\r\ndelta message time: %u\r\n", idle_count, curr_count, delta_message_time);
-    WriteUART0(buffer);
+//    sprintf(buffer, "idle count is: %u\n\rcurr count is: %u\r\ndelta message time: %u\r\n", idle_count, curr_count, delta_message_time);
+//    WriteUART0(buffer);
     //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
     if ((idle_count > delta_message_time/2) && (heard_since_last == 1))
     {
@@ -182,7 +182,7 @@ void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
 void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {
-    sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRxSniff.status);
+    sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRx.status);
     WriteUART0(buffer);
     //if we successfully recevied
     if (e & RF_EventRxEntryDone)
@@ -209,13 +209,17 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
 //        WriteUART0(buffer);
 
-//        interpret_packet(*(packetDataPointer + 2));
+        interpret_packet(*(packetDataPointer + 2));
 
         //on successful rx set resp flag high
         idle_count = 0;
         resp_flag = 1;
         heard_since_last = 1;
-//        WriteUART0("heard from someone resp flag set high\r\n");
+
+
+        WriteUART0("heard from someone resp flag set high\r\n");
     }
+
+//    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
 }
 
