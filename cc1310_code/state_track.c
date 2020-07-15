@@ -31,36 +31,31 @@ void inc_state()
     uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
     uint8_t detector = state_track.detect_flag;
 
-    sprintf(buffer, "stator: %u\r\n",stator);
-    WriteUART0(buffer);
+//    sprintf(buffer, "stator: %u\r\n",stator);
+//    WriteUART0(buffer);
 
     if (get_intersection_flag() && !get_actuation_flag() && get_detect_flag() && get_on_line_flag())
     {
-        //stash next decision
-//        uint8_t dir;
-//        if (!get_return_flag())
-//        {
-//            dir = state_track.xc_state & state_track.policy;
-//        }
-//        else
-//        {
-//            dir = state_track.xc_state & state_track.return_policy;
-//        }
-//        state_track.next_dir = dir;
-
         switch(stator)
         {
-            case 0b010:
+            case 0b010: //2
                 state_track.return_flag = 0b1;
                 state_track.xc_state = 0b01;
                 break;
-            case 0b101:
+            case 0b101: //5
                 state_track.return_flag = 0b1;
                 state_track.xc_state = 0b10;
                 break;
-            case 0b110:
+            case 0b110: //6
                 state_track.return_flag = 0b0;
                 state_track.xc_state = 0b01;
+
+                //noting that a loop is completed now update policy based on neighbor feedback
+                if (get_neighbor_target_flag())
+                {
+                    set_policy(get_neighbor_target_policy());
+                }
+
                 break;
             case 0b001:
                 state_track.return_flag = 0b0;
@@ -117,6 +112,7 @@ void set_xc_state(uint8_t state)
 {
     state_track.xc_state = state & 0x03;
 }
+
 
 uint8_t get_xc_state()
 {
@@ -206,7 +202,22 @@ uint8_t get_on_line_flag()
     return state_track.on_line_flag;
 }
 
-//uint8_t get_next_dir()
-//{
-//    return state_track.next_dir;
-//}
+void set_neighbor_target_policy(uint8_t policy)
+{
+    state_track.neighbor_target_policy = policy & 0x3;
+}
+
+uint8_t get_neighbor_target_policy()
+{
+    return state_track.neighbor_target_policy;
+}
+
+uint8_t get_neighbor_target_flag()
+{
+    return state_track.neighbor_target_flag;
+}
+void set_neighbor_target_flag(uint8_t flag)
+{
+    state_track.neighbor_target_flag = flag;
+}
+

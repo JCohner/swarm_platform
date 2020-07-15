@@ -11,11 +11,6 @@
 #include <stdint.h>
 #include "gpio.h"
 #include "helpful.h"
-#define NO_DETECT 0b00
-#define DETECT_0 0b01 //first intersection marker on left
-#define DETECT_1 0b10 //second intersection marker on right
-
-//extern struct ColorTrack;
 
 struct StateTrack{
     //policy and target bits
@@ -33,10 +28,9 @@ struct StateTrack{
     uint8_t detect_flag : 1; //raised when grey detected
     uint8_t intersection_flag : 1; //rasied when white intersection detected
 
+    uint8_t neighbor_target_policy : 2; //this is the policy heard from another bot that has found target
+    uint8_t neighbor_target_flag : 1; //flag that indicates another bot found target
 
-//    uint8_t prep_flag: 1; //indicates grey pre white detected
-
-//    uint8_t next_dir : 1;
     uint8_t on_line_flag : 1; // raised if robot on line
     uint8_t actuation_flag : 1; //raised if: xc_state != prev_xc_state || ret_flag != prev_ret_flag
                                    // in execute_policy() in zumo_moves
@@ -76,7 +70,11 @@ uint8_t get_intersection_flag();
 void set_on_line_flag(uint8_t flag);
 uint8_t get_on_line_flag();
 
-uint8_t get_next_dir();
+void set_neighbor_target_policy(uint8_t policy);
+uint8_t get_neighbor_target_policy();
+
+uint8_t get_neighbor_target_flag();
+void set_neighbor_target_flag(uint8_t flag);
 
 void evaluate_state();
 void inc_state();
