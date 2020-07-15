@@ -182,8 +182,8 @@ void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
 void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {
-    sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRx.status);
-    WriteUART0(buffer);
+//    sprintf(buffer, "sniff status code is: %X\r\n", RF_cmdPropRx.status);
+//    WriteUART0(buffer);
     //if we successfully recevied
     if (e & RF_EventRxEntryDone)
     {
@@ -217,7 +217,7 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         heard_since_last = 1;
 
 
-        WriteUART0("heard from someone resp flag set high\r\n");
+//        WriteUART0("heard from someone resp flag set high\r\n");
     }
 
 //    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
