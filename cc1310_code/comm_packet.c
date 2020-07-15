@@ -7,6 +7,7 @@
 
 
 #include "comm_packet.h"
+#include "uart.h"
 
 static uint8_t mach_id;
 
@@ -29,8 +30,11 @@ void interpret_packet(uint8_t packet)
     //if target flag of packet is high& yours is not
     if (packet & 0x20 && !get_target_flag())
     {
+        set_neighbor_target_flag(1);
         //set their policy as your own policy
-        uint8_t policy = packet & 0x18;
-        set_policy(policy);
+        uint8_t policy = (packet & 0x18) >> 3;
+        set_neighbor_target_policy(policy);
     }
+
+//    WriteUART0("hiyo\r\n");
 }
