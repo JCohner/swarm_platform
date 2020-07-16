@@ -17,7 +17,6 @@ void delay(float sec)
 //    sprintf(buffer, "num ticks: %u\r\n", num_ticks);
 //    WriteUART0(buffer);
 
-
     uint32_t curr_time = 0;
 
     while ((curr_time) < num_ticks){
