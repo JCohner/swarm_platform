@@ -238,6 +238,25 @@
 <smd name="36" x="3.435" y="2.75" dx="0.86" dy="0.26" layer="1" roundness="25"/>
 <smd name="49" x="0" y="0" dx="5.15" dy="5.15" layer="1" cream="no"/>
 </package>
+<package name="ANTENNA">
+<dimension x1="0" y1="0" x2="0" y2="25" x3="41" y3="12.5" textsize="1.27" layer="21"/>
+<dimension x1="0" y1="0" x2="0" y2="9" x3="-11" y3="4.5" textsize="1.27" layer="21"/>
+<dimension x1="0" y1="0" x2="0" y2="1" x3="-10" y3="0.5" textsize="1.27" layer="21"/>
+<dimension x1="0" y1="4" x2="18" y2="4" x3="9" y3="-7" textsize="1.27" layer="21"/>
+<rectangle x1="0" y1="1" x2="2" y2="10" layer="1"/>
+<rectangle x1="0" y1="8" x2="18" y2="10" layer="1"/>
+<dimension x1="18" y1="9" x2="18" y2="12" x3="29" y3="10.5" textsize="1.27" layer="21"/>
+<rectangle x1="16" y1="8" x2="18" y2="15" layer="1"/>
+<dimension x1="18" y1="14" x2="-20" y2="14" x3="-1" y3="26" textsize="1.27" layer="21"/>
+<rectangle x1="-19" y1="13" x2="18" y2="15" layer="1"/>
+<dimension x1="-20" y1="14" x2="-20" y2="17" x3="-31" y3="15.5" textsize="1.27" layer="21"/>
+<rectangle x1="-20" y1="13" x2="-18" y2="20" layer="1"/>
+<rectangle x1="-20" y1="18" x2="18" y2="20" layer="1"/>
+<dimension x1="18" y1="19" x2="18" y2="22" x3="31" y3="20.5" textsize="1.27" layer="21"/>
+<rectangle x1="16" y1="18" x2="18" y2="25" layer="1"/>
+<rectangle x1="-20" y1="23" x2="18" y2="25" layer="1"/>
+<smd name="A" x="1" y="1" dx="1.4" dy="1.15" layer="1"/>
+</package>
 </packages>
 <symbols>
 <symbol name="CC1310">
@@ -294,6 +313,15 @@
 <pin name="DIO28" x="-12.7" y="-43.18" length="middle" rot="R180"/>
 <pin name="DIO29" x="-12.7" y="-45.72" length="middle" rot="R180"/>
 <pin name="DIO30" x="-12.7" y="-48.26" length="middle" rot="R180"/>
+</symbol>
+<symbol name="ANTENNA">
+<text x="-7.62" y="7.62" size="1.27" layer="95">&gt;NAME</text>
+<pin name="P$1" x="-5.08" y="0" length="middle"/>
+<circle x="7.62" y="0" radius="8.032184375" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-7.62" x2="7.62" y2="0" width="0.254" layer="94"/>
+<wire x1="7.62" y1="0" x2="10.16" y2="2.54" width="0.254" layer="94"/>
+<wire x1="7.62" y1="0" x2="5.08" y2="2.54" width="0.254" layer="94"/>
+<wire x1="7.62" y1="0" x2="7.62" y2="2.54" width="0.254" layer="94"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -353,6 +381,21 @@
 <connect gate="G$1" pin="X32K_Q2" pad="5"/>
 <connect gate="G$1" pin="X48M_N" pad="46"/>
 <connect gate="G$1" pin="X48M_P" pad="47"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="ANTENNA">
+<gates>
+<gate name="G$1" symbol="ANTENNA" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="ANTENNA">
+<connects>
+<connect gate="G$1" pin="P$1" pad="A"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -9549,6 +9592,7 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 <part name="C14" library="Swarm" deviceset="C-US" device="025-024X044" package3d_urn="urn:adsk.eagle:package:23630/1"/>
 <part name="GND8" library="Swarm" deviceset="GND" device=""/>
 <part name="GND9" library="Swarm" deviceset="GND" device=""/>
+<part name="U$3" library="CC1310F128RGZT" deviceset="ANTENNA" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9670,6 +9714,9 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 </instance>
 <instance part="GND9" gate="1" x="325.12" y="53.34" smashed="yes">
 <attribute name="VALUE" x="322.58" y="50.8" size="1.778" layer="96"/>
+</instance>
+<instance part="U$3" gate="G$1" x="345.44" y="73.66" smashed="yes">
+<attribute name="NAME" x="337.82" y="81.28" size="1.27" layer="95"/>
 </instance>
 </instances>
 <busses>
@@ -10063,8 +10110,10 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 <wire x1="314.96" y1="71.12" x2="325.12" y2="71.12" width="0.1524" layer="91"/>
 <pinref part="C14" gate="G$1" pin="1"/>
 <wire x1="325.12" y1="71.12" x2="325.12" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="325.12" y1="71.12" x2="335.28" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="325.12" y1="71.12" x2="340.36" y2="71.12" width="0.1524" layer="91"/>
 <junction x="325.12" y="71.12"/>
+<pinref part="U$3" gate="G$1" pin="P$1"/>
+<wire x1="340.36" y1="71.12" x2="340.36" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
