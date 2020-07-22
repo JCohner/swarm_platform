@@ -18,5 +18,9 @@ maps/*.png
 maps/tests
 maps/swatches
 maps/open_loop_tests
-maps/arena/arena_[3,4,5].svg
+# maps/arena/arena_[3,4,5].svg
 maps/arena/arena_old
+
+#ignore eagle backups
+*.s#*
+*.l#*
