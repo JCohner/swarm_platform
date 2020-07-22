@@ -16424,6 +16424,18 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <smd name="36" x="3.435" y="2.75" dx="0.86" dy="0.26" layer="1" roundness="25"/>
 <smd name="49" x="0" y="0" dx="5.15" dy="5.15" layer="1" cream="no"/>
 </package>
+<package name="R0402_US">
+<smd name="P$1" x="-0.5" y="0" dx="0.5" dy="0.6" layer="1" cream="no"/>
+<smd name="P$2" x="0.5" y="0" dx="0.5" dy="0.6" layer="1" cream="no"/>
+<text x="1" y="0.25" size="0.2" layer="25">&gt;NAME</text>
+<text x="1" y="0" size="0.2" layer="27">&gt;VALUE</text>
+</package>
+<package name="R0603_US">
+<smd name="P$1" x="-0.725" y="0" dx="0.65" dy="0.9" layer="1" cream="no"/>
+<smd name="P$2" x="0.725" y="0" dx="0.65" dy="0.9" layer="1" cream="no"/>
+<text x="1.45" y="0.725" size="0.25" layer="25">&gt;NAME</text>
+<text x="1.45" y="0.3625" size="0.25" layer="27">&gt;VALUE</text>
+</package>
 </packages>
 <symbols>
 <symbol name="C-US">
@@ -16505,9 +16517,24 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <pin name="DIO29" x="-12.7" y="-45.72" length="middle" rot="R180"/>
 <pin name="DIO30" x="-12.7" y="-48.26" length="middle" rot="R180"/>
 </symbol>
+<symbol name="R-US">
+<wire x1="-2.54" y1="0" x2="-2.159" y2="1.016" width="0.2032" layer="94"/>
+<wire x1="-2.159" y1="1.016" x2="-1.524" y2="-1.016" width="0.2032" layer="94"/>
+<wire x1="-1.524" y1="-1.016" x2="-0.889" y2="1.016" width="0.2032" layer="94"/>
+<wire x1="-0.889" y1="1.016" x2="-0.254" y2="-1.016" width="0.2032" layer="94"/>
+<wire x1="-0.254" y1="-1.016" x2="0.381" y2="1.016" width="0.2032" layer="94"/>
+<wire x1="0.381" y1="1.016" x2="1.016" y2="-1.016" width="0.2032" layer="94"/>
+<wire x1="1.016" y1="-1.016" x2="1.651" y2="1.016" width="0.2032" layer="94"/>
+<wire x1="1.651" y1="1.016" x2="2.286" y2="-1.016" width="0.2032" layer="94"/>
+<wire x1="2.286" y1="-1.016" x2="2.54" y2="0" width="0.2032" layer="94"/>
+<text x="-3.81" y="1.4986" size="1.778" layer="95">&gt;NAME</text>
+<text x="-3.81" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
+<pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
+</symbol>
 </symbols>
 <devicesets>
-<deviceset name="C-US">
+<deviceset name="C-US" prefix="C" uservalue="yes">
 <gates>
 <gate name="G$1" symbol="C-US" x="0" y="0"/>
 </gates>
@@ -16611,6 +16638,31 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 </device>
 </devices>
 </deviceset>
+<deviceset name="R-US">
+<gates>
+<gate name="G$1" symbol="R-US" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="R0603_US">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+<connect gate="G$1" pin="2" pad="P$2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="&quot;" package="R0402_US">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+<connect gate="G$1" pin="2" pad="P$2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -16624,7 +16676,7 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 </classes>
 <parts>
 <part name="U$1" library="learning_particle" deviceset="CC1310" device=""/>
-<part name="R1" library="Swarm" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="100K"/>
+<part name="R1" library="learning_particle" deviceset="R-US" device="&quot;" value="100K"/>
 <part name="C1" library="learning_particle" deviceset="C-US" device="" value="100nF"/>
 <part name="GND1" library="Swarm" deviceset="GND" device=""/>
 <part name="GND2" library="Swarm" deviceset="GND" device=""/>
@@ -16670,7 +16722,7 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <part name="GND15" library="Swarm" deviceset="GND" device=""/>
 <part name="C17" library="Swarm" deviceset="CPOL-US" device="E2.5-6" package3d_urn="urn:adsk.eagle:package:23349/1"/>
 <part name="GND16" library="Swarm" deviceset="GND" device=""/>
-<part name="C18" library="learning_particle" deviceset="C-US" device="" value="34nF"/>
+<part name="C18" library="learning_particle" deviceset="C-US" device="" value="22nF"/>
 <part name="C19" library="learning_particle" deviceset="C-US" device="" value="100nF"/>
 <part name="C20" library="learning_particle" deviceset="C-US" device="" value="100nF"/>
 <part name="C21" library="learning_particle" deviceset="C-US" device="" value="100nF"/>
@@ -16688,7 +16740,7 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <part name="GND23" library="Swarm" deviceset="GND" device=""/>
 <part name="GND24" library="Swarm" deviceset="GND" device=""/>
 <part name="PW_SW" library="Swarm" deviceset="SWITCH_JS202011SCQN" device=""/>
-<part name="R2" library="Swarm" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="220"/>
+<part name="R2" library="Swarm" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="147"/>
 <part name="GND25" library="Swarm" deviceset="GND" device=""/>
 <part name="GND26" library="Swarm" deviceset="GND" device=""/>
 <part name="GND27" library="Swarm" deviceset="GND" device=""/>
@@ -16701,7 +16753,7 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <part name="EL" library="Swarm" deviceset="IR_LED" device=""/>
 <part name="ML" library="Swarm" deviceset="IR_LED" device=""/>
 <part name="CL" library="Swarm" deviceset="IR_LED" device=""/>
-<part name="R6" library="Swarm" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="220"/>
+<part name="R6" library="Swarm" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="147"/>
 <part name="GND28" library="Swarm" deviceset="GND" device=""/>
 <part name="GND29" library="Swarm" deviceset="GND" device=""/>
 <part name="GND30" library="Swarm" deviceset="GND" device=""/>
@@ -17635,6 +17687,16 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <wire x1="363.22" y1="-2.54" x2="365.76" y2="-2.54" width="0.1524" layer="91"/>
 <label x="363.22" y="-2.54" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="R2" gate="G$1" pin="2"/>
+<wire x1="251.46" y1="2.54" x2="236.22" y2="2.54" width="0.1524" layer="91"/>
+<label x="238.76" y="2.54" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="R6" gate="G$1" pin="2"/>
+<wire x1="327.66" y1="2.54" x2="314.96" y2="2.54" width="0.1524" layer="91"/>
+<label x="317.5" y="2.54" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="N$24" class="0">
 <segment>
@@ -17707,16 +17769,6 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <pinref part="DRV8835" gate="G$1" pin="VM"/>
 <wire x1="99.06" y1="-12.7" x2="114.3" y2="-12.7" width="0.1524" layer="91"/>
 <label x="109.22" y="-12.7" size="1.778" layer="95"/>
-</segment>
-<segment>
-<wire x1="226.06" y1="2.54" x2="251.46" y2="2.54" width="0.1524" layer="91"/>
-<pinref part="R2" gate="G$1" pin="2"/>
-<label x="226.06" y="5.08" size="1.778" layer="95"/>
-</segment>
-<segment>
-<wire x1="302.26" y1="2.54" x2="327.66" y2="2.54" width="0.1524" layer="91"/>
-<pinref part="R6" gate="G$1" pin="2"/>
-<label x="302.26" y="5.08" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="U$9" gate="G$1" pin="1.POS"/>
