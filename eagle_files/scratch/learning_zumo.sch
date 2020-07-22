@@ -8,34 +8,34 @@
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
-<layer number="2" name="Route2" color="16" fill="1" visible="yes" active="no"/>
-<layer number="3" name="Route3" color="17" fill="1" visible="yes" active="no"/>
-<layer number="4" name="Route4" color="18" fill="1" visible="yes" active="no"/>
-<layer number="5" name="Route5" color="19" fill="1" visible="yes" active="no"/>
-<layer number="6" name="Route6" color="25" fill="1" visible="yes" active="no"/>
-<layer number="7" name="Route7" color="26" fill="1" visible="yes" active="no"/>
-<layer number="8" name="Route8" color="27" fill="1" visible="yes" active="no"/>
-<layer number="9" name="Route9" color="28" fill="1" visible="yes" active="no"/>
-<layer number="10" name="Route10" color="29" fill="1" visible="yes" active="no"/>
-<layer number="11" name="Route11" color="30" fill="1" visible="yes" active="no"/>
-<layer number="12" name="Route12" color="20" fill="1" visible="yes" active="no"/>
-<layer number="13" name="Route13" color="21" fill="1" visible="yes" active="no"/>
-<layer number="14" name="Route14" color="22" fill="1" visible="yes" active="no"/>
-<layer number="15" name="Route15" color="23" fill="1" visible="yes" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
-<layer number="20" name="Dimension" color="24" fill="1" visible="yes" active="no"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
+<layer number="2" name="Route2" color="16" fill="1" visible="no" active="no"/>
+<layer number="3" name="Route3" color="17" fill="1" visible="no" active="no"/>
+<layer number="4" name="Route4" color="18" fill="1" visible="no" active="no"/>
+<layer number="5" name="Route5" color="19" fill="1" visible="no" active="no"/>
+<layer number="6" name="Route6" color="25" fill="1" visible="no" active="no"/>
+<layer number="7" name="Route7" color="26" fill="1" visible="no" active="no"/>
+<layer number="8" name="Route8" color="27" fill="1" visible="no" active="no"/>
+<layer number="9" name="Route9" color="28" fill="1" visible="no" active="no"/>
+<layer number="10" name="Route10" color="29" fill="1" visible="no" active="no"/>
+<layer number="11" name="Route11" color="30" fill="1" visible="no" active="no"/>
+<layer number="12" name="Route12" color="20" fill="1" visible="no" active="no"/>
+<layer number="13" name="Route13" color="21" fill="1" visible="no" active="no"/>
+<layer number="14" name="Route14" color="22" fill="1" visible="no" active="no"/>
+<layer number="15" name="Route15" color="23" fill="1" visible="no" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
+<layer number="20" name="Dimension" color="24" fill="1" visible="no" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="no" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -44,8 +44,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -53,19 +53,19 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="no"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
-<layer number="57" name="tCAD" color="7" fill="1" visible="yes" active="no"/>
-<layer number="59" name="tCarbon" color="7" fill="1" visible="yes" active="no"/>
-<layer number="60" name="bCarbon" color="7" fill="1" visible="yes" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="no"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="59" name="tCarbon" color="7" fill="1" visible="no" active="no"/>
+<layer number="60" name="bCarbon" color="7" fill="1" visible="no" active="no"/>
 <layer number="88" name="SimResults" color="9" fill="1" visible="yes" active="yes"/>
 <layer number="89" name="SimProbes" color="9" fill="1" visible="yes" active="yes"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
@@ -3296,26 +3296,6 @@ Source: AVX .. aphvc.pdf</description>
 <circle x="-2.2" y="2.2" radius="0.282840625" width="0.127" layer="21"/>
 <text x="-2" y="4" size="0.5" layer="25">&gt;NAME</text>
 <text x="-2" y="3" size="0.5" layer="27">&gt;VALUE</text>
-</package>
-<package name="DRV8835">
-<smd name="13.GND" x="0" y="0" dx="0.9" dy="2" layer="1" roundness="10" rot="R180" cream="no"/>
-<smd name="1.VM" x="-0.85" y="1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="2.AOUT-" x="-0.85" y="0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="3.AOUT+" x="-0.85" y="0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="4.BOUT-" x="-0.85" y="-0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="5.BOUT+" x="-0.85" y="-0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="6.GND" x="-0.85" y="-1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="12.VCC" x="0.85" y="1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="11.MODE" x="0.85" y="0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="10.A_PHASE" x="0.85" y="0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="9.A_ENBL" x="0.85" y="-0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="8.B_PHASE" x="0.85" y="-0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="7.B_ENBL" x="0.85" y="-1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<wire x1="-1.25" y1="1.5" x2="-1.25" y2="-1.5" width="0.127" layer="21"/>
-<wire x1="-1.25" y1="-1.5" x2="1.25" y2="-1.5" width="0.127" layer="21"/>
-<wire x1="1.25" y1="-1.5" x2="1.25" y2="1.5" width="0.127" layer="21"/>
-<wire x1="1.25" y1="1.5" x2="-1.25" y2="1.5" width="0.127" layer="21"/>
-<circle x="-1.5" y="1.75" radius="0.111803125" width="0.127" layer="21"/>
 </package>
 <package name="NU32V7_SOT223">
 <description>&lt;b&gt;SOT-223&lt;/b&gt;</description>
@@ -10715,25 +10695,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <text x="-7.62" y="12.7" size="1.27" layer="95">&gt;NAME</text>
 <text x="-7.62" y="10.16" size="1.27" layer="96">&gt;VALUE</text>
 </symbol>
-<symbol name="DRV8835">
-<pin name="APHASE" x="-12.7" y="7.62" length="middle"/>
-<pin name="AENBL" x="-12.7" y="5.08" length="middle"/>
-<pin name="BPHASE" x="-12.7" y="0" length="middle"/>
-<pin name="BENBL" x="-12.7" y="-2.54" length="middle"/>
-<pin name="MODE" x="-12.7" y="-7.62" length="middle"/>
-<pin name="GND" x="-12.7" y="-12.7" length="middle"/>
-<pin name="GND2" x="-12.7" y="-15.24" length="middle"/>
-<pin name="BOUT+" x="22.86" y="-15.24" length="middle" rot="R180"/>
-<pin name="BOUT-" x="22.86" y="-12.7" length="middle" rot="R180"/>
-<pin name="AOUT+" x="22.86" y="-7.62" length="middle" rot="R180"/>
-<pin name="AOUT-" x="22.86" y="-5.08" length="middle" rot="R180"/>
-<pin name="VCC" x="22.86" y="2.54" length="middle" rot="R180"/>
-<pin name="VM" x="22.86" y="7.62" length="middle" rot="R180"/>
-<wire x1="-7.62" y1="10.16" x2="-7.62" y2="-17.78" width="0.254" layer="94"/>
-<wire x1="-7.62" y1="-17.78" x2="17.78" y2="-17.78" width="0.254" layer="94"/>
-<wire x1="17.78" y1="-17.78" x2="17.78" y2="10.16" width="0.254" layer="94"/>
-<wire x1="17.78" y1="10.16" x2="-7.62" y2="10.16" width="0.254" layer="94"/>
-</symbol>
 <symbol name="NU32V7_78ADJ">
 <wire x1="-5.08" y1="-5.08" x2="5.08" y2="-5.08" width="0.4064" layer="94"/>
 <wire x1="5.08" y1="-5.08" x2="5.08" y2="2.54" width="0.4064" layer="94"/>
@@ -13374,33 +13335,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <connect gate="G$1" pin="2.GND" pad="GND"/>
 <connect gate="G$1" pin="3.Q2" pad="Q2"/>
 <connect gate="G$1" pin="4.GND" pad="GND2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="DRV8835">
-<gates>
-<gate name="G$1" symbol="DRV8835" x="-5.08" y="5.08"/>
-</gates>
-<devices>
-<device name="DRV8835" package="DRV8835">
-<connects>
-<connect gate="G$1" pin="AENBL" pad="9.A_ENBL"/>
-<connect gate="G$1" pin="AOUT+" pad="3.AOUT+"/>
-<connect gate="G$1" pin="AOUT-" pad="2.AOUT-"/>
-<connect gate="G$1" pin="APHASE" pad="10.A_PHASE"/>
-<connect gate="G$1" pin="BENBL" pad="7.B_ENBL"/>
-<connect gate="G$1" pin="BOUT+" pad="5.BOUT+"/>
-<connect gate="G$1" pin="BOUT-" pad="4.BOUT-"/>
-<connect gate="G$1" pin="BPHASE" pad="8.B_PHASE"/>
-<connect gate="G$1" pin="GND" pad="6.GND"/>
-<connect gate="G$1" pin="GND2" pad="13.GND"/>
-<connect gate="G$1" pin="MODE" pad="11.MODE"/>
-<connect gate="G$1" pin="VCC" pad="12.VCC"/>
-<connect gate="G$1" pin="VM" pad="1.VM"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -16436,6 +16370,56 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <text x="1.45" y="0.725" size="0.25" layer="25">&gt;NAME</text>
 <text x="1.45" y="0.3625" size="0.25" layer="27">&gt;VALUE</text>
 </package>
+<package name="DRV8835">
+<smd name="13.GND" x="0" y="0" dx="0.9" dy="2" layer="1" roundness="10" rot="R180" cream="no"/>
+<smd name="1.VM" x="-0.95" y="1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="2.AOUT-" x="-0.95" y="0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="3.AOUT+" x="-0.95" y="0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="4.BOUT-" x="-0.95" y="-0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="5.BOUT+" x="-0.95" y="-0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="6.GND" x="-0.95" y="-1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="12.VCC" x="0.95" y="1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="11.MODE" x="0.95" y="0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="10.A_PHASE" x="0.95" y="0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="9.A_ENBL" x="0.95" y="-0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="8.B_PHASE" x="0.95" y="-0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="7.B_ENBL" x="0.95" y="-1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<wire x1="-1.25" y1="1.5" x2="-1.25" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="-1.25" y1="-1.5" x2="1.25" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="1.25" y1="-1.5" x2="1.25" y2="1.5" width="0.127" layer="21"/>
+<wire x1="1.25" y1="1.5" x2="-1.25" y2="1.5" width="0.127" layer="21"/>
+<circle x="-1.5" y="1.75" radius="0.111803125" width="0.127" layer="21"/>
+</package>
+<package name="1X03">
+<wire x1="3.81" y1="0.635" x2="4.445" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="4.445" y1="1.27" x2="5.715" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="5.715" y1="1.27" x2="6.35" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="6.35" y1="-0.635" x2="5.715" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="5.715" y1="-1.27" x2="4.445" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="4.445" y1="-1.27" x2="3.81" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="1.27" y1="0.635" x2="1.905" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="1.905" y1="1.27" x2="3.175" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="3.175" y1="1.27" x2="3.81" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="3.175" y1="-1.27" x2="1.905" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<pad name="VCC" x="0" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="GND" x="2.54" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="SIG" x="5.08" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<rectangle x1="4.826" y1="-0.254" x2="5.334" y2="0.254" layer="51"/>
+<rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
+<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
+<text x="-1.27" y="1.397" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
+<text x="-1.27" y="-2.032" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
+<wire x1="6.35" y1="-0.635" x2="6.35" y2="0.635" width="0.1778" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="C-US">
@@ -16531,6 +16515,36 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <text x="-3.81" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
+</symbol>
+<symbol name="DRV8835">
+<pin name="APHASE" x="-12.7" y="7.62" length="middle"/>
+<pin name="AENBL" x="-12.7" y="5.08" length="middle"/>
+<pin name="BPHASE" x="-12.7" y="0" length="middle"/>
+<pin name="BENBL" x="-12.7" y="-2.54" length="middle"/>
+<pin name="MODE" x="-12.7" y="-7.62" length="middle"/>
+<pin name="GND" x="-12.7" y="-12.7" length="middle"/>
+<pin name="GND2" x="-12.7" y="-15.24" length="middle"/>
+<pin name="BOUT+" x="22.86" y="-15.24" length="middle" rot="R180"/>
+<pin name="BOUT-" x="22.86" y="-12.7" length="middle" rot="R180"/>
+<pin name="AOUT+" x="22.86" y="-7.62" length="middle" rot="R180"/>
+<pin name="AOUT-" x="22.86" y="-5.08" length="middle" rot="R180"/>
+<pin name="VCC" x="22.86" y="2.54" length="middle" rot="R180"/>
+<pin name="VM" x="22.86" y="7.62" length="middle" rot="R180"/>
+<wire x1="-7.62" y1="10.16" x2="-7.62" y2="-17.78" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="-17.78" x2="17.78" y2="-17.78" width="0.254" layer="94"/>
+<wire x1="17.78" y1="-17.78" x2="17.78" y2="10.16" width="0.254" layer="94"/>
+<wire x1="17.78" y1="10.16" x2="-7.62" y2="10.16" width="0.254" layer="94"/>
+</symbol>
+<symbol name="GP2Y_DIST_SENSE_BREAKOUT">
+<wire x1="0" y1="7.62" x2="7.62" y2="7.62" width="0.254" layer="94"/>
+<wire x1="7.62" y1="7.62" x2="7.62" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-7.62" x2="0" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="0" y1="-7.62" x2="0" y2="7.62" width="0.254" layer="94"/>
+<pin name="VCC" x="-5.08" y="5.08" length="middle"/>
+<pin name="SIG" x="-5.08" y="0" length="middle"/>
+<pin name="GND" x="-5.08" y="-5.08" length="middle"/>
+<text x="10.16" y="5.08" size="1.27" layer="95">&gt;NAME</text>
+<text x="10.16" y="2.54" size="1.27" layer="96">&gt;VALUE</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -16663,6 +16677,50 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 </device>
 </devices>
 </deviceset>
+<deviceset name="DRV8835">
+<gates>
+<gate name="G$1" symbol="DRV8835" x="-5.08" y="5.08"/>
+</gates>
+<devices>
+<device name="DRV8835" package="DRV8835">
+<connects>
+<connect gate="G$1" pin="AENBL" pad="9.A_ENBL"/>
+<connect gate="G$1" pin="AOUT+" pad="3.AOUT+"/>
+<connect gate="G$1" pin="AOUT-" pad="2.AOUT-"/>
+<connect gate="G$1" pin="APHASE" pad="10.A_PHASE"/>
+<connect gate="G$1" pin="BENBL" pad="7.B_ENBL"/>
+<connect gate="G$1" pin="BOUT+" pad="5.BOUT+"/>
+<connect gate="G$1" pin="BOUT-" pad="4.BOUT-"/>
+<connect gate="G$1" pin="BPHASE" pad="8.B_PHASE"/>
+<connect gate="G$1" pin="GND" pad="6.GND"/>
+<connect gate="G$1" pin="GND2" pad="13.GND"/>
+<connect gate="G$1" pin="MODE" pad="11.MODE"/>
+<connect gate="G$1" pin="VCC" pad="12.VCC"/>
+<connect gate="G$1" pin="VM" pad="1.VM"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="GP2Y_DIST_SENSE_BREAKOUT">
+<gates>
+<gate name="G$1" symbol="GP2Y_DIST_SENSE_BREAKOUT" x="-7.62" y="0"/>
+</gates>
+<devices>
+<device name="" package="1X03">
+<connects>
+<connect gate="G$1" pin="GND" pad="GND"/>
+<connect gate="G$1" pin="SIG" pad="SIG"/>
+<connect gate="G$1" pin="VCC" pad="VCC"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -16710,18 +16768,14 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <part name="U$3" library="CC1310F128RGZ" deviceset="ANTENNA" device=""/>
 <part name="DEBUG_HEADER" library="CC1310F128RGZ" deviceset="DEBUG_BREAKOUT" device=""/>
 <part name="GND10" library="Swarm" deviceset="GND" device=""/>
-<part name="DRV8835" library="Swarm" deviceset="DRV8835" device="DRV8835"/>
+<part name="DRV8835" library="learning_particle" deviceset="DRV8835" device="DRV8835"/>
 <part name="GND11" library="Swarm" deviceset="GND" device=""/>
 <part name="5V_REG" library="Swarm" deviceset="NU32V7_V_REG_LM1117" device="SOT223" value="5v"/>
 <part name="3V3_REG" library="Swarm" deviceset="NU32V7_V_REG_LM1117" device="SOT223" value="3v3"/>
 <part name="C15" library="Swarm" deviceset="CPOL-US" device="E2.5-6" package3d_urn="urn:adsk.eagle:package:23349/1"/>
 <part name="GND12" library="Swarm" deviceset="GND" device=""/>
 <part name="GND13" library="Swarm" deviceset="GND" device=""/>
-<part name="C16" library="Swarm" deviceset="CPOL-US" device="E2.5-6" package3d_urn="urn:adsk.eagle:package:23349/1"/>
-<part name="GND14" library="Swarm" deviceset="GND" device=""/>
 <part name="GND15" library="Swarm" deviceset="GND" device=""/>
-<part name="C17" library="Swarm" deviceset="CPOL-US" device="E2.5-6" package3d_urn="urn:adsk.eagle:package:23349/1"/>
-<part name="GND16" library="Swarm" deviceset="GND" device=""/>
 <part name="C18" library="learning_particle" deviceset="C-US" device="" value="22nF"/>
 <part name="C19" library="learning_particle" deviceset="C-US" device="" value="100nF"/>
 <part name="C20" library="learning_particle" deviceset="C-US" device="" value="100nF"/>
@@ -16781,6 +16835,8 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <part name="U$10" library="Swarm" deviceset="20MM_COINCELL" device=""/>
 <part name="GND37" library="Swarm" deviceset="GND" device=""/>
 <part name="FB" library="CC1310F128RGZ" deviceset="FERRITE_BEAD" device=""/>
+<part name="U$2" library="learning_particle" deviceset="GP2Y_DIST_SENSE_BREAKOUT" device=""/>
+<part name="GND14" library="Swarm" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -16932,22 +16988,8 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <instance part="GND13" gate="1" x="-22.86" y="-27.94" smashed="yes">
 <attribute name="VALUE" x="-25.4" y="-30.48" size="1.778" layer="96"/>
 </instance>
-<instance part="C16" gate="G$1" x="-10.16" y="-20.32" smashed="yes">
-<attribute name="NAME" x="-9.144" y="-19.685" size="1.778" layer="95"/>
-<attribute name="VALUE" x="-9.144" y="-24.511" size="1.778" layer="96"/>
-</instance>
-<instance part="GND14" gate="1" x="-10.16" y="-27.94" smashed="yes">
-<attribute name="VALUE" x="-12.7" y="-30.48" size="1.778" layer="96"/>
-</instance>
 <instance part="GND15" gate="1" x="-22.86" y="-12.7" smashed="yes">
 <attribute name="VALUE" x="-25.4" y="-15.24" size="1.778" layer="96"/>
-</instance>
-<instance part="C17" gate="G$1" x="-10.16" y="-5.08" smashed="yes">
-<attribute name="NAME" x="-9.144" y="-4.445" size="1.778" layer="95"/>
-<attribute name="VALUE" x="-9.144" y="-9.271" size="1.778" layer="96"/>
-</instance>
-<instance part="GND16" gate="1" x="-10.16" y="-12.7" smashed="yes">
-<attribute name="VALUE" x="-12.7" y="-15.24" size="1.778" layer="96"/>
 </instance>
 <instance part="C18" gate="G$1" x="124.46" y="106.68" smashed="yes">
 <attribute name="NAME" x="125.476" y="107.315" size="1.778" layer="95"/>
@@ -17164,6 +17206,13 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <attribute name="NAME" x="10.16" y="-57.15" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="10.16" y="-52.07" size="1.778" layer="96" rot="R180"/>
 </instance>
+<instance part="U$2" gate="G$1" x="139.7" y="10.16" smashed="yes">
+<attribute name="NAME" x="149.86" y="15.24" size="1.27" layer="95"/>
+<attribute name="VALUE" x="149.86" y="12.7" size="1.27" layer="96"/>
+</instance>
+<instance part="GND14" gate="1" x="134.62" y="2.54" smashed="yes">
+<attribute name="VALUE" x="132.08" y="0" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -17320,16 +17369,8 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <pinref part="GND13" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="C16" gate="G$1" pin="-"/>
-<pinref part="GND14" gate="1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="3V3_REG" gate="G$1" pin="ADJ"/>
 <pinref part="GND15" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="C17" gate="G$1" pin="-"/>
-<pinref part="GND16" gate="1" pin="GND"/>
 </segment>
 <segment>
 <pinref part="GND25" gate="1" pin="GND"/>
@@ -17476,6 +17517,10 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <pinref part="C5" gate="G$1" pin="P$1"/>
 <pinref part="GND33" gate="1" pin="GND"/>
 <wire x1="190.5" y1="93.98" x2="190.5" y2="96.52" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="GND"/>
+<pinref part="GND14" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="X32_Q2" class="0">
@@ -17639,12 +17684,9 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <pinref part="5V_REG" gate="G$1" pin="OUT"/>
 <pinref part="5V_REG" gate="G$1" pin="OUT@1"/>
 <wire x1="-15.24" y1="-17.78" x2="-15.24" y2="-20.32" width="0.1524" layer="91"/>
-<wire x1="-15.24" y1="-17.78" x2="-10.16" y2="-17.78" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="-17.78" x2="-7.62" y2="-17.78" width="0.1524" layer="91"/>
 <junction x="-15.24" y="-17.78"/>
 <label x="-12.7" y="-17.78" size="1.778" layer="95"/>
-<pinref part="C16" gate="G$1" pin="+"/>
-<wire x1="-10.16" y1="-17.78" x2="-7.62" y2="-17.78" width="0.1524" layer="91"/>
-<junction x="-10.16" y="-17.78"/>
 </segment>
 <segment>
 <pinref part="3V3_REG" gate="G$1" pin="IN"/>
@@ -17784,11 +17826,8 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <pinref part="3V3_REG" gate="G$1" pin="OUT"/>
 <pinref part="3V3_REG" gate="G$1" pin="OUT@1"/>
 <wire x1="-15.24" y1="-2.54" x2="-15.24" y2="-5.08" width="0.1524" layer="91"/>
-<wire x1="-15.24" y1="-2.54" x2="-10.16" y2="-2.54" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="-2.54" x2="-7.62" y2="-2.54" width="0.1524" layer="91"/>
 <junction x="-15.24" y="-2.54"/>
-<pinref part="C17" gate="G$1" pin="+"/>
-<wire x1="-10.16" y1="-2.54" x2="-7.62" y2="-2.54" width="0.1524" layer="91"/>
-<junction x="-10.16" y="-2.54"/>
 <label x="-12.7" y="-2.54" size="1.778" layer="95"/>
 </segment>
 <segment>
@@ -17800,6 +17839,11 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <pinref part="PW_SW" gate="G$1" pin="CA"/>
 <wire x1="-5.08" y1="-50.8" x2="2.54" y2="-50.8" width="0.1524" layer="91"/>
 <label x="2.54" y="-50.8" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="VCC"/>
+<wire x1="134.62" y1="15.24" x2="134.62" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="22.86" x2="137.16" y2="22.86" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="DCDC_SW" class="0">
@@ -17943,9 +17987,9 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <label x="304.8" y="-66.04" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="104.14" y1="25.4" x2="114.3" y2="25.4" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="DIO26"/>
-<label x="109.22" y="25.4" size="1.778" layer="95"/>
+<pinref part="U$1" gate="G$1" pin="DIO27"/>
+<wire x1="104.14" y1="22.86" x2="114.3" y2="22.86" width="0.1524" layer="91"/>
+<label x="109.22" y="22.86" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="IR_CL" class="0">
@@ -17955,9 +17999,9 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <label x="307.34" y="-104.14" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="104.14" y1="30.48" x2="114.3" y2="30.48" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="DIO24"/>
-<label x="109.22" y="30.48" size="1.778" layer="95"/>
+<pinref part="U$1" gate="G$1" pin="DIO26"/>
+<wire x1="104.14" y1="25.4" x2="114.3" y2="25.4" width="0.1524" layer="91"/>
+<label x="109.22" y="25.4" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="IR_CR" class="0">
@@ -17979,9 +18023,9 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <label x="383.54" y="-66.04" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="104.14" y1="27.94" x2="114.3" y2="27.94" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="DIO25"/>
-<label x="109.22" y="27.94" size="1.778" layer="95"/>
+<pinref part="U$1" gate="G$1" pin="DIO24"/>
+<wire x1="104.14" y1="30.48" x2="114.3" y2="30.48" width="0.1524" layer="91"/>
+<label x="109.22" y="30.48" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="IR_ER" class="0">
@@ -17991,9 +18035,9 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <label x="381" y="-22.86" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="DIO27"/>
-<wire x1="104.14" y1="22.86" x2="114.3" y2="22.86" width="0.1524" layer="91"/>
-<label x="109.22" y="22.86" size="1.778" layer="95"/>
+<pinref part="U$1" gate="G$1" pin="DIO25"/>
+<wire x1="104.14" y1="27.94" x2="114.3" y2="27.94" width="0.1524" layer="91"/>
+<label x="109.22" y="27.94" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$5" class="0">
@@ -18094,6 +18138,22 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <wire x1="299.72" y1="71.12" x2="307.34" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="299.72" y1="63.5" x2="299.72" y2="71.12" width="0.1524" layer="91"/>
 <junction x="299.72" y="71.12"/>
+</segment>
+</net>
+<net name="DIST0" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="DIO29"/>
+<label x="109.22" y="17.78" size="1.778" layer="95"/>
+<wire x1="104.14" y1="17.78" x2="129.54" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="17.78" x2="129.54" y2="10.16" width="0.1524" layer="91"/>
+<pinref part="U$2" gate="G$1" pin="SIG"/>
+<wire x1="129.54" y1="10.16" x2="134.62" y2="10.16" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$9" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="DIO30"/>
+<wire x1="104.14" y1="15.24" x2="114.3" y2="15.24" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
