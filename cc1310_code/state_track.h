@@ -12,6 +12,8 @@
 #include "gpio.h"
 #include "helpful.h"
 
+enum States{ret_0=0b101, ret_1=0b110, for_0=0b001, for_1=0b010};
+
 struct StateTrack{
     //policy and target bits
     uint8_t policy : 2;
@@ -19,11 +21,15 @@ struct StateTrack{
     uint8_t target : 1;
 
     //state management bits
-    uint8_t xc_state : 2;
-    uint8_t prev_xc_state : 2;
-    uint8_t return_flag : 1; //whether on return path or forward path
-    uint8_t prev_return_flag : 1; //prev state of return such that
-                                    //state transition can be handled
+    enum States xc_state : 3;
+    enum States prev_xc_state : 3;
+
+//
+//    uint8_t xc_state : 2;
+//    uint8_t prev_xc_state : 2;
+//    uint8_t return_flag : 1; //whether on return path or forward path
+//    uint8_t prev_return_flag : 1; //prev state of return such that
+//                                    //state transition can be handled
 
     uint8_t detect_flag : 1; //raised when grey detected
     uint8_t intersection_flag : 1; //rasied when white intersection detected
@@ -55,7 +61,7 @@ void set_actuation_flag(uint8_t flag);
 uint8_t get_actuation_flag();
 
 void set_return_flag(uint8_t flag);
-uint8_t get_return_flag();
+bool get_return_flag();
 void set_prev_return_flag(uint8_t flag);
 uint8_t get_prev_return_flag();
 void toggle_return_flag();

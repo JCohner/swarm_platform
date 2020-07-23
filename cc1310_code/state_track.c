@@ -10,10 +10,14 @@
 #include "uart.h"
 #include <stdio.h>
 
+static enum States state;
+
 static struct StateTrack state_track =
-                                {.xc_state = 0b10, .prev_xc_state=0b10,
-                                 .return_flag = 0b0, .prev_return_flag = 0b0,
+                                {.xc_state = for_1, .prev_xc_state=for_1,
                                  .actuation_flag = 0};
+
+
+
 
 /*!
  *  \brief examines flags, determines if state transition is needed
@@ -28,27 +32,23 @@ static char buffer[50];
 //after an intersection has been dealt with we can increment the state
 void inc_state()
 {
-    uint8_t stator = state_track.return_flag << 2 | state_track.xc_state;
-    uint8_t detector = state_track.detect_flag;
+//    uint8_t stator = state_track.xc_state;
 
 //    sprintf(buffer, "stator: %u\r\n",stator);
 //    WriteUART0(buffer);
 
     if (get_intersection_flag() && !get_actuation_flag() && get_detect_flag() && get_on_line_flag())
     {
-        switch(stator)
+        switch(state_track.xc_state)
         {
-            case 0b010: //2
-                state_track.return_flag = 0b1;
-                state_track.xc_state = 0b01;
+            case for_1: //2
+                state_track.xc_state = ret_0;
                 break;
-            case 0b101: //5
-                state_track.return_flag = 0b1;
-                state_track.xc_state = 0b10;
+            case ret_0: //5
+                state_track.xc_state = ret_1;
                 break;
-            case 0b110: //6
-                state_track.return_flag = 0b0;
-                state_track.xc_state = 0b01;
+            case ret_1: //6
+                state_track.xc_state = for_0;
 
                 //noting that a loop is completed now update policy based on neighbor feedback
                 if (get_neighbor_target_flag())
@@ -57,9 +57,8 @@ void inc_state()
                 }
 
                 break;
-            case 0b001:
-                state_track.return_flag = 0b0;
-                state_track.xc_state = 0b10;
+            case for_0:
+                state_track.xc_state = for_1;
                 break;
         }
 
@@ -110,7 +109,7 @@ uint8_t get_return_policy()
 
 void set_xc_state(uint8_t state)
 {
-    state_track.xc_state = state & 0x03;
+    state_track.xc_state = state & 0x07;
 }
 
 
@@ -121,7 +120,7 @@ uint8_t get_xc_state()
 
 void set_prev_xc_state(uint8_t state)
 {
-    state_track.prev_xc_state = state & 0x03;
+    state_track.prev_xc_state = state & 0x07;
 }
 
 uint8_t get_prev_xc_state()
@@ -148,31 +147,31 @@ uint8_t get_actuation_flag()
     return state_track.actuation_flag;
 }
 
-void set_return_flag(uint8_t flag)
+//void set_return_flag(uint8_t flag)
+//{
+//    state_track.return_flag = flag;
+//}
+//
+bool get_return_flag()
 {
-    state_track.return_flag = flag;
+    return (state_track.xc_state & 0b100);
 }
+//
+//uint8_t get_prev_return_flag()
+//{
+//    return state_track.prev_return_flag;
+//}
+//
+//void set_prev_return_flag(uint8_t flag)
+//{
+//    state_track.prev_return_flag = flag;
+//}
 
-uint8_t get_return_flag()
-{
-    return state_track.return_flag;
-}
-
-uint8_t get_prev_return_flag()
-{
-    return state_track.prev_return_flag;
-}
-
-void set_prev_return_flag(uint8_t flag)
-{
-    state_track.prev_return_flag = flag;
-}
-
-void toggle_return_flag()
-{
-    state_track.prev_return_flag = state_track.return_flag;
-    state_track.return_flag = !state_track.return_flag;
-}
+//void toggle_return_flag()
+//{
+//    state_track.prev_return_flag = state_track.return_flag;
+//    state_track.return_flag = !state_track.return_flag;
+//}
 
 void set_detect_flag(uint8_t flag)
 {
