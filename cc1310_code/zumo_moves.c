@@ -50,6 +50,7 @@ void init_openloop(void)
     state = 1;
     counter = 0;
     set_actuation_flag(1);
+    WriteUART0("loop initialized\r\n");
 }
 
 void end_openloop(void)
@@ -139,7 +140,6 @@ void openloop_turn()
     {
         dir = xc_state & ret_policy;
     }
-
     //it is recommended that clearing the interrupt flag is not the last command
     TimerIntClear(GPT1_BASE, TIMER_TIMA_TIMEOUT);
     if (state && counter < (on_time + offset_time))
@@ -189,10 +189,11 @@ void openloop_turn()
  */
 void manage_intersection()
 {
-    uint8_t xc_state = get_xc_state();
-    uint8_t prev_xc_state=  get_prev_xc_state();
-    uint8_t ret_flag = get_return_flag();
+    enum States xc_state = get_xc_state();
+    enum States prev_xc_state=  get_prev_xc_state();
 
+    sprintf(buffer, "prev: %u, cur: %u\r\n",prev_xc_state, xc_state);
+    WriteUART0(buffer);
     if (xc_state != prev_xc_state)
     {
         GPIO_toggleDio(BLED3);
@@ -200,7 +201,6 @@ void manage_intersection()
     }
 
     set_prev_xc_state(xc_state);
-    set_prev_return_flag(ret_flag);
     set_intersection_flag(0);
     return;
 }
