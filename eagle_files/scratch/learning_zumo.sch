@@ -3272,31 +3272,6 @@ Source: AVX .. aphvc.pdf</description>
 <text x="-0.4" y="0.3" size="1.27" layer="25">&gt;NAME</text>
 <text x="-0.4" y="-1.6" size="1.27" layer="27">&gt;VALUE</text>
 </package>
-<package name="CRYSTAL-32KHZ">
-<smd name="Q1" x="1.25" y="0" dx="1" dy="1.8" layer="1"/>
-<smd name="Q2" x="-1.25" y="0" dx="1" dy="1.8" layer="1"/>
-<wire x1="-2.5" y1="1.25" x2="-2.5" y2="-1.25" width="0.127" layer="21"/>
-<wire x1="-2.5" y1="-1.25" x2="2.5" y2="-1.25" width="0.127" layer="21"/>
-<wire x1="2.5" y1="-1.25" x2="2.5" y2="1.25" width="0.127" layer="21"/>
-<wire x1="2.5" y1="1.25" x2="-2.5" y2="1.25" width="0.127" layer="21"/>
-<text x="-2.3" y="1.6" size="0.5" layer="21">32kHz</text>
-<text x="-2.413" y="-2.032" size="0.5" layer="21">$NAME</text>
-<text x="-2.413" y="-2.921" size="0.5" layer="21">$VALUE</text>
-</package>
-<package name="CRYSTAL-24MHZ">
-<description>https://www.digikey.com/product-detail/en/epson/TSX-3225-24.0000MF15X-AC3/SER3635CT-ND/1825447</description>
-<smd name="GND" x="-1.1" y="1.1" dx="1.4" dy="1.15" layer="1"/>
-<smd name="Q1" x="-1.1" y="-0.5" dx="1.4" dy="1.15" layer="1"/>
-<smd name="Q2" x="1.1" y="1.1" dx="1.4" dy="1.15" layer="1"/>
-<smd name="GND2" x="1.1" y="-0.5" dx="1.4" dy="1.15" layer="1"/>
-<wire x1="-2" y1="2" x2="-2" y2="-1.8" width="0.127" layer="21"/>
-<wire x1="-2" y1="-1.8" x2="2" y2="-1.8" width="0.127" layer="21"/>
-<wire x1="2" y1="-1.8" x2="2" y2="2" width="0.127" layer="21"/>
-<wire x1="2" y1="2" x2="-2" y2="2" width="0.127" layer="21"/>
-<circle x="-2.2" y="2.2" radius="0.282840625" width="0.127" layer="21"/>
-<text x="-2" y="4" size="0.5" layer="25">&gt;NAME</text>
-<text x="-2" y="3" size="0.5" layer="27">&gt;VALUE</text>
-</package>
 <package name="NU32V7_SOT223">
 <description>&lt;b&gt;SOT-223&lt;/b&gt;</description>
 <wire x1="3.2766" y1="1.651" x2="3.2766" y2="-1.651" width="0.2032" layer="21"/>
@@ -8194,44 +8169,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <text x="2.5" y="3" size="0.5" layer="25">&gt;NAME</text>
 <text x="2.5" y="2" size="0.5" layer="27">&gt;VALUE</text>
 </package>
-<package name="1X02">
-<description>&lt;h3&gt;Plated Through Hole -8 Pin&lt;/h3&gt;
-&lt;p&gt;Specifications:
-&lt;ul&gt;&lt;li&gt;Pin count:8&lt;/li&gt;
-&lt;li&gt;Pin pitch:0.1"&lt;/li&gt;
-&lt;/ul&gt;&lt;/p&gt;
-&lt;p&gt;Example device(s):
-&lt;ul&gt;&lt;li&gt;CONN_08&lt;/li&gt;
-&lt;/ul&gt;&lt;/p&gt;</description>
-<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="1.27" y1="0.635" x2="1.905" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="1.905" y1="1.27" x2="3.175" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="3.175" y1="1.27" x2="3.81" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="3.175" y1="-1.27" x2="1.905" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
-<pad name="1" x="0" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="2" x="2.54" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
-<rectangle x1="14.986" y1="-0.254" x2="15.494" y2="0.254" layer="51"/>
-<rectangle x1="12.446" y1="-0.254" x2="12.954" y2="0.254" layer="51"/>
-<rectangle x1="9.906" y1="-0.254" x2="10.414" y2="0.254" layer="51"/>
-<rectangle x1="7.366" y1="-0.254" x2="7.874" y2="0.254" layer="51"/>
-<rectangle x1="4.826" y1="-0.254" x2="5.334" y2="0.254" layer="51"/>
-<rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
-<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
-<rectangle x1="17.526" y1="-0.254" x2="18.034" y2="0.254" layer="51"/>
-<text x="-1.27" y="1.397" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
-<text x="-1.27" y="-2.032" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
-<wire x1="3.81" y1="-0.635" x2="3.81" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="-3.175" y1="0" x2="-1.905" y2="0" width="0.127" layer="21"/>
-<wire x1="-2.54" y1="0.635" x2="-2.54" y2="-0.635" width="0.127" layer="21"/>
-</package>
 <package name="TACTILE_SWITCH_SMD_5.2MM">
 <description>&lt;h3&gt;Momentary Switch (Pushbutton) - SPST - SMD, 5.2mm Square&lt;/h3&gt;
 &lt;p&gt;Normally-open (NO) SPST momentary switches (buttons, pushbuttons).&lt;/p&gt;
@@ -8278,16 +8215,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <rectangle x1="2.1" y1="0.5" x2="2.3" y2="1.1" layer="51" rot="R180"/>
 <text x="0" y="1.524" size="0.6096" layer="25" font="vector" ratio="20" align="bottom-center">&gt;Name</text>
 <text x="0" y="-1.524" size="0.6096" layer="27" font="vector" ratio="20" align="top-center">&gt;Value</text>
-</package>
-<package name="20MM_COINCELL">
-<smd name="2.POS" x="11.43" y="0" dx="2.54" dy="5.08" layer="1" cream="no"/>
-<smd name="1.POS" x="-11.43" y="0" dx="2.54" dy="5.08" layer="1" cream="no"/>
-<smd name="3.NEG" x="0" y="0" dx="17.78" dy="17.78" layer="1" roundness="100" cream="no"/>
-<circle x="0" y="0" radius="9" width="0.05" layer="21"/>
-<wire x1="-15" y1="10" x2="-15" y2="-10" width="1.27" layer="21"/>
-<wire x1="-15" y1="-10" x2="15" y2="-10" width="1.27" layer="21"/>
-<wire x1="15" y1="-10" x2="15" y2="10" width="1.27" layer="21"/>
-<wire x1="15" y1="10" x2="-15" y2="10" width="1.27" layer="21"/>
 </package>
 </packages>
 <packages3d>
@@ -10673,28 +10600,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <text x="-2.54" y="-2.54" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="GND" x="0" y="2.54" visible="off" length="short" direction="sup" rot="R270"/>
 </symbol>
-<symbol name="CRYSTAL-32K">
-<pin name="Q1" x="-2.54" y="-7.62" length="middle" rot="R90"/>
-<pin name="Q2" x="2.54" y="-7.62" length="middle" rot="R90"/>
-<wire x1="-5.08" y1="5.08" x2="-5.08" y2="-2.54" width="0.254" layer="94"/>
-<wire x1="-5.08" y1="-2.54" x2="5.08" y2="-2.54" width="0.254" layer="94"/>
-<wire x1="5.08" y1="-2.54" x2="5.08" y2="5.08" width="0.254" layer="94"/>
-<wire x1="5.08" y1="5.08" x2="-5.08" y2="5.08" width="0.254" layer="94"/>
-<text x="-5.08" y="7.62" size="0.5" layer="95">&gt;NAME</text>
-<text x="-5.08" y="6.096" size="0.5" layer="96">&gt;VALUE</text>
-</symbol>
-<symbol name="CRYSTAL-24MHZ">
-<pin name="1.Q1" x="-5.08" y="-7.62" length="middle" rot="R90"/>
-<pin name="3.Q2" x="-2.54" y="-7.62" length="middle" rot="R90"/>
-<pin name="2.GND" x="2.54" y="-7.62" length="middle" rot="R90"/>
-<pin name="4.GND" x="5.08" y="-7.62" length="middle" rot="R90"/>
-<wire x1="-7.62" y1="-2.54" x2="7.62" y2="-2.54" width="0.254" layer="94"/>
-<wire x1="7.62" y1="-2.54" x2="7.62" y2="7.62" width="0.254" layer="94"/>
-<wire x1="7.62" y1="7.62" x2="-7.62" y2="7.62" width="0.254" layer="94"/>
-<wire x1="-7.62" y1="7.62" x2="-7.62" y2="-2.54" width="0.254" layer="94"/>
-<text x="-7.62" y="12.7" size="1.27" layer="95">&gt;NAME</text>
-<text x="-7.62" y="10.16" size="1.27" layer="96">&gt;VALUE</text>
-</symbol>
 <symbol name="NU32V7_78ADJ">
 <wire x1="-5.08" y1="-5.08" x2="5.08" y2="-5.08" width="0.4064" layer="94"/>
 <wire x1="5.08" y1="-5.08" x2="5.08" y2="2.54" width="0.4064" layer="94"/>
@@ -10771,21 +10676,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <text x="-2.54" y="-15.24" size="1.778" layer="95">&gt;NAME</text>
 <text x="-2.54" y="-17.78" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
-<symbol name="DC_MOTOR">
-<circle x="0" y="0" radius="2.54" width="0.254" layer="94"/>
-<wire x1="-3.81" y1="1.27" x2="-3.81" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="-3.81" y1="-1.27" x2="-2.54" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="-3.81" y1="1.27" x2="-2.54" y2="1.27" width="0.254" layer="94"/>
-<wire x1="2.54" y1="1.27" x2="3.81" y2="1.27" width="0.254" layer="94"/>
-<wire x1="3.81" y1="1.27" x2="3.81" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="3.81" y1="-1.27" x2="2.54" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="-4.445" y1="2.54" x2="-3.175" y2="2.54" width="0.254" layer="94"/>
-<wire x1="-3.81" y1="3.175" x2="-3.81" y2="1.905" width="0.254" layer="94"/>
-<text x="5.08" y="5.08" size="1.27" layer="95">&gt;NAME</text>
-<text x="5.08" y="2.54" size="1.27" layer="95">&gt;VALUE</text>
-<pin name="+" x="-8.89" y="0" length="middle"/>
-<pin name="-" x="8.89" y="0" length="middle" rot="R180"/>
-</symbol>
 <symbol name="SWITCH-MOMENTARY">
 <description>&lt;h3&gt;Momentary Switch (Pushbutton) - SPST - Two Circuits&lt;/h3&gt;
 &lt;p&gt;Normally-open (NO) SPST momentary switches (buttons, pushbuttons). Schematic symbol includes two switch circuits.&lt;/p&gt;</description>
@@ -10808,17 +10698,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <pin name="3" x="5.08" y="0" visible="pad" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="4" x="5.08" y="-2.54" visible="pad" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="2" x="-5.08" y="-2.54" visible="pad" length="short" direction="pas" swaplevel="2"/>
-</symbol>
-<symbol name="20MM_COINCELL">
-<pin name="3.GND" x="-7.62" y="5.08" length="middle"/>
-<pin name="1.POS" x="-7.62" y="0" length="middle"/>
-<pin name="2.POS" x="-7.62" y="-5.08" length="middle"/>
-<wire x1="-2.54" y1="7.62" x2="-2.54" y2="-7.62" width="0.254" layer="94"/>
-<wire x1="-2.54" y1="-7.62" x2="7.62" y2="-7.62" width="0.254" layer="94"/>
-<wire x1="7.62" y1="-7.62" x2="7.62" y2="7.62" width="0.254" layer="94"/>
-<wire x1="7.62" y1="7.62" x2="-2.54" y2="7.62" width="0.254" layer="94"/>
-<text x="10.16" y="5.08" size="1.27" layer="95">&gt;NAME</text>
-<text x="10.16" y="2.54" size="1.27" layer="96">&gt;VALUE</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -13302,40 +13181,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </gates>
 <devices>
 <device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="CRYSTAL-32KHZ">
-<gates>
-<gate name="G$1" symbol="CRYSTAL-32K" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="CRYSTAL-32KHZ">
-<connects>
-<connect gate="G$1" pin="Q1" pad="Q1"/>
-<connect gate="G$1" pin="Q2" pad="Q2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="CRYSTAL-24MHZ">
-<gates>
-<gate name="G$1" symbol="CRYSTAL-24MHZ" x="0" y="-2.54"/>
-</gates>
-<devices>
-<device name="" package="CRYSTAL-24MHZ">
-<connects>
-<connect gate="G$1" pin="1.Q1" pad="Q1"/>
-<connect gate="G$1" pin="2.GND" pad="GND"/>
-<connect gate="G$1" pin="3.Q2" pad="Q2"/>
-<connect gate="G$1" pin="4.GND" pad="GND2"/>
-</connects>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -16041,22 +15886,6 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 </device>
 </devices>
 </deviceset>
-<deviceset name="DC_MOTOR">
-<gates>
-<gate name="G$1" symbol="DC_MOTOR" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="1X02">
-<connects>
-<connect gate="G$1" pin="+" pad="1"/>
-<connect gate="G$1" pin="-" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="MOMENTARY-SWITCH-SPST-2" prefix="S" uservalue="yes">
 <description>&lt;h3&gt;Momentary Switch (Pushbutton) - SPST - Two Circuits&lt;/h3&gt;
 &lt;p&gt;Normally-open (NO) SPST momentary switches (buttons, pushbuttons). Schematic symbol includes two switch circuits.&lt;/p&gt;
@@ -16111,23 +15940,6 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 </device>
 </devices>
 </deviceset>
-<deviceset name="20MM_COINCELL">
-<gates>
-<gate name="G$1" symbol="20MM_COINCELL" x="-2.54" y="0"/>
-</gates>
-<devices>
-<device name="" package="20MM_COINCELL">
-<connects>
-<connect gate="G$1" pin="1.POS" pad="1.POS"/>
-<connect gate="G$1" pin="2.POS" pad="2.POS"/>
-<connect gate="G$1" pin="3.GND" pad="3.NEG"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 </devicesets>
 </library>
 <library name="CC1310F128RGZ">
@@ -16145,25 +15957,6 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <wire x1="-2.54" y1="-1.27" x2="-2.54" y2="1.27" width="0.127" layer="21"/>
 <circle x="-1.778" y="0.762" radius="0.254" width="0.05" layer="21"/>
 <text x="-2.54" y="1.778" size="0.75" layer="21">DEBUG</text>
-</package>
-<package name="ANTENNA">
-<dimension x1="0" y1="0" x2="0" y2="25" x3="41" y3="12.5" textsize="1.27" layer="48"/>
-<dimension x1="0" y1="0" x2="0" y2="9" x3="-11" y3="4.5" textsize="1.27" layer="48"/>
-<dimension x1="0" y1="0" x2="0" y2="1" x3="-10" y3="0.5" textsize="1.27" layer="48"/>
-<dimension x1="0" y1="4" x2="18" y2="4" x3="9" y3="-7" textsize="1.27" layer="48"/>
-<rectangle x1="0" y1="1" x2="2" y2="10" layer="1"/>
-<rectangle x1="0" y1="8" x2="18" y2="10" layer="1"/>
-<dimension x1="18" y1="9" x2="18" y2="12" x3="29" y3="10.5" textsize="1.27" layer="48"/>
-<rectangle x1="16" y1="8" x2="18" y2="15" layer="1"/>
-<dimension x1="18" y1="14" x2="-20" y2="14" x3="-1" y3="26" textsize="1.27" layer="48"/>
-<rectangle x1="-19" y1="13" x2="18" y2="15" layer="1"/>
-<rectangle x1="-20" y1="13" x2="-18" y2="20" layer="1"/>
-<rectangle x1="-20" y1="18" x2="18" y2="20" layer="1"/>
-<dimension x1="18" y1="19" x2="18" y2="22" x3="31" y3="20.5" textsize="1.27" layer="48"/>
-<rectangle x1="16" y1="18" x2="18" y2="25" layer="1"/>
-<rectangle x1="-20" y1="23" x2="18" y2="25" layer="1"/>
-<smd name="A" x="1" y="1" dx="1.4" dy="1.15" layer="1" cream="no"/>
-<dimension x1="-19" y1="15" x2="-19" y2="18" x3="-24" y3="16.5" textsize="1.27" layer="48"/>
 </package>
 <package name="FERRITE_BEAD">
 <smd name="P$1" x="-0.6" y="0" dx="0.4" dy="0.8" layer="1" cream="no"/>
@@ -16184,15 +15977,6 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <wire x1="10.16" y1="-2.54" x2="10.16" y2="7.62" width="0.254" layer="94"/>
 <wire x1="10.16" y1="7.62" x2="-7.62" y2="7.62" width="0.254" layer="94"/>
 <wire x1="-7.62" y1="7.62" x2="-7.62" y2="-2.54" width="0.254" layer="94"/>
-</symbol>
-<symbol name="ANTENNA">
-<circle x="0" y="0" radius="5.6796125" width="0.254" layer="94"/>
-<wire x1="0" y1="-5.08" x2="0" y2="0" width="0.254" layer="94"/>
-<wire x1="0" y1="0" x2="2.54" y2="2.54" width="0.254" layer="94"/>
-<wire x1="0" y1="0" x2="-2.54" y2="2.54" width="0.254" layer="94"/>
-<wire x1="0" y1="0" x2="0" y2="2.54" width="0.254" layer="94"/>
-<text x="-7.62" y="7.62" size="1.27" layer="95">&gt;NAME</text>
-<pin name="P$1" x="-10.16" y="0" length="middle"/>
 </symbol>
 <symbol name="L-US">
 <wire x1="0" y1="5.08" x2="1.27" y2="3.81" width="0.254" layer="94" curve="-90"/>
@@ -16230,21 +16014,6 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 </device>
 </devices>
 </deviceset>
-<deviceset name="ANTENNA">
-<gates>
-<gate name="G$1" symbol="ANTENNA" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="ANTENNA">
-<connects>
-<connect gate="G$1" pin="P$1" pad="A"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="FERRITE_BEAD">
 <gates>
 <gate name="G$1" symbol="L-US" x="0" y="0"/>
@@ -16266,22 +16035,16 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <library name="learning_particle">
 <packages>
 <package name="C0402_US">
-<smd name="1" x="-0.375" y="0" dx="0.25" dy="0.5" layer="1" cream="no"/>
-<smd name="2" x="0.375" y="0" dx="0.25" dy="0.5" layer="1" cream="no"/>
-<text x="0.635" y="0.381" size="0.1" layer="25">&gt;NAME</text>
-<text x="0.635" y="0.254" size="0.1" layer="27">&gt;VALUE</text>
-</package>
-<package name="C0603_US">
-<smd name="P$1" x="0.625" y="0" dx="0.35" dy="0.81" layer="1" cream="no"/>
-<smd name="P$2" x="-0.625" y="0" dx="0.35" dy="0.81" layer="1" cream="no"/>
-<text x="1" y="0.5" size="0.1" layer="25">&gt;NAME</text>
-<text x="1" y="0.25" size="0.1" layer="27">&gt;VALUE</text>
+<smd name="1" x="-0.375" y="0" dx="0.25" dy="0.5" layer="1"/>
+<smd name="2" x="0.375" y="0" dx="0.25" dy="0.5" layer="1"/>
+<text x="1" y="1" size="1" layer="25">&gt;NAME</text>
+<text x="1" y="-1" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="L0402_US">
-<text x="0.6096" y="0.254" size="0.127" layer="25">&gt;NAME</text>
+<text x="1" y="1" size="1" layer="25">&gt;NAME</text>
 <text x="0.6096" y="0.1016" size="0.127" layer="27">&gt;VALUE</text>
-<smd name="P$1" x="-0.375" y="0" dx="0.25" dy="0.5" layer="1" cream="no"/>
-<smd name="P$2" x="0.375" y="0" dx="0.25" dy="0.5" layer="1" cream="no"/>
+<smd name="P$1" x="-0.375" y="0" dx="0.25" dy="0.5" layer="1"/>
+<smd name="P$2" x="0.375" y="0" dx="0.25" dy="0.5" layer="1"/>
 </package>
 <package name="QFN50P700X700X100-49N">
 <text x="-4" y="-4.5" size="1.27" layer="27" align="top-left">&gt;VALUE</text>
@@ -16359,31 +16122,25 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <smd name="49" x="0" y="0" dx="5.15" dy="5.15" layer="1" cream="no"/>
 </package>
 <package name="R0402_US">
-<smd name="P$1" x="-0.5" y="0" dx="0.5" dy="0.6" layer="1" cream="no"/>
-<smd name="P$2" x="0.5" y="0" dx="0.5" dy="0.6" layer="1" cream="no"/>
-<text x="1" y="0.25" size="0.2" layer="25">&gt;NAME</text>
-<text x="1" y="0" size="0.2" layer="27">&gt;VALUE</text>
-</package>
-<package name="R0603_US">
-<smd name="P$1" x="-0.725" y="0" dx="0.65" dy="0.9" layer="1" cream="no"/>
-<smd name="P$2" x="0.725" y="0" dx="0.65" dy="0.9" layer="1" cream="no"/>
-<text x="1.45" y="0.725" size="0.25" layer="25">&gt;NAME</text>
-<text x="1.45" y="0.3625" size="0.25" layer="27">&gt;VALUE</text>
+<smd name="P$1" x="-0.5" y="0" dx="0.5" dy="0.6" layer="1"/>
+<smd name="P$2" x="0.5" y="0" dx="0.5" dy="0.6" layer="1"/>
+<text x="1" y="1" size="1.27" layer="25">&gt;NAME</text>
+<text x="1" y="-1" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="DRV8835">
-<smd name="13.GND" x="0" y="0" dx="0.9" dy="2" layer="1" roundness="10" rot="R180" cream="no"/>
-<smd name="1.VM" x="-0.95" y="1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="2.AOUT-" x="-0.95" y="0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="3.AOUT+" x="-0.95" y="0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="4.BOUT-" x="-0.95" y="-0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="5.BOUT+" x="-0.95" y="-0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="6.GND" x="-0.95" y="-1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="12.VCC" x="0.95" y="1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="11.MODE" x="0.95" y="0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="10.A_PHASE" x="0.95" y="0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="9.A_ENBL" x="0.95" y="-0.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="8.B_PHASE" x="0.95" y="-0.75" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
-<smd name="7.B_ENBL" x="0.95" y="-1.25" dx="0.5" dy="0.25" layer="1" roundness="10" cream="no"/>
+<smd name="13.GND" x="0" y="0" dx="0.9" dy="2" layer="1" roundness="10" rot="R180"/>
+<smd name="1.VM" x="-0.95" y="1.25" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="2.AOUT-" x="-0.95" y="0.75" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="3.AOUT+" x="-0.95" y="0.25" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="4.BOUT-" x="-0.95" y="-0.25" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="5.BOUT+" x="-0.95" y="-0.75" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="6.GND" x="-0.95" y="-1.25" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="12.VCC" x="0.95" y="1.25" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="11.MODE" x="0.95" y="0.75" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="10.A_PHASE" x="0.95" y="0.25" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="9.A_ENBL" x="0.95" y="-0.25" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="8.B_PHASE" x="0.95" y="-0.75" dx="0.5" dy="0.25" layer="1" roundness="10"/>
+<smd name="7.B_ENBL" x="0.95" y="-1.25" dx="0.5" dy="0.25" layer="1" roundness="10"/>
 <wire x1="-1.25" y1="1.5" x2="-1.25" y2="-1.5" width="0.127" layer="21"/>
 <wire x1="-1.25" y1="-1.5" x2="1.25" y2="-1.5" width="0.127" layer="21"/>
 <wire x1="1.25" y1="-1.5" x2="1.25" y2="1.5" width="0.127" layer="21"/>
@@ -16419,6 +16176,100 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <text x="-1.27" y="1.397" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
 <text x="-1.27" y="-2.032" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
 <wire x1="6.35" y1="-0.635" x2="6.35" y2="0.635" width="0.1778" layer="21"/>
+</package>
+<package name="ANTENNA">
+<dimension x1="0" y1="0" x2="0" y2="25" x3="41" y3="12.5" textsize="1.27" layer="48"/>
+<dimension x1="0" y1="0" x2="0" y2="9" x3="-11" y3="4.5" textsize="1.27" layer="48"/>
+<dimension x1="0" y1="0" x2="0" y2="1" x3="-10" y3="0.5" textsize="1.27" layer="48"/>
+<dimension x1="0" y1="4" x2="18" y2="4" x3="9" y3="-7" textsize="1.27" layer="48"/>
+<rectangle x1="0" y1="1" x2="2" y2="10" layer="1"/>
+<rectangle x1="0" y1="8" x2="18" y2="10" layer="1"/>
+<dimension x1="18" y1="9" x2="18" y2="12" x3="29" y3="10.5" textsize="1.27" layer="48"/>
+<rectangle x1="16" y1="8" x2="18" y2="15" layer="1"/>
+<dimension x1="18" y1="14" x2="-20" y2="14" x3="-1" y3="26" textsize="1.27" layer="48"/>
+<rectangle x1="-19" y1="13" x2="18" y2="15" layer="1"/>
+<rectangle x1="-20" y1="13" x2="-18" y2="20" layer="1"/>
+<rectangle x1="-20" y1="18" x2="18" y2="20" layer="1"/>
+<dimension x1="18" y1="19" x2="18" y2="22" x3="31" y3="20.5" textsize="1.27" layer="48"/>
+<rectangle x1="16" y1="18" x2="18" y2="25" layer="1"/>
+<rectangle x1="-20" y1="23" x2="18" y2="25" layer="1"/>
+<smd name="A" x="1" y="1" dx="1.4" dy="1.15" layer="1" stop="no" cream="no"/>
+<dimension x1="-19" y1="15" x2="-19" y2="18" x3="-24" y3="16.5" textsize="1.27" layer="48"/>
+<rectangle x1="-20" y1="23" x2="18" y2="25" layer="16"/>
+<rectangle x1="16" y1="18" x2="18" y2="25" layer="16"/>
+<rectangle x1="-20" y1="18" x2="18" y2="20" layer="16"/>
+<rectangle x1="-20" y1="13" x2="-18" y2="20" layer="16"/>
+<rectangle x1="-20" y1="13" x2="18" y2="15" layer="16"/>
+<rectangle x1="16" y1="8" x2="18" y2="15" layer="16"/>
+<rectangle x1="0" y1="8" x2="18" y2="10" layer="16"/>
+<rectangle x1="0" y1="1" x2="2" y2="10" layer="16"/>
+</package>
+<package name="C0603_US">
+<smd name="P$1" x="0.625" y="0" dx="0.35" dy="0.81" layer="1" cream="no"/>
+<smd name="P$2" x="-0.625" y="0" dx="0.35" dy="0.81" layer="1" cream="no"/>
+<text x="1" y="1" size="1.27" layer="25">&gt;NAME</text>
+<text x="1" y="-1" size="1.27" layer="27">&gt;VALUE</text>
+</package>
+<package name="R0603_US">
+<smd name="P$1" x="-0.725" y="0" dx="0.65" dy="0.9" layer="1"/>
+<smd name="P$2" x="0.725" y="0" dx="0.65" dy="0.9" layer="1"/>
+<text x="1" y="1" size="1.27" layer="25">&gt;NAME</text>
+<text x="1" y="-1" size="1.27" layer="27">&gt;VALUE</text>
+</package>
+<package name="20MM_COINCELL">
+<smd name="2.POS" x="11.43" y="0" dx="2.54" dy="5.08" layer="1"/>
+<smd name="1.POS" x="-11.43" y="0" dx="2.54" dy="5.08" layer="1"/>
+<smd name="3.NEG" x="0" y="0" dx="17.78" dy="17.78" layer="1" roundness="100"/>
+<circle x="0" y="0" radius="9" width="0.05" layer="21"/>
+</package>
+<package name="CRYSTAL-24MHZ">
+<description>https://www.digikey.com/product-detail/en/epson/TSX-3225-24.0000MF15X-AC3/SER3635CT-ND/1825447</description>
+<smd name="GND" x="-1.1" y="1.1" dx="1.4" dy="1.15" layer="1"/>
+<smd name="Q1" x="-1.1" y="-0.5" dx="1.4" dy="1.15" layer="1"/>
+<smd name="Q2" x="1.1" y="1.1" dx="1.4" dy="1.15" layer="1"/>
+<smd name="GND2" x="1.1" y="-0.5" dx="1.4" dy="1.15" layer="1"/>
+<circle x="-2.2" y="2.2" radius="0.282840625" width="0.127" layer="21"/>
+<text x="-2" y="4" size="0.5" layer="25">&gt;NAME</text>
+<text x="-2" y="3" size="0.5" layer="27">&gt;VALUE</text>
+<text x="-2.921" y="-1.524" size="0.635" layer="21">Q1</text>
+</package>
+<package name="CRYSTAL-32KHZ">
+<smd name="Q1" x="1.25" y="0" dx="1" dy="1.8" layer="1"/>
+<smd name="Q2" x="-1.25" y="0" dx="1" dy="1.8" layer="1"/>
+<text x="-2.413" y="-2.032" size="0.5" layer="21">&gt;NAME</text>
+<text x="-2.413" y="-2.921" size="0.5" layer="21">&gt;VALUE</text>
+</package>
+<package name="1X02">
+<description>&lt;h3&gt;Plated Through Hole -8 Pin&lt;/h3&gt;
+&lt;p&gt;Specifications:
+&lt;ul&gt;&lt;li&gt;Pin count:8&lt;/li&gt;
+&lt;li&gt;Pin pitch:0.1"&lt;/li&gt;
+&lt;/ul&gt;&lt;/p&gt;
+&lt;p&gt;Example device(s):
+&lt;ul&gt;&lt;li&gt;CONN_08&lt;/li&gt;
+&lt;/ul&gt;&lt;/p&gt;</description>
+<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="1.27" y1="0.635" x2="1.905" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="1.905" y1="1.27" x2="3.175" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="3.175" y1="1.27" x2="3.81" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="3.175" y1="-1.27" x2="1.905" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<pad name="1" x="0" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="2" x="2.54" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
+<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
+<text x="-1.27" y="1.397" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
+<text x="-1.27" y="-2.032" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
+<wire x1="3.81" y1="-0.635" x2="3.81" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="-3.175" y1="0" x2="-1.905" y2="0" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="0.635" x2="-2.54" y2="-0.635" width="0.127" layer="21"/>
 </package>
 </packages>
 <symbols>
@@ -16545,6 +16396,63 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <pin name="GND" x="-5.08" y="-5.08" length="middle"/>
 <text x="10.16" y="5.08" size="1.27" layer="95">&gt;NAME</text>
 <text x="10.16" y="2.54" size="1.27" layer="96">&gt;VALUE</text>
+</symbol>
+<symbol name="ANTENNA">
+<circle x="0" y="0" radius="5.6796125" width="0.254" layer="94"/>
+<wire x1="0" y1="-5.08" x2="0" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="2.54" y2="2.54" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="-2.54" y2="2.54" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="0" y2="2.54" width="0.254" layer="94"/>
+<text x="-7.62" y="7.62" size="1.27" layer="95">&gt;NAME</text>
+<pin name="P$1" x="-10.16" y="2.54" length="middle"/>
+</symbol>
+<symbol name="20MM_COINCELL">
+<pin name="3.GND" x="-7.62" y="5.08" length="middle"/>
+<pin name="1.POS" x="-7.62" y="0" length="middle"/>
+<pin name="2.POS" x="-7.62" y="-5.08" length="middle"/>
+<wire x1="-2.54" y1="7.62" x2="-2.54" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="-7.62" x2="7.62" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-7.62" x2="7.62" y2="7.62" width="0.254" layer="94"/>
+<wire x1="7.62" y1="7.62" x2="-2.54" y2="7.62" width="0.254" layer="94"/>
+<text x="10.16" y="5.08" size="1.27" layer="95">&gt;NAME</text>
+<text x="10.16" y="2.54" size="1.27" layer="96">&gt;VALUE</text>
+</symbol>
+<symbol name="CRYSTAL-24MHZ">
+<pin name="1.Q1" x="-5.08" y="-7.62" length="middle" rot="R90"/>
+<pin name="3.Q2" x="-2.54" y="-7.62" length="middle" rot="R90"/>
+<pin name="2.GND" x="2.54" y="-7.62" length="middle" rot="R90"/>
+<pin name="4.GND" x="5.08" y="-7.62" length="middle" rot="R90"/>
+<wire x1="-7.62" y1="-2.54" x2="7.62" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-2.54" x2="7.62" y2="7.62" width="0.254" layer="94"/>
+<wire x1="7.62" y1="7.62" x2="-7.62" y2="7.62" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="7.62" x2="-7.62" y2="-2.54" width="0.254" layer="94"/>
+<text x="-7.62" y="12.7" size="1.27" layer="95">&gt;NAME</text>
+<text x="-7.62" y="10.16" size="1.27" layer="96">&gt;VALUE</text>
+</symbol>
+<symbol name="CRYSTAL-32K">
+<pin name="Q1" x="-2.54" y="-7.62" length="middle" rot="R90"/>
+<pin name="Q2" x="2.54" y="-7.62" length="middle" rot="R90"/>
+<wire x1="-5.08" y1="5.08" x2="-5.08" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="-5.08" y1="-2.54" x2="5.08" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="5.08" y1="-2.54" x2="5.08" y2="5.08" width="0.254" layer="94"/>
+<wire x1="5.08" y1="5.08" x2="-5.08" y2="5.08" width="0.254" layer="94"/>
+<text x="-5.08" y="7.62" size="0.5" layer="95">&gt;NAME</text>
+<text x="-5.08" y="6.096" size="0.5" layer="96">&gt;VALUE</text>
+</symbol>
+<symbol name="DC_MOTOR">
+<circle x="0" y="0" radius="2.54" width="0.254" layer="94"/>
+<wire x1="-3.81" y1="1.27" x2="-3.81" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="-3.81" y1="-1.27" x2="-2.54" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="-3.81" y1="1.27" x2="-2.54" y2="1.27" width="0.254" layer="94"/>
+<wire x1="2.54" y1="1.27" x2="3.81" y2="1.27" width="0.254" layer="94"/>
+<wire x1="3.81" y1="1.27" x2="3.81" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="3.81" y1="-1.27" x2="2.54" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="-4.445" y1="2.54" x2="-3.175" y2="2.54" width="0.254" layer="94"/>
+<wire x1="-3.81" y1="3.175" x2="-3.81" y2="1.905" width="0.254" layer="94"/>
+<text x="5.08" y="5.08" size="1.27" layer="95">&gt;NAME</text>
+<text x="5.08" y="2.54" size="1.27" layer="95">&gt;VALUE</text>
+<pin name="+" x="-8.89" y="0" length="middle"/>
+<pin name="-" x="8.89" y="0" length="middle" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -16721,6 +16629,88 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 </device>
 </devices>
 </deviceset>
+<deviceset name="ANTENNA">
+<gates>
+<gate name="G$1" symbol="ANTENNA" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="ANTENNA">
+<connects>
+<connect gate="G$1" pin="P$1" pad="A"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="20MM_COINCELL">
+<gates>
+<gate name="G$1" symbol="20MM_COINCELL" x="-2.54" y="0"/>
+</gates>
+<devices>
+<device name="" package="20MM_COINCELL">
+<connects>
+<connect gate="G$1" pin="1.POS" pad="1.POS"/>
+<connect gate="G$1" pin="2.POS" pad="2.POS"/>
+<connect gate="G$1" pin="3.GND" pad="3.NEG"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="CRYSTAL-24MHZ">
+<gates>
+<gate name="G$1" symbol="CRYSTAL-24MHZ" x="0" y="-2.54"/>
+</gates>
+<devices>
+<device name="" package="CRYSTAL-24MHZ">
+<connects>
+<connect gate="G$1" pin="1.Q1" pad="Q1"/>
+<connect gate="G$1" pin="2.GND" pad="GND"/>
+<connect gate="G$1" pin="3.Q2" pad="Q2"/>
+<connect gate="G$1" pin="4.GND" pad="GND2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="CRYSTAL-32KHZ">
+<gates>
+<gate name="G$1" symbol="CRYSTAL-32K" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="CRYSTAL-32KHZ">
+<connects>
+<connect gate="G$1" pin="Q1" pad="Q1"/>
+<connect gate="G$1" pin="Q2" pad="Q2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="DC_MOTOR">
+<gates>
+<gate name="G$1" symbol="DC_MOTOR" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="1X02">
+<connects>
+<connect gate="G$1" pin="+" pad="1"/>
+<connect gate="G$1" pin="-" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -16740,13 +16730,13 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <part name="GND2" library="Swarm" deviceset="GND" device=""/>
 <part name="C3" library="learning_particle" deviceset="C-US" device="" value="1uF"/>
 <part name="GND3" library="Swarm" deviceset="GND" device=""/>
-<part name="Y2" library="Swarm" deviceset="CRYSTAL-32KHZ" device=""/>
+<part name="Y2" library="learning_particle" deviceset="CRYSTAL-32KHZ" device=""/>
 <part name="C2" library="learning_particle" deviceset="C-US" device="" value="12pF"/>
 <part name="C4" library="learning_particle" deviceset="C-US" device="" value="12pF"/>
 <part name="GND4" library="Swarm" deviceset="GND" device=""/>
 <part name="GND5" library="Swarm" deviceset="GND" device=""/>
 <part name="GND6" library="Swarm" deviceset="GND" device=""/>
-<part name="Y1" library="Swarm" deviceset="CRYSTAL-24MHZ" device=""/>
+<part name="Y1" library="learning_particle" deviceset="CRYSTAL-24MHZ" device=""/>
 <part name="L1" library="learning_particle" deviceset="L-US" device="" value="27nH"/>
 <part name="C5" library="learning_particle" deviceset="C-US" device="" value="3.6pF"/>
 <part name="L2" library="learning_particle" deviceset="L-US" device="" value="7.5nH"/>
@@ -16765,7 +16755,7 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <part name="C14" library="learning_particle" deviceset="C-US" device="" value="DNM"/>
 <part name="GND8" library="Swarm" deviceset="GND" device=""/>
 <part name="GND9" library="Swarm" deviceset="GND" device=""/>
-<part name="U$3" library="CC1310F128RGZ" deviceset="ANTENNA" device=""/>
+<part name="U$3" library="learning_particle" deviceset="ANTENNA" device=""/>
 <part name="DEBUG_HEADER" library="CC1310F128RGZ" deviceset="DEBUG_BREAKOUT" device=""/>
 <part name="GND10" library="Swarm" deviceset="GND" device=""/>
 <part name="DRV8835" library="learning_particle" deviceset="DRV8835" device="DRV8835"/>
@@ -16823,16 +16813,16 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <part name="GND31" library="Swarm" deviceset="GND" device=""/>
 <part name="C32" library="Swarm" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="3.3nF"/>
 <part name="C33" library="Swarm" deviceset="C-US" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="3.3nF"/>
-<part name="M2" library="Swarm" deviceset="DC_MOTOR" device=""/>
-<part name="M1" library="Swarm" deviceset="DC_MOTOR" device=""/>
+<part name="M2" library="learning_particle" deviceset="DC_MOTOR" device=""/>
+<part name="M1" library="learning_particle" deviceset="DC_MOTOR" device=""/>
 <part name="S1" library="Swarm" deviceset="MOMENTARY-SWITCH-SPST-2" device="-SMD-4.6X2.8MM"/>
 <part name="GND32" library="Swarm" deviceset="GND" device=""/>
 <part name="GND33" library="Swarm" deviceset="GND" device=""/>
 <part name="GND34" library="Swarm" deviceset="GND" device=""/>
 <part name="GND35" library="Swarm" deviceset="GND" device=""/>
 <part name="GND36" library="Swarm" deviceset="GND" device=""/>
-<part name="U$9" library="Swarm" deviceset="20MM_COINCELL" device=""/>
-<part name="U$10" library="Swarm" deviceset="20MM_COINCELL" device=""/>
+<part name="U$9" library="learning_particle" deviceset="20MM_COINCELL" device=""/>
+<part name="U$10" library="learning_particle" deviceset="20MM_COINCELL" device=""/>
 <part name="GND37" library="Swarm" deviceset="GND" device=""/>
 <part name="FB" library="CC1310F128RGZ" deviceset="FERRITE_BEAD" device=""/>
 <part name="U$2" library="learning_particle" deviceset="GP2Y_DIST_SENSE_BREAKOUT" device=""/>
@@ -18121,11 +18111,11 @@ Standard adjustable voltage regulator but in SMD form. Spark Fun Electronics SKU
 <segment>
 <pinref part="C13" gate="G$1" pin="P$2"/>
 <wire x1="313.69" y1="71.12" x2="325.12" y2="71.12" width="0.1524" layer="91"/>
-<pinref part="U$3" gate="G$1" pin="P$1"/>
-<wire x1="325.12" y1="71.12" x2="335.28" y2="71.12" width="0.1524" layer="91"/>
-<wire x1="335.28" y1="71.12" x2="335.28" y2="73.66" width="0.1524" layer="91"/>
 <pinref part="C14" gate="G$1" pin="P$1"/>
 <wire x1="325.12" y1="63.5" x2="325.12" y2="71.12" width="0.1524" layer="91"/>
+<pinref part="U$3" gate="G$1" pin="P$1"/>
+<wire x1="325.12" y1="71.12" x2="325.12" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="325.12" y1="76.2" x2="335.28" y2="76.2" width="0.1524" layer="91"/>
 <junction x="325.12" y="71.12"/>
 </segment>
 </net>
