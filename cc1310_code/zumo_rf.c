@@ -175,7 +175,7 @@ void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     {
         seqNumber++;
         GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
-        WriteUART0("ah shouting\r\n");
+//        WriteUART0("ah shouting\r\n");
     }
 
 }
@@ -209,7 +209,7 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
 //        WriteUART0(buffer);
 
-        interpret_packet(*(packetDataPointer + 2));
+        evaluate_packet(*(packetDataPointer + 2));
 
         //on successful rx set resp flag high
         idle_count = 0;
