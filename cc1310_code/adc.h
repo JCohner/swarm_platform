@@ -14,12 +14,14 @@
 
 #define NUM_SENSORS 6
 
-#define MR_Sense IOID_25
-#define IR_Sense IOID_23
-#define IL_Sense IOID_24
-#define ML_Sense IOID_26
-#define ER_Sense IOID_27
-#define EL_Sense IOID_28
+//TODO: remapped the pins for v2.0 design!!! make sure to change these
+
+#define MR_Sense IOID_25 //IOID_24
+#define IR_Sense IOID_23 //IOID_23
+#define IL_Sense IOID_24 //IOID_26
+#define ML_Sense IOID_26 //IOID_27
+#define ER_Sense IOID_27 //IOID_25
+#define EL_Sense IOID_28 //IOID_28
 
 //wire it such that this is true
 static char adc_inputs[8] = {ADC_COMPB_IN_AUXIO7, ADC_COMPB_IN_AUXIO6,ADC_COMPB_IN_AUXIO5, ADC_COMPB_IN_AUXIO4, ADC_COMPB_IN_AUXIO3, ADC_COMPB_IN_AUXIO2, ADC_COMPB_IN_AUXIO1, ADC_COMPB_IN_AUXIO0};
