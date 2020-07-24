@@ -95,22 +95,33 @@ float dt = 0.05;
 int policy = 0;
 //char do_once = 0;
 
-void drive_line(float val, uint32_t * vals)
+void drive_line(float cent_val, uint16_t dist_val, uint32_t * vals)
 {
 
     ////////
     //NORMAL DRIVING
     ///////
     prev_error = error;
-    error = 1.5 - val;
-    e = (1.5 - val)/1.5;
+    error = 1.5 - cent_val;
+    e = (1.5 - cent_val)/1.5;
     d_error = (error-prev_error)/dt;
 
 //    sprintf(buffer, "error: %f\r\n", error);
 //    WriteUART0(buffer);
     float speed_delim = 1 - fabs(error)/1.5;
+
+
+
     float rhs = speed_delim * MOTOR_ON + (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
     float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
+
+
+    if (dist_val > 3000) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
+    {
+     rhs /= 2;
+     lhs /= 2;
+    }
+
 
     if (lhs < MOTOR_ON)
     {

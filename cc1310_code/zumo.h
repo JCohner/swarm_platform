@@ -40,7 +40,7 @@
 //#define MOTOR_TURN 64//64
 
 float read_line(uint32_t * vals);
-void drive_line(float val, uint32_t * vals);
+void drive_line(float cent_val, uint16_t dist_val, uint32_t * vals);
 void calibrate_line(int num_samps);
 
 
