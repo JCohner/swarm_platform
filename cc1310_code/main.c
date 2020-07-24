@@ -23,7 +23,7 @@
 //#include "rtc.h"
 #include "interrupt_timer.h"
 #include "comm_packet.h"
-
+#include "dist_sense.h"
 
 static char buffer[60];
 uint32_t adc_vals[8];
@@ -96,13 +96,14 @@ int main(void)
           WriteRFPacket(get_packet());
 
           float IR_val = read_line(adc_vals);
-//          sprintf(buffer, "IR VAL: %f\r\n", IR_val);
+          uint32_t Dist_val = ReadDist();
+//          sprintf(buffer, "DIST VAL: %f\r\n", Dist_val);
 //          WriteUART0(buffer);
-          drive_line(IR_val, adc_vals);
+          drive_line(IR_val, Dist_val, adc_vals);
 
           detect_poi(adc_vals);
           detect_xc(adc_vals);
-          inc_state(); //if at intersection
+          inc_state();
           manage_intersection();
       }
 
