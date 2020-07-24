@@ -11,14 +11,13 @@
 
 
 static char buffer[50];
-float ReadDist()
+uint32_t ReadDist()
 {
     uint32_t analog_sig = Read1ADC(7);
 
     sprintf(buffer, "sig: %u\r\n", analog_sig);
     WriteUART0(buffer);
 
-    float dist = analog_sig * 2;
 
-    return dist;
+    return analog_sig;
 }

@@ -11,7 +11,7 @@
 #include "adc.h"
 #include <stdint.h>
 
-float ReadDist();
+uint32_t ReadDist();
 
 
 #endif /* DIST_SENSE_H_ */
