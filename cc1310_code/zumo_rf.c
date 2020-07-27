@@ -174,7 +174,7 @@ void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
     {
         seqNumber++;
-        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
+//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED); //TODO CAUSE IM DUMB I MAPPED THE SAME PIN AS 2nd row leds, needs pcb rework
 //        WriteUART0("ah shouting\r\n");
     }
 
@@ -187,7 +187,7 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     //if we successfully recevied
     if (e & RF_EventRxEntryDone)
     {
-        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED); //TODO CAUSE IM DUMB I MAPPED THE SAME PIN AS 2nd row leds, needs pcb rework
 
         message_time = curr_count;
         delta_message_time = message_time - prev_message_time;
@@ -202,8 +202,8 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
         RFQueue_nextEntry();
 
-//        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
-//        WriteUART0(buffer);
+        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
+        WriteUART0(buffer);
 //        WriteUART0((char *) (packetDataPointer + 2));
 
 //        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
