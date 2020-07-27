@@ -47,6 +47,12 @@ void SetAndWritePinHigh(uint32_t pin)
     GPIO_setDio(pin);
 }
 
+void SetGPIOPin(uint32_t pin)
+{
+    IOCPortConfigureSet(pin, IOC_PORT_GPIO, IOC_STD_OUTPUT);
+    GPIO_setOutputEnableDio(pin, GPIO_OUTPUT_ENABLE);
+}
+
 void ClearPin(uint32_t pin)
 {
     GPIO_clearDio(pin);
