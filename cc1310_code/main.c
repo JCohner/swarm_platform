@@ -24,6 +24,7 @@
 #include "interrupt_timer.h"
 #include "comm_packet.h"
 #include "dist_sense.h"
+#include "leds.h"
 
 static char buffer[60];
 uint32_t adc_vals[8];
@@ -52,12 +53,14 @@ int main(void)
     //start up neccesarries for ir sensing
     IR_SenseSetup();
 
+    setup_leds();
+
     //    char data;
     ////pause until character entered
     //data = UARTCharGet(UART0_BASE);
 
     //light green LED to show setup is done
-    GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
+//    GPIO_setDio(CC1310_LAUNCHXL_PIN_GLED);
 //      callibrate();
 //      test_leds();
 
@@ -70,8 +73,8 @@ int main(void)
       set_mach_id(1);
 
 //
-//      set_policy(0b10);
-//      set_mach_id(2);
+      set_policy(0b10);
+      set_mach_id(2);
 
 //      InitRTC();
       InterTimerEnable();
@@ -105,6 +108,8 @@ int main(void)
           detect_xc(adc_vals);
           inc_state();
           manage_intersection();
+
+          manage_leds();
       }
 
 

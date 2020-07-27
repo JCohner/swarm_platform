@@ -192,8 +192,8 @@ void manage_intersection()
     enum States xc_state = get_xc_state();
     enum States prev_xc_state=  get_prev_xc_state();
 
-    sprintf(buffer, "prev: %u, cur: %u\r\n",prev_xc_state, xc_state);
-    WriteUART0(buffer);
+//    sprintf(buffer, "prev: %u, cur: %u\r\n",prev_xc_state, xc_state);
+//    WriteUART0(buffer);
     if (xc_state != prev_xc_state)
     {
         GPIO_toggleDio(BLED3);

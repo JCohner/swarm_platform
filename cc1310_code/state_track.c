@@ -17,8 +17,6 @@ static struct StateTrack state_track =
                                  .actuation_flag = 0};
 
 
-
-
 /*!
  *  \brief examines flags, determines if state transition is needed
  *
