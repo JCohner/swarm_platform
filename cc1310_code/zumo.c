@@ -116,7 +116,7 @@ void drive_line(float cent_val, uint16_t dist_val, uint32_t * vals)
     float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
 
 
-    if (dist_val > 3000) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
+    if (dist_val > DIST_THRESH) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
     {
      rhs /= 2;
      lhs /= 2;
