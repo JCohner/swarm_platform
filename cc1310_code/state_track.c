@@ -30,35 +30,66 @@ static char buffer[50];
 //after an intersection has been dealt with we can increment the state
 void inc_state()
 {
-//    uint8_t stator = state_track.xc_state;
 
-//    sprintf(buffer, "stator: %u\r\n",stator);
-//    WriteUART0(buffer);
-
+    //ensures we actually detect transition
     if (get_intersection_flag() && !get_actuation_flag() && get_detect_flag() && get_on_line_flag())
     {
-        switch(state_track.xc_state)
+        switch (state_track.branch_state)
         {
-            case for_1: //2
-                state_track.xc_state = ret_0;
-                break;
-            case ret_0: //5
-                state_track.xc_state = ret_1;
-                break;
-            case ret_1: //6
-                state_track.xc_state = for_0;
+        case 0:
+            switch(state_track.xc_state)
+            {
+                case 0b001:
+                    state_track.xc_state = 0b010;
+                    break;
+                case 0b0110:
+                    state_track.xc_state = 0b101;
+                    break;
+                case 0b101: //6
+                    state_track.xc_state = 0b110;
 
-                //noting that a loop is completed now update policy based on neighbor feedback
-                if (get_neighbor_target_flag())
-                {
-                    set_policy(get_neighbor_target_policy());
-                }
+//                    //noting that a loop is completed now update policy based on neighbor feedback
+//                    if (get_neighbor_target_flag())
+//                    {
+//                        set_policy(get_neighbor_target_policy());
+//                    }
+                    break;
+                case 0b110:
+                    state_track.xc_state = 0b001;
+                    state_track.branch_state = 0b1;
+                    break;
+            }
 
-                break;
-            case for_0:
-                state_track.xc_state = for_1;
-                break;
+            break;
+
+        case 1:
+            switch(state_track.xc_state)
+            {
+                case 0b0001:
+                    state_track.xc_state = 0b0010;
+                    break;
+                case 0b0010:
+                    state_track.xc_state = 0b0100;
+                    break;
+                case 0b0100: //6
+                    state_track.xc_state = for_0;
+
+//                    //noting that a loop is completed now update policy based on neighbor feedback
+//                    if (get_neighbor_target_flag())
+//                    {
+//                        set_policy(get_neighbor_target_policy());
+//                    }
+
+                    break;
+                case for_0:
+                    state_track.xc_state = for_1;
+                    break;
+            }
+
+            break;
         }
+
+
 
         //set_intersection_flag(0); //going to set this low when managed by manage_intersection()
         set_detect_flag(0);
