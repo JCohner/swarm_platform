@@ -164,9 +164,12 @@ void WriteRFState(uint8_t state)
     packet[2] = state;
 }
 
-void WriteRFPacket(uint8_t comm_packet)
+void WriteRFPacket(uint16_t comm_packet)
 {
-    packet[2] = comm_packet;
+    //Big Endian
+    packet[2] = (comm_packet & 0xFF00) >> 8; //writes high byte first
+    packet[3] = comm_packet & 0x00FF; //low byte second
+
 }
 
 void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)

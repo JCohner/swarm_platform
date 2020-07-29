@@ -85,5 +85,5 @@ void rf_main();
 
 void WriteRF(const char * string);
 void WriteRFState(uint8_t state);
-void WriteRFPacket(uint8_t comm_packet);
+void WriteRFPacket(uint16_t comm_packet);
 #endif /* ZUMO_RF_H_ */
