@@ -10,12 +10,48 @@
 #include "uart.h"
 #include <stdio.h>
 
-static enum States state;
+//static enum States state;
 
 static struct StateTrack state_track =
-                                {.xc_state = for_1, .prev_xc_state=for_1,
-                                 .actuation_flag = 0};
+                                {.xc_state = 0b1100, .prev_xc_state=0b1100,
+                                 .actuation_flag = 0,
+                                 .bbs = {3,4}, .bb = 4, .bb_idx = 1,
+                                 .ret = 0, .mask = 0x7};
 
+
+uint8_t reverse_bits(uint8_t bits_in, uint8_t len)
+{
+    uint8_t bits_out = 0;
+    int i;
+    for (i = len; i > 0; i--)
+    {
+        bits_out = bits_out | ((bits_in & (0b1 << (i - 1))) >> (i -1))  << (len - i) ;
+    }
+    return bits_out;
+
+}
+
+uint8_t mask_mask(uint8_t bb)
+{
+
+    uint8_t mask_mask = 0;
+    //avoiding using bitwise not due to alignment issues
+    int i;
+    for (i = bb - 1; i >= 0; i--)
+    {
+        mask_mask |= 0b1 << i;
+    }
+
+    return mask_mask;
+}
+
+
+uint8_t get_mask_mask(uint8_t bb)
+{
+    //mask mask takes care of alignment issues for bb = 3
+    uint8_t mask = ~(((0b1 << (bb - 1)))) & mask_mask(bb);
+    return mask;
+}
 
 /*!
  *  \brief examines flags, determines if state transition is needed
@@ -30,66 +66,39 @@ static char buffer[50];
 //after an intersection has been dealt with we can increment the state
 void inc_state()
 {
+    uint8_t xcs = state_track.xc_state;
+    uint8_t prev_xcs = state_track.prev_xc_state;
+    uint8_t ret = state_track.ret;
 
     //ensures we actually detect transition
     if (get_intersection_flag() && !get_actuation_flag() && get_detect_flag() && get_on_line_flag())
     {
-        switch (state_track.branch_state)
+        //OHE encoding of all but MSB
+        xcs = (xcs & state_track.mask) << 1;
+        //Wrap all but MSB
+        xcs = xcs % state_track.mask;
+        //Add MSB back in to reflect if one return path
+        xcs = xcs | ret << (state_track.bb - 1);
+        //Tracks bit before MSB, this XORd with current MSB (ie ret) allows correct trans
+        ret = (((xcs & (0b1 << (state_track.bb - 2)))) >> (state_track.bb - 2)) ^ ret;
+
+
+        sprintf(buffer, "xcs: %X, prev: %X, bb: %X, ret: %X\r\n",
+                xcs, prev_xcs, state_track.bb, state_track.ret);
+        WriteUART0(buffer);
+        //Deals with switching between branches of different bb
+        if (xcs < prev_xcs)
         {
-        case 0:
-            switch(state_track.xc_state)
-            {
-                case 0b001:
-                    state_track.xc_state = 0b010;
-                    break;
-                case 0b0110:
-                    state_track.xc_state = 0b101;
-                    break;
-                case 0b101: //6
-                    state_track.xc_state = 0b110;
-
-//                    //noting that a loop is completed now update policy based on neighbor feedback
-//                    if (get_neighbor_target_flag())
-//                    {
-//                        set_policy(get_neighbor_target_policy());
-//                    }
-                    break;
-                case 0b110:
-                    state_track.xc_state = 0b001;
-                    state_track.branch_state = 0b1;
-                    break;
-            }
-
-            break;
-
-        case 1:
-            switch(state_track.xc_state)
-            {
-                case 0b0001:
-                    state_track.xc_state = 0b0010;
-                    break;
-                case 0b0010:
-                    state_track.xc_state = 0b0100;
-                    break;
-                case 0b0100: //6
-                    state_track.xc_state = for_0;
-
-//                    //noting that a loop is completed now update policy based on neighbor feedback
-//                    if (get_neighbor_target_flag())
-//                    {
-//                        set_policy(get_neighbor_target_policy());
-//                    }
-
-                    break;
-                case for_0:
-                    state_track.xc_state = for_1;
-                    break;
-            }
-
-            break;
+            state_track.bb_idx = (state_track.bb_idx + 1) % NUM_BRANCHES;
+            state_track.bb = state_track.bbs[state_track.bb_idx];
+            state_track.mask = get_mask_mask(state_track.bb);
         }
 
 
+
+        state_track.xc_state = xcs;
+        state_track.ret = ret;
+//        state_track.prev_xc_state = xcs;
 
         //set_intersection_flag(0); //going to set this low when managed by manage_intersection()
         set_detect_flag(0);
@@ -99,18 +108,12 @@ void inc_state()
 
 void set_policy(uint8_t policy)
 {
-    state_track.policy = policy & 0x03;
-
-    if (!((state_track.policy >> 1) ^ (state_track.policy & 0b01)))
-    {
-        // 0b00 or 0b11 policy case
-        state_track.return_policy = state_track.policy;
-    }
-    else
-    {
-        //for 0b01 and 0b10 cases return policy is opposite
-        state_track.return_policy = ~state_track.policy;
-    }
+    state_track.policy = policy;
+    //TODO: make implementation that just accesses bb params of state
+    uint8_t ret_pol = 0;
+    ret_pol = ret_pol | reverse_bits((policy & 0x1C) >> 2, 3)  << 2;
+    ret_pol = ret_pol | reverse_bits(policy & 0x03, 2);
+    state_track.return_policy = ret_pol;
 }
 
 uint8_t get_policy()
@@ -123,22 +126,9 @@ uint8_t get_return_policy()
     return state_track.return_policy;
 }
 
-//void inc_xc_state()
-//{
-//    state_track.xc_state = (state_track.xc_state ^ 0b11) &0x03;
-//
-//    GPIO_toggleDio(BLED2);
-//    if (state_track.xc_state == 0b01)
-//    {
-//        toggle_return_flag();
-////        GPIO_toggleDio(BLED2);
-//    }
-//}
-
-
 void set_xc_state(uint8_t state)
 {
-    state_track.xc_state = state & 0x07;
+    state_track.xc_state = state;
 }
 
 
@@ -149,7 +139,7 @@ uint8_t get_xc_state()
 
 void set_prev_xc_state(uint8_t state)
 {
-    state_track.prev_xc_state = state & 0x07;
+    state_track.prev_xc_state = state;
 }
 
 uint8_t get_prev_xc_state()
@@ -176,31 +166,10 @@ uint8_t get_actuation_flag()
     return state_track.actuation_flag;
 }
 
-//void set_return_flag(uint8_t flag)
-//{
-//    state_track.return_flag = flag;
-//}
-//
 bool get_return_flag()
 {
-    return (state_track.xc_state & 0b100);
+    return (state_track.xc_state & (0b1 << (state_track.bb - 1)));
 }
-//
-//uint8_t get_prev_return_flag()
-//{
-//    return state_track.prev_return_flag;
-//}
-//
-//void set_prev_return_flag(uint8_t flag)
-//{
-//    state_track.prev_return_flag = flag;
-//}
-
-//void toggle_return_flag()
-//{
-//    state_track.prev_return_flag = state_track.return_flag;
-//    state_track.return_flag = !state_track.return_flag;
-//}
 
 void set_detect_flag(uint8_t flag)
 {
@@ -232,7 +201,7 @@ uint8_t get_on_line_flag()
 
 void set_neighbor_target_policy(uint8_t policy)
 {
-    state_track.neighbor_target_policy = policy & 0x3;
+    state_track.neighbor_target_policy = policy;
 }
 
 uint8_t get_neighbor_target_policy()
@@ -248,4 +217,16 @@ void set_neighbor_target_flag(uint8_t flag)
 {
     state_track.neighbor_target_flag = flag;
 }
+
+uint8_t get_mask()
+{
+    return state_track.mask;
+}
+
+uint8_t get_bb_idx()
+{
+    return state_track.bb_idx;
+}
+
+
 

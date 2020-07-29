@@ -9,27 +9,29 @@
 #define STATE_TRACK_H_
 
 #include <stdint.h>
+
 #include "gpio.h"
 #include "helpful.h"
 
-enum States{ret_0=0b101, ret_1=0b110, for_0=0b001, for_1=0b010};
+//enum States{ret_0=0b101, ret_1=0b110, for_0=0b001, for_1=0b010};
 
+
+#define NUM_BRANCHES 2
 struct StateTrack{
     //policy and target bits
-    uint8_t policy : 2;
+    uint8_t policy : 5;
     uint8_t return_policy : 2;
     uint8_t target : 1;
 
     //state management bits
-    enum States xc_state : 3;
-    enum States prev_xc_state : 3;
+    uint8_t bb_idx : 2;
+    uint8_t bb : 3;
+    uint8_t bbs[NUM_BRANCHES];
+    uint8_t ret : 1;
+    uint8_t mask;
 
-//
-//    uint8_t xc_state : 2;
-//    uint8_t prev_xc_state : 2;
-//    uint8_t return_flag : 1; //whether on return path or forward path
-//    uint8_t prev_return_flag : 1; //prev state of return such that
-//                                    //state transition can be handled
+    uint8_t xc_state : 4;
+    uint8_t prev_xc_state : 4;
 
     uint8_t detect_flag : 1; //raised when grey detected
     uint8_t intersection_flag : 1; //rasied when white intersection detected
@@ -85,4 +87,9 @@ void set_neighbor_target_flag(uint8_t flag);
 void evaluate_state();
 void inc_state();
 
+//gets the mask for the mask, only used internally
+uint8_t get_mask_mask(uint8_t bb);
+//gives current bit mask for policy to other files
+uint8_t get_mask();
+uint8_t get_bb_idx();
 #endif /* STATE_TRACK_H_ */
