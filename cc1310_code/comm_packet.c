@@ -13,26 +13,25 @@ static uint8_t mach_id;
 
 void set_mach_id(uint8_t id)
 {
-    mach_id = id & 0x3;
+    mach_id = id;
 }
-
-uint8_t get_packet()
+static char buffer[50];
+uint16_t get_packet()
 {
     //target bit
-
     uint8_t stator = get_xc_state();
-    return  mach_id << 6 | get_target_flag() << 5 | get_policy() << 3 | stator;
+    return  mach_id << (4+5+1) | get_target_flag() << (4+5) | get_policy() << 4 | stator;
 
 }
 
-void evaluate_packet(uint8_t packet)
+void evaluate_packet(uint16_t packet)
 {
-    struct Packet info = {.target_flag = (packet & 0x20) >> 5,
-                          .policy = (packet & 0x18) >> 3,
-                          .xc_state = (packet & 0x07)};
+    struct Packet info = {.target_flag = (packet & TFLAG_MASK) >> TFLAG_SHIFT,
+                          .policy = (packet & POLICY_MASK) >> POL_SHIFT,
+                          .xc_state = (packet & STATE_MASK) >> STATE_SHIFT};
 
     //if target flag of packet is high& yours is not
-    if (packet & 0x20 && !get_target_flag() && check_near(&info))
+    if (info.target_flag && !get_target_flag() && check_near(&info))
     {
         set_neighbor_target_flag(1);
         //set their policy as your own policy
