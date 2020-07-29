@@ -113,8 +113,26 @@ void steer(int dir)
     }
 }
 
+//TODO for scalibility can definitely reference (bb - 1) value for number of
+//      bits to bitshift
+uint8_t mask_policy(uint8_t policy)
+{
+    uint8_t ret;
+    uint8_t idx = get_bb_idx();
+    if (idx == 0)
+    {
+        ret = policy & get_mask();
+    }
+    else if (idx == 1)
+    {
+        ret = (policy & (get_mask() << 2)) >> 2;
+    }
+
+    return ret;
+}
+
 /*!
- *  \brief Called once per main loop, if state is active will take over controlling
+ *  \brief Called at 1kHz, if state is active will take over controlling
  *      motors and open loop turn the robot. Uses state as a mask to get policy bit OR
  *      return_policy bit relevant to current intersection
  */
@@ -134,11 +152,11 @@ void openloop_turn()
     uint8_t dir;
     if (!get_return_flag())
     {
-        dir = xc_state & policy;
+        dir = xc_state & mask_policy(policy);
     }
     else
     {
-        dir = xc_state & ret_policy;
+        dir = xc_state & mask_policy(ret_policy);
     }
     //it is recommended that clearing the interrupt flag is not the last command
     TimerIntClear(GPT1_BASE, TIMER_TIMA_TIMEOUT);
@@ -189,8 +207,8 @@ void openloop_turn()
  */
 void manage_intersection()
 {
-    enum States xc_state = get_xc_state();
-    enum States prev_xc_state=  get_prev_xc_state();
+    uint8_t xc_state = get_xc_state();
+    uint8_t prev_xc_state=  get_prev_xc_state();
 
 //    sprintf(buffer, "prev: %u, cur: %u\r\n",prev_xc_state, xc_state);
 //    WriteUART0(buffer);
