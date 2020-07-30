@@ -10,17 +10,21 @@
 
 #include "state_track.h"
 
-#define POLICY_MASK 0x001F0
-#define TFLAG_MASK 0x0200
-#define STATE_MASK 0x0000F
+#define POLICY_MASK 0x003E0
+#define TFLAG_MASK 0x00400
+#define BBI_MASK 0x000010
+#define STATE_MASK 0x00000F
 
-#define POL_SHIFT 4
-#define TFLAG_SHIFT 9
+#define MACH_SHIFT 11
+#define POL_SHIFT 5
+#define TFLAG_SHIFT 10
+#define BBI_SHIFT 4
 #define STATE_SHIFT 0
 
 struct Packet {
     uint8_t target_flag : 1;
     uint8_t policy : 5;
+    uint8_t bb_idx : 1;
     uint8_t xc_state : 4;
 };
 
