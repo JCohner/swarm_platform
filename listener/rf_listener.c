@@ -191,15 +191,16 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         uint16_t data = (*(packetDataPointer + 2) << 8) | (*(packetDataPointer + 3));
 //        sprintf(buffer, "dat: %X\r\n", data);
 //        WriteUART0(buffer);
-        uint8_t mach_id = (data & 0xFC00) >> 10; //10-15th bits is mach ID
-        uint8_t target_flag = (data & 0x0200) >> 9; //9th bit is target flag
-        uint8_t policy = (data & 0x001F0) >> 4; //4-8 bit is poloicy
-        uint8_t xc_state = data & 0x0000F; //0-3 bit is state
+        uint8_t mach_id = (data & MACH_MASK) >> MACH_SHIFT; //10-15th bits is mach ID
+        uint8_t target_flag = (data & TFLAG_MASK) >> TFLAG_SHIFT; //9th bit is target flag
+        uint8_t policy = (data & POLICY_MASK) >> POL_SHIFT; //4-8 bit is poloicy
+        uint8_t bb_idx = (data & BBI_MASK) >> BBI_SHIFT;
+        uint8_t xc_state = data & STATE_MASK; //0-3 bit is state
 
 
 //        sprintf(buffer, "%u\r\n", * (packetDataPointer + 2));
-        sprintf(buffer, "mach: %x\ttarg: %u\tpol: %u\tstate: %X\r\n",
-                mach_id, target_flag, policy, xc_state);
+        sprintf(buffer, "mach: %x\ttarg: %u\tpol: %u\tbbi: %u\tstate: %X\r\n",
+                mach_id, target_flag, policy, bb_idx, xc_state);
         WriteUART0(buffer);
         resp_flag = 1;
 
