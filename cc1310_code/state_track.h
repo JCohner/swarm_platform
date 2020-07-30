@@ -20,7 +20,7 @@
 struct StateTrack{
     //policy and target bits
     uint8_t policy : 5;
-    uint8_t return_policy : 2;
+    uint8_t return_policy : 5;
     uint8_t target : 1;
 
     //state management bits
