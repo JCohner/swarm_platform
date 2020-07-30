@@ -94,6 +94,12 @@ void inc_state()
             state_track.mask = get_mask_mask(state_track.bb);
         }
 
+        if(prev_xcs == 0b0010 && get_bb_idx() && ((get_policy() & 0b11) == 0b11))
+        {
+            //fast forward for path that has lack of
+            xcs = 0x9;
+            ret = 1; //this may break;
+        }
 
 
         state_track.xc_state = xcs;
