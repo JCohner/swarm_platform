@@ -73,9 +73,9 @@ void detect_poi(uint32_t * vals)
 //    sprintf(buffer, "%u,%u\r\n", graphite.left_prev_vals_ave, graphite.right_prev_vals_ave);
 ////    WriteUART0(buffer);
 //    WriteRF(buffer);
-    if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > 25
+    if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > 26
 //            && !get_detect_flag()
-            && (get_xc_state()== 0b010))
+            && (get_xc_state()== 0b0100))
     {
         set_target_flag(1);
         GPIO_toggleDio(BLED2);
