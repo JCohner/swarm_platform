@@ -20,6 +20,8 @@
 #include "CC1310_LAUNCHXL.h"
 #include "gpio.h"
 
+#include "print_info.h"
+
 #include <stdlib.h>
 
 /***** Defines *****/
@@ -77,6 +79,7 @@ rxDataEntryBuffer[RF_QUEUE_DATA_ENTRY_BUFFER_SIZE(NUM_DATA_ENTRIES,
 //static void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 //void sneeze_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
+void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 /*Globals for biosynchronicity*/
 uint32_t curr_time;
 void rf_setup()
@@ -113,9 +116,9 @@ void rf_setup()
     RF_cmdPropRx.condition.rule = COND_STOP_ON_FALSE;
     RF_cmdPropRx.pOutput = (uint8_t *)&rxStatistics;
 //
-//    RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
-////    RF_cmdPropTx.pPkt = txPacket;
-//    RF_cmdPropTx.startTrigger.triggerType = TRIG_REL_PREVEND;
+    RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
+    RF_cmdPropTx.pPkt = packet;
+    RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
 //    RF_cmdPropTx.startTime = TX_DELAY;
 
    //request acces to radio
@@ -160,7 +163,7 @@ void rf_main()
     }
 
 
-    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
+//    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
 }
 
 void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
@@ -191,19 +194,33 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         uint16_t data = (*(packetDataPointer + 2) << 8) | (*(packetDataPointer + 3));
 //        sprintf(buffer, "dat: %X\r\n", data);
 //        WriteUART0(buffer);
-        uint8_t mach_id = (data & MACH_MASK) >> MACH_SHIFT; //10-15th bits is mach ID
-        uint8_t target_flag = (data & TFLAG_MASK) >> TFLAG_SHIFT; //9th bit is target flag
-        uint8_t policy = (data & POLICY_MASK) >> POL_SHIFT; //4-8 bit is poloicy
-        uint8_t bb_idx = (data & BBI_MASK) >> BBI_SHIFT;
-        uint8_t xc_state = data & STATE_MASK; //0-3 bit is state
+
+        print_info(data);
 
 
-//        sprintf(buffer, "%u\r\n", * (packetDataPointer + 2));
-        sprintf(buffer, "mach: %x\ttarg: %u\tpol: %u\tbbi: %u\tstate: %X\r\n",
-                mach_id, target_flag, policy, bb_idx, xc_state);
-        WriteUART0(buffer);
         resp_flag = 1;
 
     }
 }
 
+void rf_post_message(uint32_t data)
+{
+    packet[0] = (data & 0xFF00) >> 8;
+    packet[1] = (data & 0x00FF);
+
+//    sprintf(buffer, "sending: %X\r\n", data);
+//    WriteUART0(buffer);
+
+    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+               &TX_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+}
+void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
+{
+    if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
+    {
+        seqNumber++;
+        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+
+    }
+
+}
