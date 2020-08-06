@@ -94,13 +94,13 @@ void inc_state()
             state_track.mask = get_mask_mask(state_track.bb);
         }
 
-        if(prev_xcs == 0b0010 && get_bb_idx() && ((get_policy() & 0b11) == 0b11))
+        //fast forward for truncated path (the 0bx11xx policy)
+        if(xcs == 0b0100 && get_bb_idx() && (((get_policy() & 0b01100) >> 2) == 0b11))
         {
             //fast forward for path that has lack of
-            xcs = 0x9;
+            xcs = 0xA;
             ret = 1; //this may break;
         }
-
 
         state_track.xc_state = xcs;
         state_track.ret = ret;
@@ -109,6 +109,15 @@ void inc_state()
         //set_intersection_flag(0); //going to set this low when managed by manage_intersection()
         set_detect_flag(0);
         set_on_line_flag(0);
+    }
+
+
+
+
+    //for when its acceptable to overwrite DRIVING policy
+    if ((xcs == 0b110 || xcs == 0xC) && get_neighbor_target_flag())
+    {
+        set_policy(get_neighbor_target_policy());
     }
 }
 

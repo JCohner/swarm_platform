@@ -36,7 +36,7 @@ struct StateTrack{
     uint8_t detect_flag : 1; //raised when grey detected
     uint8_t intersection_flag : 1; //rasied when white intersection detected
 
-    uint8_t neighbor_target_policy : 2; //this is the policy heard from another bot that has found target
+    uint8_t neighbor_target_policy : 5; //this is the policy heard from another bot that has found target
     uint8_t neighbor_target_flag : 1; //flag that indicates another bot found target
 
     uint8_t on_line_flag : 1; // raised if robot on line
