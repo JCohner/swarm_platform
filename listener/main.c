@@ -9,9 +9,13 @@
 #include <devices/cc13x0/driverlib/prcm.h>
 #include <devices/cc13x0/driverlib/uart.h>
 #include <devices/cc13x0/driverlib/sys_ctrl.h>
-#include <rf_listener.h>
+#include "rf_listener.h"
+#include <stdlib.h>
+
 #include "gpio.h"
 #include "uart.h"
+#include "print_info.h"
+
 static char buffer[50];
 int main(void)
 {
@@ -27,12 +31,21 @@ int main(void)
     rf_setup();
     GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED);
     WriteUART0("got here\r\n");
+
+
+    READUART0_AS_ENABLE();
+
+    char data = 0;
       while(1)
       {
 //          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
-          //proceed on space
-//          char data = UARTCharGet(UART0_BASE);
-//          WriteUART0("got here\r\n");
+
+          uint8_t flag = ReadUART0_AS(buffer, 16);
+          if (flag)
+          {
+              char * pEnd;
+              rf_post_message((uint32_t) strtol(buffer, &pEnd, 16));
+          }
           rf_main();
       }
 
