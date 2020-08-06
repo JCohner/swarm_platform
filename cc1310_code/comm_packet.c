@@ -8,6 +8,7 @@
 
 #include "comm_packet.h"
 #include "uart.h"
+#include "gpio.h"
 
 static uint8_t mach_id;
 
@@ -28,10 +29,22 @@ uint16_t get_packet()
 
 void evaluate_packet(uint16_t packet)
 {
-    struct Packet info = {.target_flag = (packet & TFLAG_MASK) >> TFLAG_SHIFT,
+    sprintf(buffer, "packet: %u\r\n", packet);
+    WriteUART0(buffer);
+
+    uint8_t send_id = (packet & MACH_MASK) >> MACH_SHIFT;
+    if (send_id == mach_id || send_id == UNIV_ID)
+    {
+        evaluate_command(packet);
+        return;
+    }
+
+    struct Packet info = {.mach_id = (packet & MACH_MASK) >> MACH_SHIFT,
+                          .target_flag = (packet & TFLAG_MASK) >> TFLAG_SHIFT,
                           .policy = (packet & POLICY_MASK) >> POL_SHIFT,
                           .bb_idx = (packet & BBI_MASK) >> BBI_SHIFT,
                           .xc_state = (packet & STATE_MASK) >> STATE_SHIFT};
+
 
     //if target flag of packet is high& yours is not
     if (info.target_flag && !get_target_flag() && check_near(&info))
@@ -55,3 +68,21 @@ uint8_t check_near(struct Packet * info)
         return 0;
     }
 }
+
+//sets internal properties
+void evaluate_command(uint16_t packet)
+{
+    WriteUART0("suh dong\r\n");
+    switch ((packet & COMMAND_MASK) >> COMMAND_SHIFT)
+    {
+    case START_CMD:
+        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
+        break;
+    case NEW_POLICY_CMD:
+        break;
+    default:
+        WriteUART0("Command not implemented\r\n");
+    }
+}
+
+
