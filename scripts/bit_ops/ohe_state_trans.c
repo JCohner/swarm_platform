@@ -46,17 +46,18 @@ uint8_t get_mask(uint8_t bb)
 
 int main()
 {
-	uint8_t xcs = 0b001;
+	uint8_t xcs = 0b1100;
 	uint8_t prev_xcs = xcs;
 
 	uint8_t bbs[2] = {3,4};
-	uint8_t bb_idx = 0;
+	uint8_t bb_idx = 1;
 
 	uint8_t bb = bbs[bb_idx];
 	uint8_t ret = 0;
 
 	uint8_t mask = get_mask(bb);
 	printf("mask: %X\r\n", mask);
+
 	for (int i = 0; i < 24; i++)
 	{
 		printf("xc: %X\r\n", xcs);
@@ -75,6 +76,7 @@ int main()
 			bb_idx = (bb_idx + 1) % NUM_BRANCHS;
 			bb = bbs[bb_idx];
 			mask = get_mask(bb);
+			printf("mask: %X\r\n", mask);
 		}
 
 		prev_xcs = xcs;
