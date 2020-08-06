@@ -6,6 +6,7 @@
  */
 #include "uart.h"
 #include <stdio.h>
+#include <string.h>
 
 void InitUART0()
 {
@@ -81,5 +82,49 @@ void ReadUART0(char * message, int maxLength)
         }
     }
     message[num_bytes] = '\0';
+}
+
+
+
+
+static uint16_t message_idx;
+static uint8_t message_complete;
+void READUART0_AS_ENABLE()
+{
+    message_idx = 0;
+    message_complete = 0;
+}
+
+uint8_t ReadUART0_AS(char * message, int maxLength)
+{
+    if (message_complete)
+    {
+        message_complete = 0;
+        message_idx = 0;
+        memset(message, 0, maxLength);
+    }
+
+    char data = 0;
+    while(UARTCharsAvail(UART0_BASE))
+    {
+        data = UARTCharGetNonBlocking(UART0_BASE);
+        if ((data == '\n') || (data == '\r'))
+        {
+            message_complete = 1;
+        } else {
+            message[message_idx] = data;
+            ++message_idx;
+            if (message_idx >= maxLength){
+                message_idx = 0;
+            }
+        }
+    }
+
+    if (message_complete)
+    {
+        WriteUART0(message);
+        WriteUART0("\r\n");
+    }
+    return message_complete;
 }
 

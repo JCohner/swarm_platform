@@ -22,5 +22,6 @@
 void InitUART0();
 void WriteUART0(const char * string);
 void ReadUART0(char * message, int maxLength);
-
+uint8_t ReadUART0_AS(char * message, int maxLength);
+void READUART0_AS_ENABLE();
 #endif /* UART_H_ */
