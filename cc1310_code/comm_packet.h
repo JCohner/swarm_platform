@@ -30,7 +30,7 @@ struct Packet {
     uint8_t xc_state : 4;
 };
 
-#define UNIV_ID 0
+#define UNIV_ID 0x3F
 
 #define COMMAND_MASK 0x0100
 #define START_BIT_MASK 0x0001

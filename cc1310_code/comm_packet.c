@@ -29,10 +29,12 @@ uint16_t get_packet()
 
 void evaluate_packet(uint16_t packet)
 {
-    sprintf(buffer, "packet: %u\r\n", packet);
-    WriteUART0(buffer);
+//    sprintf(buffer, "packet: %u\r\n", packet);
+//    WriteUART0(buffer);
 
     uint8_t send_id = (packet & MACH_MASK) >> MACH_SHIFT;
+    sprintf(buffer, "send_id: %u\r\n", send_id);
+    WriteUART0(buffer);
     if (send_id == mach_id || send_id == UNIV_ID)
     {
         evaluate_command(packet);
@@ -72,13 +74,19 @@ uint8_t check_near(struct Packet * info)
 //sets internal properties
 void evaluate_command(uint16_t packet)
 {
-    WriteUART0("suh dong\r\n");
+    uint8_t val;
     switch ((packet & COMMAND_MASK) >> COMMAND_SHIFT)
     {
     case START_CMD:
+        val = (packet & START_BIT_MASK);
+        WriteUART0("gotta dinger\r\n");
+        set_enable_flag(val);
         GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
         break;
     case NEW_POLICY_CMD:
+        val = (packet & NEW_POLICY_MASK);
+        set_new_policy(val); //might have to figure out how this fits in state machine
+        set_new_policy_flag(1);
         break;
     default:
         WriteUART0("Command not implemented\r\n");
