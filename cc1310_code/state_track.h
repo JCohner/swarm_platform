@@ -39,10 +39,13 @@ struct StateTrack{
     uint8_t neighbor_target_policy : 5; //this is the policy heard from another bot that has found target
     uint8_t neighbor_target_flag : 1; //flag that indicates another bot found target
 
+    uint8_t new_policy : 5; //if we want to load a new policy
+    uint8_t new_policy_flag : 1;//flag indicates new pol received
+
     uint8_t on_line_flag : 1; // raised if robot on line
     uint8_t actuation_flag : 1; //raised if: xc_state != prev_xc_state || ret_flag != prev_ret_flag
                                    // in execute_policy() in zumo_moves
-
+    uint8_t enabled: 1;
 };
 
 void set_policy(uint8_t policy);
@@ -83,6 +86,16 @@ uint8_t get_neighbor_target_policy();
 
 uint8_t get_neighbor_target_flag();
 void set_neighbor_target_flag(uint8_t flag);
+
+void set_new_policy(uint8_t policy);
+uint8_t get_new_policy();
+
+uint8_t get_new_policy_flag();
+void set_new_policy_flag(uint8_t flag);
+
+void set_enable_flag(uint8_t flag);
+uint8_t get_enable_flag();
+
 
 void evaluate_state();
 void inc_state();

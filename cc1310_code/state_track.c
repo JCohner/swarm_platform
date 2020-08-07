@@ -118,7 +118,15 @@ void inc_state()
     if ((xcs == 0b110 || xcs == 0xC) && get_neighbor_target_flag())
     {
         set_policy(get_neighbor_target_policy());
+        set_neighbor_target_flag(0);
     }
+    if ((xcs == 0b110 || xcs == 0xC) && get_new_policy_flag())
+    {
+        set_policy(get_new_policy());
+        set_new_policy_flag(0);
+    }
+
+
 }
 
 void set_policy(uint8_t policy)
@@ -232,6 +240,36 @@ void set_neighbor_target_flag(uint8_t flag)
 {
     state_track.neighbor_target_flag = flag;
 }
+
+void set_new_policy(uint8_t policy)
+{
+    state_track.new_policy = policy;
+}
+
+uint8_t get_new_policy()
+{
+    return state_track.new_policy;
+}
+
+uint8_t get_new_policy_flag()
+{
+    return state_track.new_policy_flag;
+}
+void set_new_policy_flag(uint8_t flag)
+{
+    state_track.new_policy_flag = flag & 0x1;
+}
+
+uint8_t get_enable_flag()
+{
+    return state_track.enabled;
+}
+void set_enable_flag(uint8_t flag)
+{
+    state_track.enabled = flag & 0x1;
+}
+
+
 
 uint8_t get_mask()
 {
