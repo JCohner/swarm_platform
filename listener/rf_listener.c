@@ -183,8 +183,8 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
         RFQueue_nextEntry();
 
-//        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
-//        WriteUART0(buffer);
+        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
+        WriteUART0(buffer);
 
 //        sprintf(buffer, "policy: %u\r\ntarget flag: %u\r\nxc_state: %u\r\nret_state: %u\r\n", *(packetDataPointer + 2),
 //                        *(packetDataPointer + 3), *(packetDataPointer + 4), *(packetDataPointer + 5));
@@ -205,14 +205,18 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
 void rf_post_message(uint32_t data)
 {
-    packet[0] = (data & 0xFF00) >> 8;
-    packet[1] = (data & 0x00FF);
+    packet[2] = (data & 0xFF00) >> 8;
+    packet[3] = (data & 0x00FF);
 
 //    sprintf(buffer, "sending: %X\r\n", data);
 //    WriteUART0(buffer);
+    int i;
+    for (i = 0; i < 5; i++)
+    {
+        RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
+                   &TX_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
+    }
 
-    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
-               &TX_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 }
 void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {

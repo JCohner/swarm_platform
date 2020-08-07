@@ -15,6 +15,8 @@
 #include "gpio.h"
 #include "uart.h"
 #include "print_info.h"
+#include "leds.h"
+#include "helpful.h"
 
 static char buffer[50];
 int main(void)
@@ -35,10 +37,11 @@ int main(void)
 
     READUART0_AS_ENABLE();
 
-    char data = 0;
+//    setup_leds();
+
       while(1)
       {
-//          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
+          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 
           uint8_t flag = ReadUART0_AS(buffer, 16);
           if (flag)
@@ -47,6 +50,7 @@ int main(void)
               rf_post_message((uint32_t) strtol(buffer, &pEnd, 16));
           }
           rf_main();
+
       }
 
 
