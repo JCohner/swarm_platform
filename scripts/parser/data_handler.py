@@ -4,6 +4,9 @@ import numpy as np
 import pandas as pd
 import sys 
 
+import comm_packet
+from helpful import int_to_bin_str
+
 class data_in():
 	def __init__(self, port):
 		self.data = np.array(np.zeros((5, 10000)))
@@ -31,8 +34,20 @@ class data_in():
 		self.data[:,self.data_idx] = np.fromstring(mess, sep=",").astype('uint16')
 		self.data_idx += 1
 
-	def write(info):
+	def write(self,info):
 		ser.write(info)
+
+	def write_packet(self,packet):
+		mess = ""
+		mess += int_to_bin_str(packet.mach_id, 5)
+		mess += int_to_bin_str(packet.cmd, 3)
+		if not (isinstance(packet.info, str)):
+			mess += int_to_bin_str(packet.info, 8)
+		else:
+			mess += '000'
+			mess += packet.info
+		mess += '\r'
+		print(mess)
 
 if __name__ == '__main__':
 	DI = data_in(0)
