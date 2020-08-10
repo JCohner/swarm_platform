@@ -1,8 +1,8 @@
 import sys
-def int_to_bin_str(val):
+def int_to_bin_str(val, len):
 	strong = ""
-	for i in range(4,-1,-1):
-		if val & pow(2, i):
+	for i in range(len - 1,-1,-1):
+		if int(val) & pow(2, i):
 			strong += '1'
 		else:
 			strong += '0'
