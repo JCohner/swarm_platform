@@ -24,3 +24,5 @@ maps/arena/arena_old
 #ignore eagle backups
 *.s#*
 *.l#*
+
+__pycache__
