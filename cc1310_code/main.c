@@ -65,51 +65,32 @@ int main(void)
 //      test_leds();
 
       //sets open loop control characteristics
-      set_on_time(300);
+      set_on_time(325);
       set_offset_time(500);
 
       //sets inital policy pursued by robot
-      set_policy(0b01);
-      set_mach_id(1);
+//      set_policy(0b01);
+//      set_mach_id(1);
 
-//
-      set_policy(0b10);
-      set_mach_id(2);
+      set_policy(0b01011);
+      set_mach_id(0x1);
 
 //      InitRTC();
       InterTimerEnable();
 //      struct RTCVal time_prev = GetRTCVal();
+
+//      sprintf(buffer, "64 bit mac addr %X %X \r\n", HWREG(FCFG1_BASE + 0x2F4), HWREG(FCFG1_BASE +0x2F0));
+//      WriteUART0(buffer);
+//      while(1);
+
       while(1)
       {
 //          GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED); //pin6
 //          read_imu();
+          WriteUART0("binnn\r\n");
           rf_main();
-
-          ReadIR(adc_vals);
-
-          //ODD IS LEFT
-//          sprintf(buffer,"%u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
-//                            adc_vals[0], adc_vals[2], adc_vals[4]);
-//          WriteUART0(buffer);
-//          sprintf(buffer, "int: %u\r\ndet: %u\r\n, line:%u\r\n", )
-
-//          WriteRF(buffer);
-
-//          WriteRFState(get_return_flag() << 2 | get_xc_state());
           WriteRFPacket(get_packet());
 
-          float IR_val = read_line(adc_vals);
-          uint32_t Dist_val = ReadDist();
-//          sprintf(buffer, "DIST VAL: %f\r\n", Dist_val);
-//          WriteUART0(buffer);
-          drive_line(IR_val, Dist_val, adc_vals);
-
-          detect_poi(adc_vals);
-          detect_xc(adc_vals);
-          inc_state();
-          manage_intersection();
-
-          manage_leds();
       }
 
 

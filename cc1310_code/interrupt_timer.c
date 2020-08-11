@@ -11,12 +11,15 @@
 #include "zumo_moves.h"
 #include "zumo_rf.h"
 #include "comm_packet.h"
+#include "state_track.h"
+#include "ir_sense.h"
+#include "color_track.h"
+#include "leds.h"
+
 void TimerInt()
 {
     GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
     TimerIntClear(GPT1_BASE, TIMER_TIMB_TIMEOUT);
-
-
 }
 
 void pack_and_transmit()
@@ -25,6 +28,40 @@ void pack_and_transmit()
     WriteRFPacket(get_packet());
     TimerIntClear(GPT1_BASE, TIMER_TIMB_TIMEOUT);
 }
+static uint32_t adc_vals[8];
+void main_loop()
+{
+    TimerIntClear(GPT1_BASE, TIMER_TIMB_TIMEOUT);
+    WriteUART0("dinga\r\n");
+    if (get_enable_flag())
+    {
+    ReadIR(adc_vals);
+
+    //ODD IS LEFT
+//          sprintf(buffer,"%u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
+//                            adc_vals[0], adc_vals[2], adc_vals[4]);
+//          WriteUART0(buffer);
+    float IR_val = read_line(adc_vals);
+    uint32_t Dist_val = ReadDist();
+//          sprintf(buffer, "DIST VAL: %f\r\n", Dist_val);
+//          WriteUART0(buffer);
+    drive_line(IR_val, Dist_val, adc_vals);
+
+    detect_poi(adc_vals);
+    detect_xc(adc_vals);
+    inc_state();
+    manage_intersection();
+
+    manage_leds();
+    }
+    else
+    {
+        setMotor(M2, 0, 0);
+        setMotor(M1, 0, 0);
+    }
+}
+
+
 
 void InterTimerEnable()
 {
@@ -45,22 +82,20 @@ void InterTimerEnable()
 //
     TimerPrescaleSet(GPT1_BASE, TIMER_B, 0xFF);
 //    TimerPrescaleMatchSet(GPT1_BASE, TIMER_B, 0xFF);
-    TimerLoadSet(GPT1_BASE, TIMER_B, 0xFFFF / 512);
+    TimerLoadSet(GPT1_BASE, TIMER_B, 0xFFFF /8);
 //    TimerMatchSet(GPT1_BASE, TIMER_B, 0xFFFF / 2);
 
 
     IntMasterEnable();
-    TimerIntRegister(GPT1_BASE, TIMER_A, openloop_turn); //
+    TimerIntRegister(GPT1_BASE, TIMER_A, openloop_turn); //openloop_turn
     TimerIntEnable(GPT1_BASE, TIMER_TIMA_TIMEOUT);
     IntPrioritySet(INT_GPT1A, INT_PRI_LEVEL3);
     IntEnable(INT_GPT1A);
 //
-    TimerIntRegister(GPT1_BASE, TIMER_B, pack_and_transmit);
+    TimerIntRegister(GPT1_BASE, TIMER_B, main_loop);//pack_and_transmit
     TimerIntEnable(GPT1_BASE, TIMER_TIMB_TIMEOUT);
     IntPrioritySet(INT_GPT1B, INT_PRI_LEVEL4);
     IntEnable(INT_GPT1B);
-
-//    TimerLoadSet(GPT1_BASE,TIMER_A,  48e6 / 2); //this line is needed think harder bout it
 
     TimerEnable(GPT1_BASE,TIMER_A);
     TimerEnable(GPT1_BASE,TIMER_B);
