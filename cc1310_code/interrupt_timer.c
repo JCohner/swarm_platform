@@ -9,13 +9,21 @@
 
 #include "gpio.h"
 #include "zumo_moves.h"
-
+#include "zumo_rf.h"
+#include "comm_packet.h"
 void TimerInt()
 {
     GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
     TimerIntClear(GPT1_BASE, TIMER_TIMB_TIMEOUT);
 
 
+}
+
+void pack_and_transmit()
+{
+    rf_main();
+    WriteRFPacket(get_packet());
+    TimerIntClear(GPT1_BASE, TIMER_TIMB_TIMEOUT);
 }
 
 void InterTimerEnable()
@@ -36,6 +44,7 @@ void InterTimerEnable()
 //    TimerMatchSet(GPT1_BASE, TIMER_A, 0xFFFF / 4);
 //
     TimerPrescaleSet(GPT1_BASE, TIMER_B, 0xFF);
+//    TimerPrescaleMatchSet(GPT1_BASE, TIMER_B, 0xFF);
     TimerLoadSet(GPT1_BASE, TIMER_B, 0xFFFF / 512);
 //    TimerMatchSet(GPT1_BASE, TIMER_B, 0xFFFF / 2);
 
@@ -46,7 +55,7 @@ void InterTimerEnable()
     IntPrioritySet(INT_GPT1A, INT_PRI_LEVEL3);
     IntEnable(INT_GPT1A);
 //
-    TimerIntRegister(GPT1_BASE, TIMER_B, TimerInt);
+    TimerIntRegister(GPT1_BASE, TIMER_B, pack_and_transmit);
     TimerIntEnable(GPT1_BASE, TIMER_TIMB_TIMEOUT);
     IntPrioritySet(INT_GPT1B, INT_PRI_LEVEL4);
     IntEnable(INT_GPT1B);
