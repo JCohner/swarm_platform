@@ -21,7 +21,7 @@ class UI(QWidget):
 
 		#data handler stuff
 		self.data_sock = data_in(0)
-
+		print("open")
 		label = QLabel("Swarm Control GUI")
 		header = QHBoxLayout()
 		header.addWidget(label)
@@ -72,14 +72,24 @@ class UI(QWidget):
 		csv_name_edit.setPlaceholderText("CSV Name <press Enter>")
 		csv_name_box = QHBoxLayout()
 		csv_name_box.addWidget(csv_name_edit)
-		csv_name_edit.returnPressed.connect(self.csv_name_click)
+		csv_name_edit.returnPressed.connect(self.csv_rename)
 		self.csv_name_edit = csv_name_edit
 		trail_group_grid.addWidget(self.csv_name_edit, 0,0,1,2)
 		
 		begin_trial_btn = QPushButton("begin")
 		end_trial_btn = QPushButton("end")
+		self.idx_counter = QLabel("data idx: {}".format(self.data_sock.data_idx))
+
+		begin_trial_btn.clicked[bool].connect(self.begin_trial)
+		self.csv_num_el_edit = QLineEdit()
+		self.csv_num_el_edit.setPlaceholderText("input # enteries")
+		self.csv_num_el_edit.returnPressed.connect(self.num_el_edit)
+		self.num_els = 100
+
 		trail_group_grid.addWidget(begin_trial_btn, 1,0,1,1)
 		trail_group_grid.addWidget(end_trial_btn, 2,0,1,1)
+		trail_group_grid.addWidget(self.csv_num_el_edit, 1, 1, 1, 1)
+		trail_group_grid.addWidget(self.idx_counter,2, 1, 1,1)
 		trail_group.setLayout(trail_group_grid)
 		grid.addWidget(trail_group, 0,1,2,1)
 
@@ -96,9 +106,6 @@ class UI(QWidget):
 		# self.line_edit.setPlaceholderText("ex: ID CMD")
 		# grid.addLayout(liney, 1, 0, 1, 1)
 
-
-
-
 		self.setWindowTitle('Swarm Interface')
 		self.resize(500, 250)
 		self.center()
@@ -109,7 +116,6 @@ class UI(QWidget):
 		self.ID_edit.setPlaceholderText(self.ID_edit.text())
 		self.info_disp.setText("curr bot: {}".format(self.ID_edit.text()))
 		self.ID_edit.setText("")
-
 
 	def enable(self):
 		source = self.sender()
@@ -137,24 +143,29 @@ class UI(QWidget):
 		qr.moveCenter(cp)
 		self.move(qr.topLeft())
 
-
-
-	# def transmit(self):
-	# 	source = self.sender
-		
-	# 	print(source)
-	# 	print("{}".format(self.line_edit.text()))
-
-
-	# 	self.line_edit.setText("") 
-
-	def csv_name_click(self):
+	def csv_rename(self):
 		self.data_sock.set_csv_name(self.csv_name_edit.text())
 		self.csv_name_edit.setPlaceholderText(self.csv_name_edit.text())
 		self.csv_name_edit.setText("")
+
+	def begin_trial(self):
+		self.data_sock.data_idx = 0
+		while(self.data_sock.data_idx < self.num_els):
+			print(self.data_sock.data_idx)
+			self.data_sock.read()
+			self.idx_counter.setText("data idx: {}".format(self.data_sock.data_idx))
+
+		self.data_sock.to_csv()
+
+	def num_el_edit(self):
+		self.num_els = int(self.csv_num_el_edit.text())
+		self.csv_num_el_edit.setPlaceholderText(str(self.num_els))
+		self.csv_num_el_edit.setText("")
+		self.idx_counter.setText("data idx: {}/{}".format(self.data_sock.data_idx, self.num_els))
 
 if __name__ == '__main__':
 
 	app = QApplication(sys.argv)
 	ex = UI()
+	# ex.data_sock.ser.close()
 	sys.exit(app.exec_())

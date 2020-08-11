@@ -27,12 +27,13 @@ class data_in():
 
 	def read(self):
 		mess = self.ser.readline().decode('utf-8')
-		print(np.fromstring(mess, sep=","))
+		# print(np.fromstring(mess, sep=","))
 		if (np.fromstring(mess, sep=",").shape[0] != 5):
 			return
-		print(mess)
+		# print(mess)
 		self.data[:,self.data_idx] = np.fromstring(mess, sep=",").astype('uint16')
 		self.data_idx += 1
+		print(self.data_idx)
 
 	def write(self,info):
 		ser.write(info)
@@ -46,8 +47,17 @@ class data_in():
 		else:
 			mess += '000'
 			mess += packet.info
-		mess += '\r'
-		print(mess)
+
+		hex_rep = hex(int(mess, 2)) + '\r'
+		print(hex_rep)
+		self.ser.write(hex_rep.encode())
+		# print(self.ser.read_until())
+
+	def write_message(self, mess):
+		self.ser.write(mess)
+
+	# def trial(self):
+
 
 if __name__ == '__main__':
 	DI = data_in(0)
