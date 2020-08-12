@@ -10,13 +10,13 @@
 
 #include <stdint.h>
 
-#define MACH_MASK 0x1F800
-#define POLICY_MASK 0x003E0
-#define TFLAG_MASK 0x00400
-#define BBI_MASK 0x000010
-#define STATE_MASK 0x00000F
+#define MACH_MASK 0xFFFF0000
+#define POLICY_MASK 0x0003E0
+#define TFLAG_MASK 0x000400
+#define BBI_MASK 0x0000010
+#define STATE_MASK 0x000000F
 
-#define MACH_SHIFT 11
+#define MACH_SHIFT 16
 #define POL_SHIFT 5
 #define TFLAG_SHIFT 10
 #define BBI_SHIFT 4

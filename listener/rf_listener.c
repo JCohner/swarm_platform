@@ -183,19 +183,20 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
         packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
         RFQueue_nextEntry();
 
-        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
-        WriteUART0(buffer);
+//        sprintf(buffer, "seq: %d\r\n",((*(packetDataPointer) << 8) | *(packetDataPointer + 1)));
+//        WriteUART0(buffer);
 
 //        sprintf(buffer, "policy: %u\r\ntarget flag: %u\r\nxc_state: %u\r\nret_state: %u\r\n", *(packetDataPointer + 2),
 //                        *(packetDataPointer + 3), *(packetDataPointer + 4), *(packetDataPointer + 5));
 //        WriteUART0(buffer);
 //        WriteUART0("me guy: ");
 //        WriteUART0((char *) (packetDataPointer + 2));
-        uint16_t data = (*(packetDataPointer + 2) << 8) | (*(packetDataPointer + 3));
+        uint32_t data = (*(packetDataPointer + 2) << 24) | (*(packetDataPointer + 3) << 16) | (*(packetDataPointer +4) << 8) | (*(packetDataPointer +5));
 //        sprintf(buffer, "dat: %X\r\n", data);
 //        WriteUART0(buffer);
 
         print_info(data);
+
 
 
         resp_flag = 1;
@@ -218,6 +219,9 @@ void rf_post_message(uint32_t data)
     }
 
 }
+
+
+
 void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 {
     if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
