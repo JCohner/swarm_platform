@@ -149,6 +149,7 @@ void openloop_turn()
     uint8_t ret_policy = get_return_policy();
 
     //this gets the single bit rotation value we need
+    //this works due to the OHE nature of the xc_state representation
     uint8_t dir;
     if (!get_return_flag())
     {
@@ -165,6 +166,8 @@ void openloop_turn()
         if (counter > offset_time)
         {
 //            WriteUART0("ACTUATING\r\n");
+            sprintf(buffer, "dir: %u\r\n", dir);
+            WriteUART0(buffer);
             rotate(dir);
         }
         else

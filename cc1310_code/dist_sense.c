@@ -15,8 +15,8 @@ uint32_t ReadDist()
 {
     uint32_t analog_sig = Read1ADC(7);
 
-    sprintf(buffer, "sig: %u\r\n", analog_sig);
-    WriteUART0(buffer);
+//    sprintf(buffer, "sig: %u\r\n", analog_sig);
+//    WriteUART0(buffer);
 
 
     return analog_sig;
