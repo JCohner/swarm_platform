@@ -6,12 +6,16 @@ import sys
 
 import comm_packet
 from helpful import int_to_bin_str
+from add_robot import MAC_mem
+
 
 class data_in():
 	def __init__(self, port):
 		self.data = np.array(np.zeros((5, 10000)))
 		self.data_idx = 0
 		self.csv_name = ""
+
+		# self.MAC_lib = MAC_mem()
 
 		ser = serial.Serial()
 		ser.baudrate = 115200
@@ -30,6 +34,11 @@ class data_in():
 		# print(np.fromstring(mess, sep=","))
 		if (np.fromstring(mess, sep=",").shape[0] != 5):
 			return
+		# #catch startup case
+		# elif (np.fromstring(mess, sep=" ").shape[0] == 4):
+		# 	print(mess)
+			
+
 		# print(mess)
 		self.data[:,self.data_idx] = np.fromstring(mess, sep=",").astype('uint16')
 		self.data_idx += 1
