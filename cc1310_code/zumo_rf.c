@@ -11,7 +11,7 @@
 //static void callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
-
+void RX_setup_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 
 /*Globals for biosynchronicity*/
 static uint32_t message_time;
@@ -89,6 +89,7 @@ void rf_setup()
    RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                          &TX_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
 }
+
 RF_CmdHandle rxCommandHandle;
 RF_CmdHandle txCommandHandle;
 RF_EventMask events;
@@ -145,6 +146,10 @@ void rf_main()
     if (rxCommandHandle < 0)
     {
         WriteUART0("queue full\r\n");
+
+//        RF_cmdFlush.pFirstEntry = dataQueue.pLastEntry;
+//        RF_runImmediateCmd(rfHandle, (uint32_t*)&RF_cmdFlush);
+
     }
 
 }
@@ -164,12 +169,13 @@ void WriteRFState(uint8_t state)
     packet[2] = state;
 }
 
-void WriteRFPacket(uint16_t comm_packet)
+void WriteRFPacket(uint32_t comm_packet)
 {
     //Big Endian
-    packet[2] = (comm_packet & 0xFF00) >> 8; //writes high byte first
-    packet[3] = comm_packet & 0x00FF; //low byte second
-
+    packet[2] = (comm_packet & 0xFF000000) >> 24;
+    packet[3] = (comm_packet & 0x00FF0000) >> 16; //writes high byte first
+    packet[4] = (comm_packet & 0x0000FF00) >> 8; //low byte second
+    packet[5] = (comm_packet & 0x000000FF);
 }
 
 void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
@@ -211,9 +217,8 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
 //        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
 //        WriteUART0(buffer);
-        uint16_t info = (*(packetDataPointer + 2) << 8) | *(packetDataPointer + 3);
+        uint32_t info = (*(packetDataPointer + 2) << 24) | (*(packetDataPointer + 3) << 16) | (*(packetDataPointer + 4) << 8) | (*(packetDataPointer + 5));
         evaluate_packet(info);
-
         //on successful rx set resp flag high
         idle_count = 0;
         resp_flag = 1;
@@ -226,3 +231,23 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
 }
 
+void RX_setup_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
+{
+    if (e & RF_EventRxEntryDone)
+    {
+        currentDataEntry = RFQueue_getDataEntry();
+
+        /* Handle the packet data, located at &currentDataEntry->data:
+         * - Length is the first byte with the current configuration
+         * - Data starts from the second byte */
+        packetLength      = *(uint8_t *)(&(currentDataEntry->data));
+        packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
+        RFQueue_nextEntry();
+        uint16_t info = (*(packetDataPointer + 2) << 8) | *(packetDataPointer + 3);
+
+
+
+
+    }
+
+}

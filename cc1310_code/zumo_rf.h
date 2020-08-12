@@ -82,8 +82,9 @@ rxDataEntryBuffer[RF_QUEUE_DATA_ENTRY_BUFFER_SIZE(NUM_DATA_ENTRIES,
 
 void rf_setup();
 void rf_main();
+uint8_t rf_startup();
 
 void WriteRF(const char * string);
 void WriteRFState(uint8_t state);
-void WriteRFPacket(uint16_t comm_packet);
+void WriteRFPacket(uint32_t comm_packet);
 #endif /* ZUMO_RF_H_ */
