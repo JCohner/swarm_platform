@@ -37,11 +37,11 @@ int main(void)
 
     READUART0_AS_ENABLE();
 
-//    setup_leds();
+    setup_leds();
 
       while(1)
       {
-          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
+//          GPIO_setDio(CC1310_LAUNCHXL_PIN_RLED);
 
           uint8_t flag = ReadUART0_AS(buffer, 16);
           if (flag)
