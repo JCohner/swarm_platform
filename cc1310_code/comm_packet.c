@@ -10,16 +10,21 @@
 #include "uart.h"
 #include "gpio.h"
 
-static uint8_t mach_id;
+static uint16_t mach_id;
 
-void set_mach_id(uint8_t id)
+void set_mach_id(uint16_t id)
 {
     mach_id = id;
 }
-static char buffer[50];
-uint16_t get_packet()
+
+uint16_t get_mach_id()
 {
-    return  mach_id << MACH_SHIFT |
+    return mach_id;
+}
+static char buffer[50];
+uint32_t get_packet()
+{
+    return  get_mach_id() << MACH_SHIFT |
             get_target_flag() << TFLAG_SHIFT |
             get_bb_idx() << BBI_SHIFT |
             get_policy() << POL_SHIFT |
@@ -27,7 +32,7 @@ uint16_t get_packet()
 
 }
 
-void evaluate_packet(uint16_t packet)
+void evaluate_packet(uint32_t packet)
 {
 //    sprintf(buffer, "packet: %u\r\n", packet);
 //    WriteUART0(buffer);
@@ -72,7 +77,7 @@ uint8_t check_near(struct Packet * info)
 }
 
 //sets internal properties
-void evaluate_command(uint16_t packet)
+void evaluate_command(uint32_t packet)
 {
     uint8_t val;
     switch ((packet & COMMAND_MASK) >> COMMAND_SHIFT)
