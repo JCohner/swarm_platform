@@ -46,7 +46,6 @@ int main(void)
     //configures rf driver, configures application specific packages, makes initial chirp call
     rf_setup();
 
-
     setMotor(M2, 0, 0);
     setMotor(M1, 0, 0);
     delay(1);
@@ -68,29 +67,17 @@ int main(void)
       set_on_time(325);
       set_offset_time(500);
 
-      //sets inital policy pursued by robot
-//      set_policy(0b01);
-//      set_mach_id(1);
+      set_policy(0b11111);
+      set_mach_id(HWREG(FCFG1_BASE +0x2F0) & 0xFFFF);
 
-      set_policy(0b01011);
-      set_mach_id(0x1);
-
-//      InitRTC();
       InterTimerEnable();
-//      struct RTCVal time_prev = GetRTCVal();
 
-//      sprintf(buffer, "64 bit mac addr %X %X \r\n", HWREG(FCFG1_BASE + 0x2F4), HWREG(FCFG1_BASE +0x2F0));
-//      WriteUART0(buffer);
-//      while(1);
 
       while(1)
       {
-//          GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED); //pin6
 //          read_imu();
-          WriteUART0("binnn\r\n");
           rf_main();
           WriteRFPacket(get_packet());
-
       }
 
 
