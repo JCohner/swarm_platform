@@ -49,14 +49,15 @@ class data_in():
 
 	def write_packet(self,packet):
 		mess = ""
-		mess += int_to_bin_str(packet.mach_id, 5)
+		mess += int_to_bin_str(int(packet.mach_id,16), 16)
+		mess += '00000' #padding
 		mess += int_to_bin_str(packet.cmd, 3)
 		if not (isinstance(packet.info, str)):
 			mess += int_to_bin_str(packet.info, 8)
 		else:
 			mess += '000'
 			mess += packet.info
-
+		print(mess)
 		hex_rep = hex(int(mess, 2)) + '\r'
 		print(hex_rep)
 		self.ser.write(hex_rep.encode())
