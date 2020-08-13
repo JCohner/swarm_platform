@@ -24,15 +24,16 @@ void TimerInt()
 
 void pack_and_transmit()
 {
+//    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
     rf_main();
     WriteRFPacket(get_packet());
-    TimerIntClear(GPT1_BASE, TIMER_TIMB_TIMEOUT);
+    TimerIntClear(GPT3_BASE, TIMER_TIMA_TIMEOUT);
 }
 static uint32_t adc_vals[8];
 void main_loop()
 {
     TimerIntClear(GPT1_BASE, TIMER_TIMB_TIMEOUT);
-    WriteUART0("dinga\r\n");
+//    WriteUART0("dinga\r\n");
     if (get_enable_flag())
     {
     ReadIR(adc_vals);
@@ -52,7 +53,7 @@ void main_loop()
     inc_state();
     manage_intersection();
 
-    manage_leds();
+//    manage_leds();
     }
     else
     {
@@ -71,6 +72,10 @@ void InterTimerEnable()
     PRCMLoadSet();
     while ( !PRCMLoadGet() );
 
+    PRCMPeripheralRunEnable(PRCM_PERIPH_TIMER3);
+    PRCMLoadSet();
+    while ( !PRCMLoadGet() );
+
     TimerDisable(GPT1_BASE,TIMER_A);
     TimerDisable(GPT1_BASE,TIMER_B);
 
@@ -86,6 +91,10 @@ void InterTimerEnable()
 //    TimerMatchSet(GPT1_BASE, TIMER_B, 0xFFFF / 2);
 
 
+    TimerConfigure(GPT3_BASE, (TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC | TIMER_CFG_B_PERIODIC));
+    TimerPrescaleSet(GPT3_BASE, TIMER_A, 0xFF);
+    TimerLoadSet(GPT3_BASE, TIMER_A, 0xFFFF/512);
+
     IntMasterEnable();
     TimerIntRegister(GPT1_BASE, TIMER_A, openloop_turn); //openloop_turn
     TimerIntEnable(GPT1_BASE, TIMER_TIMA_TIMEOUT);
@@ -97,8 +106,15 @@ void InterTimerEnable()
     IntPrioritySet(INT_GPT1B, INT_PRI_LEVEL4);
     IntEnable(INT_GPT1B);
 
+    TimerIntRegister(GPT3_BASE, TIMER_A, pack_and_transmit);//pack_and_transmit
+    TimerIntEnable(GPT3_BASE, TIMER_TIMA_TIMEOUT);
+    IntPrioritySet(INT_GPT3A, INT_PRI_LEVEL2);
+    IntEnable(INT_GPT3A);
+
+
     TimerEnable(GPT1_BASE,TIMER_A);
     TimerEnable(GPT1_BASE,TIMER_B);
+    TimerEnable(GPT3_BASE,TIMER_A);
 }
 
 
