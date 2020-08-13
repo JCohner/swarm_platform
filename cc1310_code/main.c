@@ -67,7 +67,16 @@ int main(void)
       set_on_time(325);
       set_offset_time(500);
 
-      set_policy(0b11111);
+//      //state track for circ
+//      uint8_t bbs[2] = {3,4};
+//      init_state(0b1100, 2, bbs, 4, 1, 0, 0x7);
+
+      //state track for 5 node
+      uint8_t bbs[1] = {3};
+      init_state(0b110, 1, bbs, 3, 0, 0, 0x3);
+
+
+      set_policy(0b00011);
       set_mach_id(HWREG(FCFG1_BASE +0x2F0) & 0xFFFF);
 
       InterTimerEnable();
@@ -75,9 +84,10 @@ int main(void)
 
       while(1)
       {
+//          GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
 //          read_imu();
-          rf_main();
-          WriteRFPacket(get_packet());
+//          rf_main();
+//          WriteRFPacket(get_packet());
       }
 
 
