@@ -206,8 +206,10 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
 void rf_post_message(uint32_t data)
 {
-    packet[2] = (data & 0xFF00) >> 8;
-    packet[3] = (data & 0x00FF);
+    packet[2] = (data & 0xFF000000) >> 24;
+    packet[3] = (data & 0x00FF0000) >> 16; //writes high byte first
+    packet[4] = (data & 0x0000FF00) >> 8; //low byte second
+    packet[5] = (data & 0x000000FF);
 
 //    sprintf(buffer, "sending: %X\r\n", data);
 //    WriteUART0(buffer);
