@@ -12,11 +12,26 @@
 
 //static enum States state;
 
-static struct StateTrack state_track =
-                                {.xc_state = 0b1100, .prev_xc_state=0b1100,
-                                 .actuation_flag = 0,
-                                 .bbs = {3,4}, .bb = 4, .bb_idx = 1,
-                                 .ret = 0, .mask = 0x7};
+static struct StateTrack state_track = {.bbs = {3,4}};
+//=                                 {.xc_state = 0b1100, .prev_xc_state=0b1100,
+//                                 .actuation_flag = 0,
+//                                 .bbs = {3,4}, .bb = 4, .bb_idx = 1,
+//                                 .ret = 0, .mask = 0x7};
+
+
+void init_state(uint8_t xc_state, uint8_t NUM_BRANCHES, uint8_t * branch_bit_shifts, uint8_t curr_branch_bit,
+                uint8_t curr_branch_bit_idx, uint8_t curr_return_flag, uint8_t curr_mask)
+{
+    state_track.xc_state = xc_state;
+    state_track.prev_xc_state = xc_state;
+
+    state_track.NUM_BRANCHES = NUM_BRANCHES;
+//    state_track.bbs = branch_bit_shifts;
+    state_track.bb = curr_branch_bit;
+    state_track.bb_idx = curr_branch_bit_idx;
+    state_track.ret = curr_return_flag;
+    state_track.mask = curr_mask;
+}
 
 
 uint8_t reverse_bits(uint8_t bits_in, uint8_t len)
@@ -89,7 +104,7 @@ void inc_state()
         //Deals with switching between branches of different bb
         if (xcs < prev_xcs)
         {
-            state_track.bb_idx = (state_track.bb_idx + 1) % NUM_BRANCHES;
+            state_track.bb_idx = (state_track.bb_idx + 1) % state_track.NUM_BRANCHES;
             state_track.bb = state_track.bbs[state_track.bb_idx];
             state_track.mask = get_mask_mask(state_track.bb);
         }

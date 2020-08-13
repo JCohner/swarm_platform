@@ -16,7 +16,7 @@
 //enum States{ret_0=0b101, ret_1=0b110, for_0=0b001, for_1=0b010};
 
 
-#define NUM_BRANCHES 2
+#define MAX_NUM_BRANCHES 2
 struct StateTrack{
     //policy and target bits
     uint8_t policy : 5;
@@ -26,9 +26,11 @@ struct StateTrack{
     //state management bits
     uint8_t bb_idx : 2;
     uint8_t bb : 3;
-    uint8_t bbs[NUM_BRANCHES];
+    uint8_t bbs[MAX_NUM_BRANCHES];
     uint8_t ret : 1;
     uint8_t mask;
+    uint8_t NUM_BRANCHES : 4;
+
 
     uint8_t xc_state : 4;
     uint8_t prev_xc_state : 4;
@@ -47,6 +49,9 @@ struct StateTrack{
                                    // in execute_policy() in zumo_moves
     uint8_t enabled: 1;
 };
+
+void init_state(uint8_t xc_state, uint8_t NUM_BRANCHES, uint8_t * branch_bit_shifts, uint8_t curr_branch_bit,
+                uint8_t curr_branch_bit_idx, uint8_t curr_return_flag, uint8_t curr_mask);
 
 void set_policy(uint8_t policy);
 uint8_t get_policy();
