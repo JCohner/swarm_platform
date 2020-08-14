@@ -120,7 +120,8 @@ void rf_main()
         idle_count++;
     }
 //    sprintf(buffer, "idle count is: %u\n\rcurr count is: %u\r\ndelta message time: %u\r\n", idle_count, curr_count, delta_message_time);
-//    WriteUART0(buffer);
+    sprintf(buffer, "dmt: %u\r\n", delta_message_time);
+    WriteUART0(buffer);
     //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
     if ((idle_count > delta_message_time/2) && (heard_since_last == 1))
     {
@@ -145,8 +146,8 @@ void rf_main()
 
     if (rxCommandHandle < 0)
     {
-        WriteUART0("queue full\r\n");
-
+//        WriteUART0("quue full\r\n");
+//        WriteUART0("          \r"); //needs this to work??????
 //        RF_cmdFlush.pFirstEntry = dataQueue.pLastEntry;
 //        RF_runImmediateCmd(rfHandle, (uint32_t*)&RF_cmdFlush);
 
@@ -200,6 +201,12 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
         message_time = curr_count;
         delta_message_time = message_time - prev_message_time;
+
+        if(delta_message_time < IDLE_MIN)
+        {
+            delta_message_time = IDLE_MIN;
+        }
+
         prev_message_time = message_time;
         /* Get current unhandled data entry */
         currentDataEntry = RFQueue_getDataEntry();
@@ -231,23 +238,23 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //    GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
 }
 
-void RX_setup_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
-{
-    if (e & RF_EventRxEntryDone)
-    {
-        currentDataEntry = RFQueue_getDataEntry();
-
-        /* Handle the packet data, located at &currentDataEntry->data:
-         * - Length is the first byte with the current configuration
-         * - Data starts from the second byte */
-        packetLength      = *(uint8_t *)(&(currentDataEntry->data));
-        packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
-        RFQueue_nextEntry();
-        uint16_t info = (*(packetDataPointer + 2) << 8) | *(packetDataPointer + 3);
-
-
-
-
-    }
-
-}
+//void RX_setup_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
+//{
+//    if (e & RF_EventRxEntryDone)
+//    {
+//        currentDataEntry = RFQueue_getDataEntry();
+//
+//        /* Handle the packet data, located at &currentDataEntry->data:
+//         * - Length is the first byte with the current configuration
+//         * - Data starts from the second byte */
+//        packetLength      = *(uint8_t *)(&(currentDataEntry->data));
+//        packetDataPointer = (uint8_t *)(&(currentDataEntry->data) + 1);
+//        RFQueue_nextEntry();
+//        uint16_t info = (*(packetDataPointer + 2) << 8) | *(packetDataPointer + 3);
+//
+//
+//
+//
+//    }
+//
+//}

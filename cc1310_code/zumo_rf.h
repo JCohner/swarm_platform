@@ -44,6 +44,7 @@
 #define PROP_DONE_BUSYTIMEOUT   0x340A
 #define TX_DELAY             (uint32_t)(4000000*0.1f) //TODO: add this delay
 #define IDLE_MAX 50 //30
+#define IDLE_MIN 10
 #define DELTA_TIME_BUFF_SIZE 10
 
 /* NOTE: Only two data entries supported at the moment */
