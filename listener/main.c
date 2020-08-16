@@ -47,7 +47,7 @@ int main(void)
           if (flag)
           {
               char * pEnd;
-              rf_post_message((uint32_t) strtol(buffer, &pEnd, 16));
+              rf_post_message((uint32_t) strtoul(buffer, &pEnd, 16));
           }
           rf_main();
 
