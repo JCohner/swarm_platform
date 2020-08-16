@@ -15,6 +15,7 @@
 #include "ir_sense.h"
 #include "color_track.h"
 #include "leds.h"
+#include "dist_sense.h"
 
 void TimerInt()
 {
@@ -87,13 +88,13 @@ void InterTimerEnable()
 //
     TimerPrescaleSet(GPT1_BASE, TIMER_B, 0xFF);
 //    TimerPrescaleMatchSet(GPT1_BASE, TIMER_B, 0xFF);
-    TimerLoadSet(GPT1_BASE, TIMER_B, 0xFFFF /8);
+    TimerLoadSet(GPT1_BASE, TIMER_B, 0xFFFF / 16);
 //    TimerMatchSet(GPT1_BASE, TIMER_B, 0xFFFF / 2);
 
 
     TimerConfigure(GPT3_BASE, (TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC | TIMER_CFG_B_PERIODIC));
     TimerPrescaleSet(GPT3_BASE, TIMER_A, 0xFF);
-    TimerLoadSet(GPT3_BASE, TIMER_A, 0xFFFF / 8); // /512
+    TimerLoadSet(GPT3_BASE, TIMER_A, 0xFFFF / 16); // /512
 
     IntMasterEnable();
     TimerIntRegister(GPT1_BASE, TIMER_A, openloop_turn); //openloop_turn
