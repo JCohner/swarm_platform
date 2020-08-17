@@ -15,8 +15,8 @@
 #define PURP_LOW 325
 #define PURP_HIGH 425
 
-#define GREY_LOW 450
-#define GREY_HIGH 600
+#define GREY_LOW 600
+#define GREY_HIGH 750
 
 
 #define NUM_PREV_VALS 10
