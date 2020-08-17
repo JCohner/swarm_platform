@@ -130,13 +130,15 @@ void inc_state()
 
 
     //for when its acceptable to overwrite DRIVING policy
-    if ((xcs == 0b110 || xcs == 0xC) && get_neighbor_target_flag())
+    if ((xcs == 0b110 || xcs == 0xC) && get_neighbor_target_flag() && !get_actuation_flag() )
     {
         set_policy(get_neighbor_target_policy());
         set_neighbor_target_flag(0);
     }
-    if ((xcs == 0b110 || xcs == 0xC) && get_new_policy_flag())
+    if ((xcs == 0b110 || xcs == 0xC) && get_new_policy_flag() && !get_actuation_flag() && get_on_line_flag())
     {
+        WriteUART0("updating policyyy!\r\n");
+
         set_policy(get_new_policy());
         set_new_policy_flag(0);
     }
