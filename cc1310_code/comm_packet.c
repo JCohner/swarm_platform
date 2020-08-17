@@ -37,9 +37,9 @@ void evaluate_packet(uint32_t packet)
 //    sprintf(buffer, "packet: %u\r\n", packet);
 //    WriteUART0(buffer);
 
-    uint16_t send_id = (packet & MACH_MASK) >> MACH_SHIFT;
-    sprintf(buffer, "send_id: %X\r\n", send_id);
-    WriteUART0(buffer);
+    uint32_t send_id = (packet & MACH_MASK) >> MACH_SHIFT;
+//    sprintf(buffer, "send_id: %X\r\n", send_id);
+//    WriteUART0(buffer);
     if (send_id == mach_id || send_id == UNIV_ID)
     {
         evaluate_command(packet);
