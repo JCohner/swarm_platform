@@ -16,12 +16,12 @@ void RX_setup_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e);
 /*Globals for biosynchronicity*/
 static uint32_t message_time;
 static  uint32_t prev_message_time = 0;
-static  uint32_t delta_message_time = 10;
+static  uint32_t delta_message_time = 50;
 static  uint32_t idle_count = 0;
 static  uint32_t delta_message_time_buff[DELTA_TIME_BUFF_SIZE];
 static  bool receive_buff_full_flag = false;
 
-static uint32_t delta_message_time_average = 10;
+static uint32_t delta_message_time_average = 35;
 static uint32_t num_receives = 0;
 
 static uint8_t resp_flag;
@@ -30,8 +30,59 @@ static uint32_t curr_count = 0;
 static uint8_t period_flag = 1;
 static uint8_t sent_flag;
 
+
+char buffer[50];
+uint8_t uniq_offset;
+uint8_t rando_wait;
+uint8_t offset_lookup()
+{
+
+    uint16_t mach_id = get_mach_id();
+    switch(mach_id)
+    {
+    case 0xC464:
+        uniq_offset = 2;
+        break;
+    case 0xC219:
+        uniq_offset = 3;
+        break;
+    case 0xA171:
+        uniq_offset = 5;
+        break;
+    case 0xC683:
+        uniq_offset = 7;
+        break;
+    case 0x20CE:
+        uniq_offset = 11;
+        break;
+    case 0xB5A8:
+        uniq_offset = 13;
+        break;
+    case 0xC262:
+        uniq_offset = 17;
+        break;
+    case 0xA3EB:
+        uniq_offset = 19;
+        break;
+    case 0xC718:
+        uniq_offset = 23;
+        break;
+    default:
+        sprintf(buffer, "no match for %X\r\n", mach_id);
+        WriteUART0(buffer);
+        while(1);
+    }
+
+    return uniq_offset;
+}
+
+
+
 void rf_setup()
 {
+
+    offset_lookup();
+
     RF_Params rfParams;
     RF_Params_init(&rfParams);
 
@@ -51,8 +102,10 @@ void rf_setup()
     /* Customize the CMD_PROP_TX command for this application */
     RF_cmdPropTx.pktLen = PAYLOAD_LENGTH;
     RF_cmdPropTx.pPkt = packet;
-    RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
+//    RF_cmdPropTx.startTrigger.triggerType = TRIG_REL_SUBMIT;
+//    RF_cmdPropTx.startTime = offset_lookup();
 
+    RF_cmdPropTx.startTrigger.triggerType = TRIG_NOW;
     /* Modify CMD_PROP_TX and CMD_PROP_RX commands for application needs */
     /* Set the Data Entity queue for received data */
     RF_cmdPropRx.pQueue = &dataQueue;
@@ -96,14 +149,14 @@ RF_EventMask events;
 
 //uint32_t curr_count = 0;
 char trigNo = 0;
-char buffer[50];
+
 void rf_main()
 {
     /* Create packet with incrementing sequence number & random payload */
     packet[0] = (uint8_t)(seqNumber >> 8);
     packet[1] = (uint8_t)(seqNumber);
 
-    curr_count++; //TODO: just use mains
+    curr_count++;
 
     //if response received issue new RxSniff
     if (resp_flag)
@@ -113,28 +166,33 @@ void rf_main()
               &RX_callback, (RF_EventCmdDone |
                       RF_EventLastCmdDone | RF_EventRxEntryDone));
         resp_flag = 0;
+        rando_wait = get_random_num(11);
     }
     //if no response increment idle counter
     if (resp_flag == 0)
     {
         idle_count++;
     }
-//    sprintf(buffer, "idle count is: %u\n\rcurr count is: %u\r\ndelta message time: %u\r\n", idle_count, curr_count, delta_message_time);
-    sprintf(buffer, "dmt: %u\r\n", delta_message_time);
+//    sprintf(buffer, "idle count is: %u\n\uniq_off is: %u\r\ndelta message time: %u\r\n", idle_count, uniq_offset, delta_message_time);
+    sprintf(buffer, "dmt: %u\r\n", delta_message_time + rando_wait);
     WriteUART0(buffer);
     //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
-    if ((idle_count > delta_message_time/2) && (heard_since_last == 1))
+    if ((idle_count > (delta_message_time/2 + rando_wait)) && (heard_since_last == 1))
     {
+        sprintf(buffer,"broadcasting at %u", idle_count);
+        WriteUART0(buffer);
+
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
                                  &TX_callback, (RF_EventCmdDone | RF_EventLastCmdDone));
         resp_flag = 1;
         idle_count = 0;
         heard_since_last = 0;
+        return;
     }
 
     //if you havent heard from anyone and idle count is greater than idle max, chirp
-    if (idle_count > IDLE_MAX)
+    if (idle_count >= IDLE_MAX)
     {
         RF_runImmediateCmd(rfHandle, (uint32_t*)&triggerCmd); //kill our listen
         RF_postCmd(rfHandle, (RF_Op*)&RF_cmdPropTx, RF_PriorityNormal,
@@ -146,7 +204,7 @@ void rf_main()
 
     if (rxCommandHandle < 0)
     {
-//        WriteUART0("quue full\r\n");
+        WriteUART0("quue full\r\n");
 //        WriteUART0("          \r"); //needs this to work??????
 //        RF_cmdFlush.pFirstEntry = dataQueue.pLastEntry;
 //        RF_runImmediateCmd(rfHandle, (uint32_t*)&RF_cmdFlush);
@@ -184,7 +242,7 @@ void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
     {
         seqNumber++;
-//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED); //TODO CAUSE IM DUMB I MAPPED THE SAME PIN AS 2nd row leds, needs pcb rework
+        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED); //TODO CAUSE IM DUMB I MAPPED THE SAME PIN AS 2nd row leds, needs pcb rework
 //        WriteUART0("ah shouting\r\n");
     }
 
@@ -201,13 +259,19 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
         message_time = curr_count;
         delta_message_time = message_time - prev_message_time;
+        prev_message_time = message_time;
 
         if(delta_message_time < IDLE_MIN)
         {
             delta_message_time = IDLE_MIN;
         }
 
-        prev_message_time = message_time;
+        if(delta_message_time > IDLE_MAX)
+        {
+            delta_message_time = IDLE_MAX;
+        }
+
+
         /* Get current unhandled data entry */
         currentDataEntry = RFQueue_getDataEntry();
 
@@ -225,6 +289,8 @@ void RX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //        sprintf(buffer, "delta time: %u\r\n", delta_message_time);
 //        WriteUART0(buffer);
         uint32_t info = (*(packetDataPointer + 2) << 24) | (*(packetDataPointer + 3) << 16) | (*(packetDataPointer + 4) << 8) | (*(packetDataPointer + 5));
+        sprintf(buffer, "info: %X\r\n", info);
+        WriteUART0(buffer);
         evaluate_packet(info);
         //on successful rx set resp flag high
         idle_count = 0;
