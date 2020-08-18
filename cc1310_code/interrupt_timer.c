@@ -94,7 +94,7 @@ void InterTimerEnable()
 
     TimerConfigure(GPT3_BASE, (TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC | TIMER_CFG_B_PERIODIC));
     TimerPrescaleSet(GPT3_BASE, TIMER_A, 0xFF);
-    TimerLoadSet(GPT3_BASE, TIMER_A, 0xFFFF / 16); // /512
+    TimerLoadSet(GPT3_BASE, TIMER_A, 0xFFFF / 32); // /512
 
     IntMasterEnable();
     TimerIntRegister(GPT1_BASE, TIMER_A, openloop_turn); //openloop_turn
