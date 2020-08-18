@@ -4,6 +4,7 @@
  * main.c
  */
 #include <ccfg.c>
+#include <color_track.h>
 #include "CC1310_LAUNCHXL.h"
 
 #include <devices/cc13x0/driverlib/prcm.h>
@@ -19,12 +20,11 @@
 #include "helpful.h"
 #include "ir_sense.h"
 #include "zumo_moves.h"
-#include "color_track.h"
-//#include "rtc.h"
 #include "interrupt_timer.h"
 #include "comm_packet.h"
 #include "dist_sense.h"
 #include "leds.h"
+#include "rando.h"
 
 static char buffer[60];
 uint32_t adc_vals[8];
@@ -43,6 +43,9 @@ int main(void)
     PWMEnable(); //sets timers to finish configuring analog out pins
     //initialize analog input
     InitADC();
+
+    set_policy(0b11);
+    set_mach_id(HWREG(FCFG1_BASE +0x2F0) & 0xFFFF);
     //configures rf driver, configures application specific packages, makes initial chirp call
     rf_setup();
 
@@ -76,14 +79,20 @@ int main(void)
       init_state(0b110, 1, bbs, 3, 0, 0, 0x3);
 
 
-      set_policy(0b00011);
-      set_mach_id(HWREG(FCFG1_BASE +0x2F0) & 0xFFFF);
+      RandoConfig();
+//      WriteUART0("sup\r\n");
+//      sprintf(buffer, "got a rando hot off the press: %u\r\n", get_random_num(128));
+//      WriteUART0(buffer);
+//      while(1);
 
       InterTimerEnable();
 
-
+      uint32_t count = 0;
       while(1)
       {
+
+//            sprintf(buffer,"xc: %u\tpol: %u\r\n", get_xc_state(), get_policy());
+//            WriteUART0(buffer);
 //          GPIO_toggleDio(CC1310_LAUNCHXL_PIN_GLED);
 //          read_imu();
 //          rf_main();
