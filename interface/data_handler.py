@@ -11,7 +11,8 @@ from add_robot import MAC_mem
 
 class data_in():
 	def __init__(self, port):
-		self.data = np.array(np.zeros((5, 10000)))
+		self.data = pd.DataFrame(np.array(np.zeros((5, 10000))), index=["id", "tflag", "bb_idx", "pol", "state"]) 
+		self.data.loc["id",:] = self.data.loc["id",:].astype(str)
 		self.data_idx = 0
 		self.csv_name = ""
 
@@ -24,25 +25,27 @@ class data_in():
 		self.ser.open()
 
 	def to_csv(self):
-		pd.DataFrame(self.data).to_csv(self.csv_name, header=None, index=None)
+		self.data.to_csv(self.csv_name, header=None, index=None)
 
 	def set_csv_name(self, csv_name):
-		self.csv_name = csv_name
+		self.csv_name = "logging/{}".format(csv_name)
 
 	def read(self):
 		mess = self.ser.readline().decode('utf-8')
-		# print(np.fromstring(mess, sep=","))
-		if (np.fromstring(mess, sep=",").shape[0] != 5):
+		if (len(mess) != 14):
 			return
-		# #catch startup case
-		# elif (np.fromstring(mess, sep=" ").shape[0] == 4):
-		# 	print(mess)
-			
 
-		# print(mess)
-		self.data[:,self.data_idx] = np.fromstring(mess, sep=",").astype('uint16')
+		id = mess[:4]
+		state = np.fromstring(mess[5:], sep=",")
+
+		entry = pd.Series(np.zeros(5), index=["id", "tflag", "bb_idx", "pol", "state"])
+		entry.id = entry.id.astype(str)
+		entry.loc["id"] = id
+		entry.iloc[1:] = state
+
+		self.data.iloc[:,self.data_idx] = entry
+		print(self.data.iloc[:,self.data_idx])
 		self.data_idx += 1
-		print(self.data_idx)
 
 	def write(self,info):
 		ser.write(info)
