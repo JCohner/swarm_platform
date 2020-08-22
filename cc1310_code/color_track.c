@@ -1,8 +1,9 @@
-/*
- * color_track.c
+/**
+ *@file color_track.c
+ *@brief infrastructure for analyzing results of ADC reads from IR sensors
+ *to determine underlying colors
  *
- *  Created on: Jun 22, 2020
- *      Author: jambox
+ *(this does not deal with black detect for line following that occurs in zumo.c)
  */
 
 #include "color_track.h"
@@ -10,7 +11,7 @@
 //#include "zumo_rf.h"
 #define NUM_COLORS 3
 
-static struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .detect_thresh = 5};
+static struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .detect_thresh = 4};
 
 static struct ColorTrack purp = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .detect_thresh = 1};
 
@@ -41,10 +42,10 @@ void detect_poi(uint32_t * vals)
 
     graphite.left_prev_vals[graphite.idx] =
             (vals[3] > graphite.low_bound && vals[3] < graphite.high_bound) \
-            + (vals[5] > graphite.low_bound + 20 && vals[5] < graphite.high_bound + 20);
+            + (vals[5] > graphite.low_bound && vals[5] < graphite.high_bound);
     graphite.right_prev_vals[graphite.idx] =
             (vals[2] > graphite.low_bound && vals[2] < graphite.high_bound) \
-            + (vals[4] > graphite.low_bound + 20 && vals[4] < graphite.high_bound + 20);
+            + (vals[4] > graphite.low_bound && vals[4] < graphite.high_bound);
 
 
     int i;
@@ -70,12 +71,12 @@ void detect_poi(uint32_t * vals)
         }
     }
 
-//    sprintf(buffer, "%u,%u\r\n", graphite.left_prev_vals_ave, graphite.right_prev_vals_ave);
-////    WriteUART0(buffer);
+//    sprintf(buffer, "%u\r\n", graphite.left_prev_vals_ave + graphite.right_prev_vals_ave);
+//    WriteUART0(buffer);
 //    WriteRF(buffer);
-    if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > 26
+    if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > 25
 //            && !get_detect_flag()
-            && (get_xc_state()== 0b0100))
+            && (get_xc_state()== 0b0100 || get_xc_state() == 0b0010) )
     {
         set_target_flag(1);
         GPIO_toggleDio(BLED2);
