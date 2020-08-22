@@ -24,7 +24,8 @@
 #define M1_PWM IOID_11//pin 10 on zumo
 #define M1_DIR IOID_20//pin 8 on zumo
 
-#define DIST_THRESH 1850
+#define FORWARD_DIST_THRESH 1550
+#define SIDE_DIST_THRESH 1600
 
 //#define MR_Sense IOID_25
 //#define IR_Sense IOID_23
@@ -42,7 +43,7 @@
 //#define MOTOR_TURN 64//64
 
 float read_line(uint32_t * vals);
-void drive_line(float cent_val, uint16_t dist_val, uint32_t * vals);
+void drive_line(float cent_val, uint16_t for_dist_val, uint16_t side_dist_val, uint32_t * vals);
 void calibrate_line(int num_samps);
 
 

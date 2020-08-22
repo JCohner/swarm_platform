@@ -95,7 +95,7 @@ float dt = 0.05;
 int policy = 0;
 //char do_once = 0;
 
-void drive_line(float cent_val, uint16_t dist_val, uint32_t * vals)
+void drive_line(float cent_val, uint16_t for_dist_val, uint16_t side_dist_val, uint32_t * vals)
 {
 
     ////////
@@ -116,13 +116,6 @@ void drive_line(float cent_val, uint16_t dist_val, uint32_t * vals)
     float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
 
 
-    if (dist_val > DIST_THRESH) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
-    {
-     rhs /= 2;
-     lhs /= 2;
-    }
-
-
     if (lhs < MOTOR_ON)
     {
         setMotor(M2, 0, lhs);
@@ -139,6 +132,21 @@ void drive_line(float cent_val, uint16_t dist_val, uint32_t * vals)
     else
     {
         setMotor(M1, 0, MOTOR_ON);
+    }
+
+              sprintf(buffer, "%u %u\r\n", for_dist_val, side_dist_val);
+              WriteUART0(buffer);
+
+    if (for_dist_val > FORWARD_DIST_THRESH
+            || side_dist_val > SIDE_DIST_THRESH) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
+    {
+        setMotor(M1, 0, MOTOR_OFF);
+        setMotor(M2, 0, MOTOR_OFF);
+
+
+        TimerDisable(GPT1_BASE,TIMER_A);
+        delay(.01);
+        TimerEnable(GPT1_BASE,TIMER_A);
     }
 
 
