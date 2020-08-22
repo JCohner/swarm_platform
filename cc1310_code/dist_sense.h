@@ -11,7 +11,7 @@
 #include "adc.h"
 #include <stdint.h>
 
-uint32_t ReadDist();
+uint32_t ReadDistForward();
 
-
+uint32_t ReadDist45();
 #endif /* DIST_SENSE_H_ */
