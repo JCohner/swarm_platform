@@ -25,7 +25,7 @@
 
 //#include "state_track.h" //replaced w comm_packet
 #include "comm_packet.h"
-
+#include "rando.h"
 #include <stdlib.h>
 
 /***** Defines *****/
@@ -43,8 +43,12 @@
 #define PROP_DONE_IDLETIMEOUT   0x3409  ///< Carrier sense operation ended because of timeout with csConf.timeoutRes = 1
 #define PROP_DONE_BUSYTIMEOUT   0x340A
 #define TX_DELAY             (uint32_t)(4000000*0.1f) //TODO: add this delay
-#define IDLE_MAX 20 //30
-#define IDLE_MIN 10
+
+
+#define IDLE_MAX 50 //30
+#define IDLE_MIN 30
+
+
 #define DELTA_TIME_BUFF_SIZE 10
 
 /* NOTE: Only two data entries supported at the moment */

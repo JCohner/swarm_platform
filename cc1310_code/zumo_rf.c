@@ -70,7 +70,7 @@ uint8_t offset_lookup()
     default:
         sprintf(buffer, "no match for %X\r\n", mach_id);
         WriteUART0(buffer);
-        while(1);
+//        while(1);
     }
 
     return uniq_offset;
@@ -174,8 +174,8 @@ void rf_main()
         idle_count++;
     }
 //    sprintf(buffer, "idle count is: %u\n\uniq_off is: %u\r\ndelta message time: %u\r\n", idle_count, uniq_offset, delta_message_time);
-    sprintf(buffer, "dmt: %u\r\n", delta_message_time + rando_wait);
-    WriteUART0(buffer);
+//    sprintf(buffer, "dmt: %u\r\n", delta_message_time + rando_wait);
+//    WriteUART0(buffer);
     //if the idle_count is greater than halg the delta and you have heard from someone chirp //TODO: this is wrong
     if ((idle_count > (delta_message_time/2 + rando_wait)) && (heard_since_last == 1))
     {
@@ -204,7 +204,7 @@ void rf_main()
 
     if (rxCommandHandle < 0)
     {
-        WriteUART0("quue full\r\n");
+//        WriteUART0("quue full\r\n");
 //        WriteUART0("          \r"); //needs this to work??????
 //        RF_cmdFlush.pFirstEntry = dataQueue.pLastEntry;
 //        RF_runImmediateCmd(rfHandle, (uint32_t*)&RF_cmdFlush);
