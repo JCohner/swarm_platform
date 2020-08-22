@@ -58,15 +58,14 @@ void evaluate_packet(uint32_t packet)
     {
         set_neighbor_target_flag(1);
         //set their policy as your own policy
-        uint8_t policy = (packet & 0x18) >> 3;
-        set_neighbor_target_policy(policy);
+        set_neighbor_target_policy(info.policy);
     }
 }
 
 //checks if sender robot is near enough to communicate
 uint8_t check_near(struct Packet * info)
 {
-    if (!(info->xc_state ^ get_xc_state()) && !(info->bb_idx ^ get_bb_idx()))
+    if ((info->xc_state == get_xc_state()) && (info->bb_idx == get_bb_idx()))
     {
         return 1;
     }
