@@ -10,9 +10,20 @@ from data_handler import data_in
 from helpful import int_to_bin_str
 from comm_packet import packet
 
+import time
+import threading
+def task1(data_in, num_its):
+	print("inside 1")
+	print("idx: {} num_its: {}", data_in.data_idx, num_its)
+
+	while(data_in.data_idx < num_its):
+		data_in.read()
+		time.sleep(0.002)
+		print(data_in.data_idx)
+	data_in.to_csv()
+	print("wrote to csv")
 
 class UI(QWidget):
-
 	def __init__(self):
 		super().__init__()
 		self.curr_pack = packet()
@@ -150,12 +161,14 @@ class UI(QWidget):
 
 	def begin_trial(self):
 		self.data_sock.data_idx = 0
-		while(self.data_sock.data_idx < self.num_els):
-			print(self.data_sock.data_idx)
-			self.data_sock.read()
-			self.idx_counter.setText("data idx: {}".format(self.data_sock.data_idx))
+		ser_read = threading.Thread(target=task1, args=[self.data_sock, self.num_els])
+		ser_read.start()
+		# while(self.data_sock.data_idx < self.num_els):
+		# 	print(self.data_sock.data_idx)
+		# 	self.data_sock.read()
+		# 	self.idx_counter.setText("data idx: {}".format(self.data_sock.data_idx))
 
-		self.data_sock.to_csv()
+		# self.data_sock.to_csv()
 
 	def num_el_edit(self):
 		self.num_els = int(self.csv_num_el_edit.text())

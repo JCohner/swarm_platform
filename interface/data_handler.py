@@ -37,6 +37,10 @@ class data_in():
 
 		id = mess[:4]
 		state = np.fromstring(mess[5:], sep=",")
+		print(state)
+		if(state.shape[0] != 4):
+			return
+
 
 		entry = pd.Series(np.zeros(5), index=["id", "tflag", "bb_idx", "pol", "state"])
 		entry.id = entry.id.astype(str)
