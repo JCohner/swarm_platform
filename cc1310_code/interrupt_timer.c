@@ -70,7 +70,7 @@ void main_loop()
     inc_state();
     manage_intersection();
 
-//    manage_leds();
+    manage_leds();
     }
     else
     {
@@ -108,7 +108,7 @@ void InterTimerEnable()
 //
     TimerPrescaleSet(GPT1_BASE, TIMER_B, 0xFF);
 //    TimerPrescaleMatchSet(GPT1_BASE, TIMER_B, 0xFF);
-    TimerLoadSet(GPT1_BASE, TIMER_B, 0xFFFF / 16);
+    TimerLoadSet(GPT1_BASE, TIMER_B, 0xFFFF / 8);
 //    TimerMatchSet(GPT1_BASE, TIMER_B, 0xFFFF / 2);
 
 
