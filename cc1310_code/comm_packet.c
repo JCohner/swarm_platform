@@ -34,8 +34,8 @@ uint32_t get_packet()
 
 void evaluate_packet(uint32_t packet)
 {
-//    sprintf(buffer, "packet: %u\r\n", packet);
-//    WriteUART0(buffer);
+    sprintf(buffer, "packet: %X\r\n", packet);
+    WriteUART0(buffer);
 
     uint32_t send_id = (packet & MACH_MASK) >> MACH_SHIFT;
 //    sprintf(buffer, "send_id: %X\r\n", send_id);
@@ -65,9 +65,26 @@ void evaluate_packet(uint32_t packet)
 //checks if sender robot is near enough to communicate
 uint8_t check_near(struct Packet * info)
 {
+    //needs to be expanded for circulatory system case
+    //could also be wrapped into a bitwise machine, just dont have time rn
     if ((info->xc_state == get_xc_state()) && (info->bb_idx == get_bb_idx()))
     {
-        return 1;
+        if(info->xc_state == 6)
+        {
+            return 1;
+        }
+        else if ( (info->xc_state == 1 || info->xc_state ==5)
+                && ( (info->policy & 0b01) == (get_policy() & 0b01)))
+        {
+            return 1;
+        } else if (info->xc_state == 2 && (get_policy() == info->policy))
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
     else
     {
