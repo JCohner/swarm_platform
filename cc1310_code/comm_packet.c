@@ -69,15 +69,19 @@ uint8_t check_near(struct Packet * info)
     //could also be wrapped into a bitwise machine, just dont have time rn
     if ((info->xc_state == get_xc_state()) && (info->bb_idx == get_bb_idx()))
     {
-        if(info->xc_state == 6)
+        if(info->xc_state == 6 || info->xc_state == 0xC)
         {
             return 1;
         }
-        else if ( (info->xc_state == 1 || info->xc_state ==5)
+        else if ( (info->xc_state == 1 || info->xc_state == 5 || info->xc_state == 0xA)
                 && ( (info->policy & 0b01) == (get_policy() & 0b01)))
         {
             return 1;
-        } else if (info->xc_state == 2 && (get_policy() == info->policy))
+        } else if ((info->xc_state == 2 || info->xc_state == 4) && (get_policy() == info->policy))
+        {
+            return 1;
+        }
+        else if (info->xc_state == 2 && (info->policy & 0b11) == (get_policy() & 0b11))
         {
             return 1;
         }
