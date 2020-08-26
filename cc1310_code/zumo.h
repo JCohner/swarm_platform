@@ -24,8 +24,10 @@
 #define M1_PWM IOID_11//pin 10 on zumo
 #define M1_DIR IOID_20//pin 8 on zumo
 
-#define FORWARD_DIST_THRESH 1550
-#define SIDE_DIST_THRESH 1600
+#define FDT_STOP 1000  //700
+#define FDT_REV 2000
+#define SDT_STOP 900 //700
+#define SDT_REV 1500
 
 //#define MR_Sense IOID_25
 //#define IR_Sense IOID_23

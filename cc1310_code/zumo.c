@@ -90,6 +90,85 @@ float read_line(uint32_t * vals)
     return lastValue/1000.0;
 }
 
+
+void check_distance(uint16_t for_dist, uint16_t side_dist, uint16_t lhs, uint16_t rhs)
+{
+    if (for_dist > FDT_REV)
+    {
+        TimerDisable(GPT1_BASE,TIMER_A);
+        if (lhs < MOTOR_ON)
+        {
+            setMotor(M2, 1, lhs);
+        }
+        else
+        {
+            setMotor(M2, 1, MOTOR_ON);
+        }
+
+        if (rhs < MOTOR_ON)
+        {
+            setMotor(M1, 1, rhs);
+        }
+        else
+        {
+            setMotor(M1, 1, MOTOR_ON);
+        }
+        set_dist_flag(1);
+    }
+    else if (for_dist > FDT_STOP && for_dist< FDT_REV)
+    {
+        setMotor(M1, 0, MOTOR_OFF);
+        setMotor(M2, 0, MOTOR_OFF);
+
+
+        TimerDisable(GPT1_BASE,TIMER_A);
+        delay(.01);
+
+        TimerEnable(GPT1_BASE,TIMER_A);
+        set_dist_flag(1);
+    }
+    else if(side_dist > SDT_REV)
+    {
+        TimerDisable(GPT1_BASE,TIMER_A);
+        if (lhs < MOTOR_ON)
+        {
+            setMotor(M2, 1, lhs);
+        }
+        else
+        {
+            setMotor(M2, 1, MOTOR_ON);
+        }
+
+        if (rhs < MOTOR_ON)
+        {
+            setMotor(M1, 1, rhs);
+        }
+        else
+        {
+            setMotor(M1, 1, MOTOR_ON);
+        }
+        set_dist_flag(1);
+    }
+    else if (side_dist > SDT_STOP && side_dist < SDT_REV)
+    {
+        setMotor(M1, 0, MOTOR_OFF);
+        setMotor(M2, 0, MOTOR_OFF);
+
+
+        TimerDisable(GPT1_BASE,TIMER_A);
+        delay(.01);
+
+        TimerEnable(GPT1_BASE,TIMER_A);
+        set_dist_flag(1);
+    }
+    else if (get_dist_flag())
+    {
+        TimerEnable(GPT1_BASE,TIMER_A);
+        set_dist_flag(0);
+    }
+}
+
+
 float error, e, prev_error, d_error;
 float dt = 0.05;
 int policy = 0;
@@ -115,7 +194,6 @@ void drive_line(float cent_val, uint16_t for_dist_val, uint16_t side_dist_val, u
     float rhs = speed_delim * MOTOR_ON + (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
     float lhs = speed_delim * MOTOR_ON - (e * MOTOR_ON/2.0) + MOTOR_ON/2.0;
 
-
     if (lhs < MOTOR_ON)
     {
         setMotor(M2, 0, lhs);
@@ -134,11 +212,11 @@ void drive_line(float cent_val, uint16_t for_dist_val, uint16_t side_dist_val, u
         setMotor(M1, 0, MOTOR_ON);
     }
 
-              sprintf(buffer, "%u %u\r\n", for_dist_val, side_dist_val);
-              WriteUART0(buffer);
+//              sprintf(buffer, "%u %u\r\n", for_dist_val, side_dist_val);
+//              WriteUART0(buffer);
 
-    if (for_dist_val > FORWARD_DIST_THRESH
-            || side_dist_val > SIDE_DIST_THRESH) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
+    if (for_dist_val > FDT_STOP
+            || side_dist_val > SDT_STOP) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
     {
         setMotor(M1, 0, MOTOR_OFF);
         setMotor(M2, 0, MOTOR_OFF);
@@ -146,15 +224,16 @@ void drive_line(float cent_val, uint16_t for_dist_val, uint16_t side_dist_val, u
 
         TimerDisable(GPT1_BASE,TIMER_A);
         delay(.01);
-        TimerEnable(GPT1_BASE,TIMER_A);
-    }
 
+        TimerEnable(GPT1_BASE,TIMER_A);
+        set_dist_flag(1);
+    } else {
+        set_dist_flag(0);
+    }
+//
+//    check_distance(for_dist_val,side_dist_val, lhs, rhs);
 
     //if we've lost the line
-
-//    uint8_t bias = get_prep_flag();
-//    uint8_t bias = 0;
-    //normal lost line following
     if ((fabs(error) == 1.5)){// && !bias) {
         if (error < 0){
 
@@ -173,10 +252,7 @@ void drive_line(float cent_val, uint16_t for_dist_val, uint16_t side_dist_val, u
         }
 
     }
-//    else if ((fabs(error) == 1.5 || error == 0) && !bias)
-//    {
-//     rotate(get_next_dir());
-//    }
+
 
     return;
 }
