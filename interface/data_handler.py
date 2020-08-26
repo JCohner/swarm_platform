@@ -3,20 +3,25 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 import sys 
+import time
 
 import comm_packet
 from helpful import int_to_bin_str
 from add_robot import MAC_mem
 
 
+def get_time():
+	t = time.localtime()
+	str_t = time.strftime("%H:%M:%S", t)
+	return str_t
+
 class data_in():
 	def __init__(self, port):
-		self.data = pd.DataFrame(np.array(np.zeros((5, 10000))), index=["id", "tflag", "bb_idx", "pol", "state"]) 
+		self.data = pd.DataFrame(np.array(np.zeros((6, 10000))), index=["id", "tflag",  "pol", "bb_idx","state", "time"]) 
 		self.data.loc["id",:] = self.data.loc["id",:].astype(str)
+		self.data.loc["time",:] = self.data.loc["time",:].astype(str)	
 		self.data_idx = 0
 		self.csv_name = ""
-
-		# self.MAC_lib = MAC_mem()
 
 		ser = serial.Serial()
 		ser.baudrate = 115200
@@ -24,8 +29,9 @@ class data_in():
 		self.ser = ser
 		self.ser.open()
 
+		self.start_time = 0
 	def to_csv(self):
-		self.data.to_csv(self.csv_name, header=None, index=None)
+		self.data.to_csv(self.csv_name)
 
 	def set_csv_name(self, csv_name):
 		self.csv_name = "logging/{}".format(csv_name)
@@ -42,11 +48,11 @@ class data_in():
 			return
 
 
-		entry = pd.Series(np.zeros(5), index=["id", "tflag", "bb_idx", "pol", "state"])
+		entry = pd.Series(np.zeros(6), index=["id", "tflag", "pol", "bb_idx", "state", "time"])
 		entry.id = entry.id.astype(str)
 		entry.loc["id"] = id
-		entry.iloc[1:] = state
-
+		entry.iloc[1:-1] = state
+		entry.loc["time"] = get_time()#time.time() - self.start_time
 		self.data.iloc[:,self.data_idx] = entry
 		print(self.data.iloc[:,self.data_idx])
 		self.data_idx += 1
