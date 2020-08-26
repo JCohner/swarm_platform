@@ -23,7 +23,7 @@ void detect_xc(uint32_t * vals)
     if (vals[0] < 500 && vals[1] < 500 && vals[2] < 500 && vals[3] < 500
             && vals[4] < 500 && vals[5] < 500)
     {
-        GPIO_toggleDio(BLED1);
+//        GPIO_toggleDio(BLED1);
         set_intersection_flag(1);
     }
     return;
@@ -53,6 +53,13 @@ void detect_poi(uint32_t * vals)
     {
         graphite.left_prev_vals_ave += graphite.left_prev_vals[i];
         graphite.right_prev_vals_ave += graphite.right_prev_vals[i];
+
+    }
+
+    if (get_dist_flag() && (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > 5))
+    {
+        graphite.left_prev_vals_ave = 2;
+        graphite.left_prev_vals_ave = 1;
     }
 
     graphite.idx = (graphite.idx + 1) % NUM_PREV_VALS;
@@ -62,7 +69,7 @@ void detect_poi(uint32_t * vals)
         if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > graphite.detect_thresh)
         {
             set_detect_flag(1);
-            GPIO_toggleDio(BLED0);
+//            GPIO_toggleDio(BLED0);
             for (i = 0; i < NUM_PREV_VALS; i++)
             {
                 graphite.left_prev_vals[i] = 0;
@@ -76,10 +83,10 @@ void detect_poi(uint32_t * vals)
 //    WriteRF(buffer);
     if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > 25
 //            && !get_detect_flag()
-            && (get_xc_state()== 0b0100 || get_xc_state() == 0b0010) )
+            && (get_xc_state()== 0b0100 || get_xc_state() == 0b0010))
     {
         set_target_flag(1);
-        GPIO_toggleDio(BLED2);
+        GPIO_toggleDio(IOID_15);
     }
     return;
 }
