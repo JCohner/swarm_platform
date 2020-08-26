@@ -9,8 +9,8 @@
 
 #include "uart.h"
 #include <stdio.h>
-
-//static enum States state;
+#include <stdint.h>
+#include "rando.h"
 
 static struct StateTrack state_track = {.bbs = {3,4}};
 //=                                 {.xc_state = 0b1100, .prev_xc_state=0b1100,
@@ -130,17 +130,42 @@ void inc_state()
 
 
     //for when its acceptable to overwrite DRIVING policy
-    if ((xcs == 0b110 || xcs == 0xC) && get_neighbor_target_flag() && !get_actuation_flag() && get_on_line_flag())
+    if ((xcs == 0b110 || xcs == 0xC)
+            && get_neighbor_target_flag() && !get_ignore_pol_flag()
+            && !get_actuation_flag() && get_on_line_flag())
     {
         set_policy(get_neighbor_target_policy());
         set_neighbor_target_flag(0);
     }
-    if ((xcs == 0b110 || xcs == 0xC) && get_new_policy_flag() && !get_actuation_flag() && get_on_line_flag())
+    if ((xcs == 0b110 || xcs == 0xC)
+            && get_new_policy_flag()
+            && !get_actuation_flag() && get_on_line_flag())
     {
-//        WriteUART0("updating policyyy!\r\n");
-
         set_policy(get_new_policy());
         set_new_policy_flag(0);
+    }
+
+    //increment number of completed loops
+    if (( (xcs == 0b110 && prev_xcs == 0b101)|| (xcs == 0xC && prev_xcs == 0xA))
+            && !get_actuation_flag() && get_on_line_flag())
+    {
+        set_num_loops(get_num_loops() + 1);
+
+        if ((get_num_loops() % 2) == 0)
+        {
+            set_target_flag(0);
+        }
+//        if (get_random_num(get_num_loops()) > 2)
+//        {
+//            set_num_loops(0);
+//            set_policy(get_random_num(4));
+//            set_ignore_pol_flag(1);
+//        }
+//
+//        if (get_num_loops() > 0)
+//        {
+//            set_ignore_pol_flag(0);
+//        }
     }
 
 
@@ -286,6 +311,33 @@ void set_enable_flag(uint8_t flag)
     state_track.enabled = flag & 0x1;
 }
 
+void set_dist_flag(uint8_t flag)
+{
+    state_track.dist_flag = flag & 0x1;
+}
+uint8_t get_dist_flag()
+{
+    return state_track.dist_flag;
+}
+
+void set_num_loops(uint8_t num)
+{
+    state_track.num_loops = num;
+}
+
+uint8_t get_num_loops()
+{
+    return state_track.num_loops;
+}
+
+void set_ignore_pol_flag(uint8_t flag)
+{
+    state_track.ignore_pol_flag = flag;
+}
+uint8_t get_ignore_pol_flag()
+{
+    return state_track.ignore_pol_flag;
+}
 
 
 uint8_t get_mask()
