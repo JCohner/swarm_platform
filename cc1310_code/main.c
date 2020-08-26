@@ -34,6 +34,52 @@
 #include "rando.h"
 
 static char buffer[60];
+
+uint8_t pol;
+uint8_t pol_lookup()
+{
+
+    uint16_t mach_id = get_mach_id();
+    switch(mach_id)
+    {
+    case 0xC464:
+        pol = 0;
+        break;
+    case 0xC219:
+        pol = 0;
+        break;
+    case 0xA171:
+        pol = 2;
+        break;
+    case 0xC683:
+        pol = 2;
+        break;
+    case 0x20CE:
+        pol = 3;
+        break;
+    case 0xB5A8:
+        pol = 3;
+        break;
+    case 0xC262:
+        pol = 1;
+        break;
+    case 0xA3EB:
+        pol = 1;
+        break;
+    case 0xC718:
+        pol = 0;
+        break;
+    default:
+        sprintf(buffer, "no match for %X\r\n", mach_id);
+        WriteUART0(buffer);
+        while(1);
+    }
+
+    return pol;
+}
+
+
+
 uint32_t adc_vals[8];
 uint32_t adc_ave_vals[8];
 int main(void)
@@ -64,7 +110,12 @@ int main(void)
     setMotor(M1, 0, 0);
     //usefull delay on startup (also seems needed for random number gen??)
     delay(1);
-    set_policy(get_random_num(4));
+
+    //IF WE WANT RAND POLICY
+    set_policy(get_random_num(32));
+
+//    set_policy(pol_lookup());
+
 //    sprintf(buffer, "rand: %u\r\n" ,get_policy());
 //    WriteUART0(buffer);
 //    while(1);
@@ -82,16 +133,16 @@ int main(void)
      * exclusively comment this in for state machine
      * to be in circulatory map configuration
      * */
-    //uint8_t bbs[2] = {3,4};
-    //init_state(0b1100, 2, bbs, 4, 1, 0, 0x7);
+    uint8_t bbs[2] = {3,4};
+    init_state(0b1100, 2, bbs, 4, 1, 0, 0x7);
 
     /*
      * State Track Initialization for 5 node map
      * exclusively comment this in for state machine
      * to be in 5 node map configuration
      * */
-      uint8_t bbs[1] = {3};
-      init_state(0b110, 1, bbs, 3, 0, 0, 0x3);
+//      uint8_t bbs[1] = {3};
+//      init_state(0b110, 1, bbs, 3, 0, 0, 0x3);
 
       //Enable timer based interrupts:
       //    GPT1A - Openloop motor control
@@ -101,10 +152,10 @@ int main(void)
 
       while(1)
       {
-//          uint32_t forw = ReadDistForward();
-//          uint32_t side = ReadDist45();
-//          sprintf(buffer, "%u %u\r\n", forw, side);
-//          WriteUART0(buffer);
+          uint32_t forw = ReadDistForward();
+          uint32_t side = ReadDist45();
+          sprintf(buffer, "%u %u\r\n", forw, side);
+          WriteUART0(buffer);
 
 
 
