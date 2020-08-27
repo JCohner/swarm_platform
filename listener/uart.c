@@ -122,8 +122,8 @@ uint8_t ReadUART0_AS(char * message, int maxLength)
 
     if (message_complete)
     {
-        WriteUART0(message);
-        WriteUART0("\r\n");
+//        WriteUART0(message);
+//        WriteUART0("\r\n");
     }
     return message_complete;
 }

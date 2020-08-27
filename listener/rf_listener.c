@@ -190,11 +190,14 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 //                        *(packetDataPointer + 3), *(packetDataPointer + 4), *(packetDataPointer + 5));
 //        WriteUART0(buffer);
 //        WriteUART0("me guy: ");
-//        WriteUART0((char *) (packetDataPointer + 2));
-        uint32_t data = (*(packetDataPointer + 2) << 24) | (*(packetDataPointer + 3) << 16) | (*(packetDataPointer +4) << 8) | (*(packetDataPointer +5));
-//        sprintf(buffer, "dat: %X\r\n", data);
+//        sprintf(buffer, "%u %u %u %u %u %u\r\n", *(packetDataPointer + 2), *(packetDataPointer + 3),
+//                                                    *(packetDataPointer + 4), *(packetDataPointer + 5),
+//                                                    *(packetDataPointer + 6), *(packetDataPointer + 7));
+//
 //        WriteUART0(buffer);
 
+        //Standard Communication Packet
+        uint32_t data = (*(packetDataPointer + 2) << 24) | (*(packetDataPointer + 3) << 16) | (*(packetDataPointer +4) << 8) | (*(packetDataPointer +5));
         print_info(data);
 
 
@@ -206,12 +209,14 @@ void listen_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
 
 void rf_post_message(uint32_t data)
 {
+//    sprintf(buffer, "di: %X\r\n", data);
+//    WriteUART0(buffer);
     packet[2] = (data & 0xFF000000) >> 24;
     packet[3] = (data & 0x00FF0000) >> 16; //writes high byte first
     packet[4] = (data & 0x0000FF00) >> 8; //low byte second
     packet[5] = (data & 0x000000FF);
 
-//    sprintf(buffer, "sending: %X\r\n", data);
+//    sprintf(buffer, "sending: %X\r\n", packet[2] << 24 | packet[3] << 16 | packet[4] << 8 | packet[5]);
 //    WriteUART0(buffer);
     int i;
     for (i = 0; i < 5; i++)
