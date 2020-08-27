@@ -38,7 +38,9 @@ class data_in():
 
 	def read(self):
 		mess = self.ser.readline().decode('utf-8')
-		if (len(mess) != 14):
+		print(mess)
+		print(len(mess))
+		if (len(mess) != 14 and len(mess) != 15 and len(mess) != 16):
 			return
 
 		id = mess[:4]
