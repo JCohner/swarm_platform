@@ -11,7 +11,7 @@
 //#include "zumo_rf.h"
 #define NUM_COLORS 3
 
-static struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .detect_thresh = 4};
+static struct ColorTrack graphite = {.low_bound = GREY_LOW, .high_bound = GREY_HIGH, .detect_thresh = 6};
 
 static struct ColorTrack purp = {.low_bound = PURP_LOW, .high_bound = PURP_HIGH, .detect_thresh = 1};
 
@@ -81,7 +81,7 @@ void detect_poi(uint32_t * vals)
 //    sprintf(buffer, "%u\r\n", graphite.left_prev_vals_ave + graphite.right_prev_vals_ave);
 //    WriteUART0(buffer);
 //    WriteRF(buffer);
-    if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > 25
+    if (graphite.left_prev_vals_ave + graphite.right_prev_vals_ave > 27
 //            && !get_detect_flag()
             && (get_xc_state()== 0b0100 || get_xc_state() == 0b0010))
     {
