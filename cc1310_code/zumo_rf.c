@@ -242,7 +242,7 @@ void TX_callback(RF_Handle h, RF_CmdHandle ch, RF_EventMask e)
     if ((RF_cmdPropTx.status == PROP_DONE_OK) && (e & RF_EventLastCmdDone))
     {
         seqNumber++;
-        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED); //TODO CAUSE IM DUMB I MAPPED THE SAME PIN AS 2nd row leds, needs pcb rework
+//        GPIO_toggleDio(CC1310_LAUNCHXL_PIN_RLED); //TODO CAUSE IM DUMB I MAPPED THE SAME PIN AS 2nd row leds, needs pcb rework
 //        WriteUART0("ah shouting\r\n");
     }
 
