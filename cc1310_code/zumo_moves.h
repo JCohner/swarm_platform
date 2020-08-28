@@ -28,5 +28,5 @@ void rotate(int dir);
 void set_on_time(uint32_t counts);
 void set_offset_time(uint32_t counts);
 void set_reset_time(uint32_t counts);
-
+void set_counts(uint32_t counts);
 #endif /* ZUMO_MOVES_H_ */

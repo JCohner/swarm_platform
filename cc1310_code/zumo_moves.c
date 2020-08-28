@@ -10,10 +10,10 @@
 
 static uint32_t on_time = 0;
 static uint16_t reset_time = 0;
+
 static uint16_t offset_time = 0;
 static volatile uint32_t counter = 0;
 static volatile uint8_t state = 0;
-
 
 void setMotor(int motor, int dir, int value)
 {
@@ -50,6 +50,7 @@ void init_openloop(void)
     state = 1;
     counter = 0;
     set_actuation_flag(1);
+    set_actuation_pre_ret_flag(1);
     WriteUART0("loop initialized\r\n");
 }
 
@@ -62,6 +63,11 @@ void end_openloop(void)
 void set_on_time(uint32_t counts)
 {
     on_time = counts;
+}
+
+void set_counts(uint32_t counts)
+{
+    counter = counts;
 }
 
 
