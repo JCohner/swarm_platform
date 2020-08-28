@@ -67,7 +67,7 @@ float read_line(uint32_t * vals)
 
     if (!on_line)
     {
-//        set_on_line_flag(0);
+        set_actuation_pre_ret_flag(0);
         // If it last read to the left of center, return 0.
         if (lastValue < (4 -  1) * 1000/2.0)
         {
@@ -165,6 +165,13 @@ void check_distance(uint16_t for_dist, uint16_t side_dist, uint16_t lhs, uint16_
     {
         TimerEnable(GPT1_BASE,TIMER_A);
         set_dist_flag(0);
+//        if (get_actuation_flag())
+//        {
+//            set_counts(0);
+//        }
+//        if (get_actuation_flag())
+
+
     }
 }
 
@@ -215,27 +222,48 @@ void drive_line(float cent_val, uint16_t for_dist_val, uint16_t side_dist_val, u
 //              sprintf(buffer, "%u %u\r\n", for_dist_val, side_dist_val);
 //              WriteUART0(buffer);
 
-    if (for_dist_val > FDT_STOP
-            || side_dist_val > SDT_STOP) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
-    {
-        setMotor(M1, 0, MOTOR_OFF);
-        setMotor(M2, 0, MOTOR_OFF);
-
-
-        TimerDisable(GPT1_BASE,TIMER_A);
-        delay(.01);
-
-        TimerEnable(GPT1_BASE,TIMER_A);
-        set_dist_flag(1);
-    } else {
-        set_dist_flag(0);
-    }
+//    if (for_dist_val > FDT_STOP
 //
-//    check_distance(for_dist_val,side_dist_val, lhs, rhs);
+//            || side_dist_val > SDT_STOP) //to get gridlock maybe check policy bit, or 'seniority' ie seq num
+//    {
+//        setMotor(M1, 0, MOTOR_OFF);
+//        setMotor(M2, 0, MOTOR_OFF);
+//
+//
+//        TimerDisable(GPT1_BASE,TIMER_A);
+//        delay(.01);
+//
+//        TimerEnable(GPT1_BASE,TIMER_A);
+//        set_dist_flag(1);
+//    } else {
+//        set_dist_flag(0);
+//    }
+//
+    check_distance(for_dist_val,side_dist_val, lhs, rhs);
 
     //if we've lost the line
     if ((fabs(error) == 1.5)){// && !bias) {
-        if (error < 0){
+        if (!get_on_line_flag())
+        {
+            uint8_t xc_state = get_xc_state();
+            uint8_t policy= get_policy();
+            uint8_t ret_policy = get_return_policy();
+
+            //this gets the single bit rotation value we need
+            //this works due to the OHE nature of the xc_state representation
+            uint8_t dir;
+            if (!get_return_flag())
+            {
+                dir = xc_state & mask_policy(policy);
+            }
+            else
+            {
+                dir = xc_state & mask_policy(ret_policy);
+            }
+            rotate(dir);
+        }
+
+        else if (error < 0){
 
 //            WriteUART0("LL: turning clockwise");
             rotate(1);
