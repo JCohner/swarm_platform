@@ -27,7 +27,7 @@ uint32_t get_random_num(uint8_t num)
 //        sprintf(buffer, "suh: %u\r\n",TRNGStatusGet());
 //        WriteUART0(buffer);
     }
-    WriteUART0("gut num\r\n");
+//    WriteUART0("gut num\r\n");
     uint32_t rando = TRNGNumberGet(TRNG_HI_WORD);
 //    TRNGDisable();
     return rando % num;
