@@ -47,6 +47,8 @@ struct StateTrack{
     uint8_t on_line_flag : 1; // raised if robot on line
     uint8_t actuation_flag : 1; //raised if: xc_state != prev_xc_state || ret_flag != prev_ret_flag
                                    // in execute_policy() in zumo_moves
+
+    uint8_t actuation_pre_ret_flag : 1;
     uint8_t num_loops;
     uint8_t ignore_pol_flag : 1;
 
@@ -114,7 +116,8 @@ uint8_t get_num_loops();
 void set_ignore_pol_flag(uint8_t flag);
 uint8_t get_ignore_pol_flag();
 
-
+void set_actuation_pre_ret_flag(uint8_t flag);
+uint8_t get_actuation_pre_ret_flag();
 
 void evaluate_state();
 void inc_state();

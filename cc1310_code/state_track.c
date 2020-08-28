@@ -350,5 +350,15 @@ uint8_t get_bb_idx()
     return state_track.bb_idx;
 }
 
+void set_actuation_pre_ret_flag(uint8_t flag)
+{
+    state_track.actuation_pre_ret_flag = flag;
+}
+uint8_t get_actuation_pre_ret_flag()
+{
+    return state_track.actuation_pre_ret_flag;
+}
+
+
 
 
