@@ -112,9 +112,9 @@ int main(void)
     delay(1);
 
     //IF WE WANT RAND POLICY
-    set_policy(get_random_num(32));
+//    set_policy(get_random_num(4));
 
-//    set_policy(pol_lookup());
+    set_policy(pol_lookup());
 
 //    sprintf(buffer, "rand: %u\r\n" ,get_policy());
 //    WriteUART0(buffer);
@@ -133,16 +133,16 @@ int main(void)
      * exclusively comment this in for state machine
      * to be in circulatory map configuration
      * */
-    uint8_t bbs[2] = {3,4};
-    init_state(0b1100, 2, bbs, 4, 1, 0, 0x7);
+//    uint8_t bbs[2] = {3,4};
+//    init_state(0b1100, 2, bbs, 4, 1, 0, 0x7);
 
     /*
      * State Track Initialization for 5 node map
      * exclusively comment this in for state machine
      * to be in 5 node map configuration
      * */
-//      uint8_t bbs[1] = {3};
-//      init_state(0b110, 1, bbs, 3, 0, 0, 0x3);
+      uint8_t bbs[1] = {3};
+      init_state(0b110, 1, bbs, 3, 0, 0, 0x3);
 
       //Enable timer based interrupts:
       //    GPT1A - Openloop motor control
@@ -152,18 +152,18 @@ int main(void)
 
       while(1)
       {
-          uint32_t forw = ReadDistForward();
-          uint32_t side = ReadDist45();
-          sprintf(buffer, "%u %u\r\n", forw, side);
-          WriteUART0(buffer);
+//          uint32_t forw = ReadDistForward();
+//          uint32_t side = ReadDist45();
+//          sprintf(buffer, "%u %u\r\n", forw, side);
+//          WriteUART0(buffer);
 
 
 
-//          ReadIR(adc_vals);
-//////          WriteRF(adc_vals);
-//                    sprintf(buffer,"%u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
-//                                      adc_vals[0], adc_vals[2], adc_vals[4]);
-//                    WriteUART0(buffer);
+          ReadIR(adc_vals);
+////          WriteRF(adc_vals);
+                    sprintf(buffer,"%u, %u, %u, %u, %u, %u\r\n", adc_vals[5], adc_vals[3], adc_vals[1],
+                                      adc_vals[0], adc_vals[2], adc_vals[4]);
+                    WriteUART0(buffer);
 
 
 //          sprintf(buffer,"dist val %u\r\n", ReadDist());
